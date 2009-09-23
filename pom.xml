@@ -95,4 +95,21 @@
 			</plugin>
 		</plugins>
 	</reporting>
+	
+	<distributionManagement>
+		<!-- use the following if you're not using a snapshot version. -->
+		<repository>
+			<id>juretta-opensource</id>
+			<name>Repository Name</name>
+			<url>file:///opt/webs/juretta.com/maven2/www</url>
+		</repository>
+		<!-- use the following if you ARE using a snapshot version. -->
+		<snapshotRepository>
+			<id>juretta-opensource</id>
+			<name>Repository Name</name>
+			<url>file:///opt/webs/juretta.com/maven2/www</url>
+		</snapshotRepository>
+
+
+	</distributionManagement>
 </project>
