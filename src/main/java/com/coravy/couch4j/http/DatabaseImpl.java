@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.util.Collection;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
@@ -34,7 +35,6 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
-import com.google.gson.reflect.TypeToken;
 
 /**
  * 
@@ -104,14 +104,18 @@ public class DatabaseImpl implements Database {
     public Document fetchDocument(String id) {
         String url = urlForPath(id);
         if (null == url) {
-            return new ResponseDocument();
+            return null;
         }
-
-        byte[] data = getResponseForUrl(url);
-        if (null != data) {
-            return new ResponseDocument(new String(data));
+        try {
+            byte[] data = getResponseForUrl(url);
+            if (null != data) {
+                return new ResponseDocument(new String(data));
+            }
+        } catch (NotFoundException nfe) {
+            logger.log(Level.FINER, nfe.getLocalizedMessage());
+            return null;
         }
-        return new ResponseDocument();
+        return null;
     }
 
     public ServerResponse saveDocument(Map<String, Object> doc) {
@@ -178,20 +182,22 @@ public class DatabaseImpl implements Database {
 
     public ViewResult fetchAllDocuments() {
         // _all_docs
-        //return gson.fromJson(jsonForPath("_all_docs"), JsonViewResult.class);
-    	return new JsonViewResultWrapper(jsonForPath("_all_docs"), gson);    	
+        // return gson.fromJson(jsonForPath("_all_docs"), JsonViewResult.class);
+        return new JsonViewResultWrapper(jsonForPath("_all_docs"), gson);
     }
 
     public ViewResult fetchAllDocuments(boolean includeDocs) {
-    	return new JsonViewResultWrapper(jsonForPath(View.builder("_all_docs")
+        return new JsonViewResultWrapper(jsonForPath(View.builder("_all_docs")
                 .includeDocs(true).toString()), gson);
-/*        return gson.fromJson(jsonForPath(View.builder("_all_docs")
-                .includeDocs(true).toString()), JsonViewResult.class);*/
+        /*
+         * return gson.fromJson(jsonForPath(View.builder("_all_docs")
+         * .includeDocs(true).toString()), JsonViewResult.class);
+         */
     }
-    
-	public ViewResult fetchView(View v) {
-		return new JsonViewResultWrapper(jsonForPath(v.queryString()), gson);
-    }    
+
+    public ViewResult fetchView(View v) {
+        return new JsonViewResultWrapper(jsonForPath(v.queryString()), gson);
+    }
 
     public ServerResponse delete() {
         // TODO Auto-generated method stub
@@ -286,7 +292,9 @@ public class DatabaseImpl implements Database {
             if (statusCode != HttpStatus.SC_OK) {
                 logger.warning("Method failed: " + method.getStatusLine());
             }
-
+            if (HttpStatus.SC_NOT_FOUND == statusCode) {
+                throw new NotFoundException(method.getStatusLine().toString());
+            }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             StreamUtils.copy(method.getResponseBodyAsStream(), bos);
             return bos.toByteArray();
