@@ -2,11 +2,10 @@ package com.coravy.couch4j.http;
 
 import java.util.Map;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
+import com.coravy.core.annotations.Immutable;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResultRow;
-import com.coravy.core.annotations.Immutable;
+import com.google.gson.Gson;
 
 /**
  * @author Stefan Saasen <stefan@coravy.com>
@@ -45,7 +44,7 @@ final class JsonViewResultRow implements ViewResultRow {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return new Gson().toJson(this);
     }
 
 }

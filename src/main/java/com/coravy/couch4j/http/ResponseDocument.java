@@ -3,6 +3,7 @@ package com.coravy.couch4j.http;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.coravy.couch4j.Document;
+import com.google.gson.Gson;
 
 /**
  * 
@@ -25,7 +26,7 @@ public class ResponseDocument extends Document {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return new Gson().toJson(this);
     }
 
 }

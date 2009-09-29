@@ -3,10 +3,9 @@ package com.coravy.couch4j.http;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
+import com.google.gson.Gson;
 
 /**
  * 
@@ -32,7 +31,7 @@ class JsonViewResult implements ViewResult {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return new Gson().toJson(this);
     }
 
     public Iterator<ViewResultRow> iterator() {
