@@ -20,6 +20,7 @@ import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
@@ -27,13 +28,13 @@ import com.coravy.couch4j.ServerResponse;
 import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
-import com.coravy.core.io.StreamUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.reflect.TypeToken;
 
 /**
  * 
@@ -108,7 +109,7 @@ public class DatabaseImpl implements Database {
 
         byte[] data = getResponseForUrl(url);
         if (null != data) {
-            return gson.fromJson(new String(data), ResponseDocument.class);
+            return new ResponseDocument(new String(data));
         }
         return new ResponseDocument();
     }

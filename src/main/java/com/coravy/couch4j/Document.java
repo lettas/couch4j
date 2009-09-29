@@ -41,6 +41,10 @@ public class Document {
     public void put(Object key, Object value) {
         this.attributes.put(key, value);
     }
+    
+    public void putAll(Map<? extends Object, ? extends Object> attributes) {
+        this.attributes.putAll(attributes);
+    }
 
     public Object get(final String key) {
         return this.attributes.get(key);

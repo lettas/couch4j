@@ -31,7 +31,7 @@ class JsonViewResult implements ViewResult {
 
     @Override
     public String toString() {
-        return new Gson().toJson(this);
+        return new Gson().toJson(this); // TODO Do we need this? THis will be a wrapped response anyway
     }
 
     public Iterator<ViewResultRow> iterator() {

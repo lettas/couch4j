@@ -1,8 +1,7 @@
 package com.coravy.couch4j.http;
 
-import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-
 import com.coravy.couch4j.ServerResponse;
+import com.google.gson.Gson;
 
 /**
  * 
@@ -34,7 +33,7 @@ public class JsonServerResponse extends ServerResponse {
 
     @Override
     public String toString() {
-        return ReflectionToStringBuilder.toString(this);
+        return new Gson().toJson(this); // TODO replace with json attribute
     }
 
 }

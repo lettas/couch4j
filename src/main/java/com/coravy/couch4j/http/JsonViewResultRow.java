@@ -44,7 +44,7 @@ final class JsonViewResultRow implements ViewResultRow {
 
     @Override
     public String toString() {
-        return new Gson().toJson(this);
+        return new Gson().toJson(this); // TODO replace with json attribute
     }
 
 }
