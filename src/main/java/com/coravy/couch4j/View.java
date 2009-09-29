@@ -5,7 +5,7 @@ import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 
-import com.coravy.lib.core.text.StringUtils;
+import com.coravy.core.text.StringUtils;
 
 /**
  * @author Stefan Saasen

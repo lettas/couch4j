@@ -6,7 +6,7 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResultRow;
-import com.coravy.lib.core.annotations.Immutable;
+import com.coravy.core.annotations.Immutable;
 
 /**
  * @author Stefan Saasen <stefan@coravy.com>

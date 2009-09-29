@@ -27,7 +27,7 @@ import com.coravy.couch4j.ServerResponse;
 import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
-import com.coravy.lib.core.io.StreamUtils;
+import com.coravy.core.io.StreamUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonDeserializationContext;
