@@ -1,10 +1,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.coravy.couch4j</groupId>
+	<groupId>com.coravy</groupId>
 	<artifactId>couch4j</artifactId>
 	<packaging>jar</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<version>0.2-SNAPSHOT</version>
 	<name>couch4j</name>
 	<url>http://github.com/juretta/couch4j</url>
 	<build>
@@ -40,6 +40,11 @@
 				<enabled>true</enabled>
 			</releases>
 		</repository>
+		<repository>
+			<id>juretta-opensource-public</id>
+			<name>http://maven2.juretta.com/</name>
+			<url>http://maven2.juretta.com/</url>
+		</repository>
 	</repositories>
 
 	<dependencies>
@@ -62,7 +67,7 @@
 		<dependency>
 			<groupId>com.coravy.lib</groupId>
 			<artifactId>core</artifactId>
-			<version>1.3.0-SNAPSHOT</version>
+			<version>1.3.2-SNAPSHOT</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
@@ -112,17 +117,15 @@
 	<distributionManagement>
 		<!-- use the following if you're not using a snapshot version. -->
 		<repository>
-			<id>juretta-opensource</id>
+			<id>coravy-opensource-release</id>
 			<name>Repository Name</name>
-			<url>file:///opt/webs/juretta.com/maven2/www</url>
+			<url>file:///opt/webs/coravy.com/repository/www/maven2</url>
 		</repository>
 		<!-- use the following if you ARE using a snapshot version. -->
 		<snapshotRepository>
-			<id>juretta-opensource</id>
+			<id>coravy-opensource-snapshot</id>
 			<name>Repository Name</name>
-			<url>file:///opt/webs/juretta.com/maven2/www</url>
+			<url>file:///opt/webs/coravy.com/snapshots/www/maven2</url>
 		</snapshotRepository>
-
-
 	</distributionManagement>
 </project>

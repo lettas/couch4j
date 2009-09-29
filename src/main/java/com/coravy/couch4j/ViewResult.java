@@ -13,4 +13,10 @@ public interface ViewResult extends Iterable<ViewResultRow> {
     int getOffset();
 
     List<ViewResultRow> getRows();
+    
+    /**
+     * @return JSON string representation of the viewresult
+     */
+    @Override
+    String toString();
 }

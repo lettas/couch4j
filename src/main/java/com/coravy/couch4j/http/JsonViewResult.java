@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
 
 /**
@@ -12,7 +13,7 @@ import com.coravy.couch4j.ViewResultRow;
  * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
-class JsonViewResult implements com.coravy.couch4j.ViewResult {
+class JsonViewResult implements ViewResult {
     private int total_rows;
     private int offset;
     private List<ViewResultRow> rows;

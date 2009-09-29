@@ -24,6 +24,7 @@ import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ServerResponse;
+import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
 import com.coravy.lib.core.io.StreamUtils;
@@ -176,13 +177,20 @@ public class DatabaseImpl implements Database {
 
     public ViewResult fetchAllDocuments() {
         // _all_docs
-        return gson.fromJson(jsonForPath("_all_docs"), JsonViewResult.class);
+        //return gson.fromJson(jsonForPath("_all_docs"), JsonViewResult.class);
+    	return new JsonViewResultWrapper(jsonForPath("_all_docs"), gson);    	
     }
 
     public ViewResult fetchAllDocuments(boolean includeDocs) {
-        return gson.fromJson(jsonForPath(new ViewBuilder("_all_docs")
-                .includeDocs(true).toString()), JsonViewResult.class);
+    	return new JsonViewResultWrapper(jsonForPath(View.builder("_all_docs")
+                .includeDocs(true).toString()), gson);
+/*        return gson.fromJson(jsonForPath(View.builder("_all_docs")
+                .includeDocs(true).toString()), JsonViewResult.class);*/
     }
+    
+	public ViewResult fetchView(View v) {
+		return new JsonViewResultWrapper(jsonForPath(v.queryString()), gson);
+    }    
 
     public ServerResponse delete() {
         // TODO Auto-generated method stub
@@ -291,4 +299,5 @@ public class DatabaseImpl implements Database {
         }
         return null;
     }
+
 }

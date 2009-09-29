@@ -5,13 +5,14 @@ import java.util.Map;
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.coravy.couch4j.Document;
+import com.coravy.couch4j.ViewResultRow;
 import com.coravy.lib.core.annotations.Immutable;
 
 /**
  * @author Stefan Saasen <stefan@coravy.com>
  */
 @Immutable
-final class JsonViewResultRow implements com.coravy.couch4j.ViewResultRow {
+final class JsonViewResultRow implements ViewResultRow {
     private String id;
     private String key;
     private Map<String, Object> doc;

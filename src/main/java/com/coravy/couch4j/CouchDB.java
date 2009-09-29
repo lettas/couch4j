@@ -2,6 +2,11 @@ package com.coravy.couch4j;
 
 import com.coravy.couch4j.http.DatabaseImpl;
 
+/**
+ * The CouchDB database server.
+ *  
+ * @author Stefan Saasen
+ */
 public class CouchDB {
 
     public Database getDatabase(final String databaseName) {

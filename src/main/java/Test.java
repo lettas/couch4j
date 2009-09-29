@@ -5,6 +5,7 @@ import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ServerResponse;
+import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
 
@@ -15,8 +16,9 @@ import com.coravy.couch4j.ViewResultRow;
  */
 public class Test {
     public static void main(String[] args) {
+    	/*
         Database db = CouchDB.localServerInstance().getDatabase("couch4j");
-
+        
         Document doc = db.fetchDocument("a21edf5d178b1b4f3b37e80d850406ef");
         System.out.println(doc);
         doc = new Document();
@@ -29,7 +31,6 @@ public class Test {
         doc.put("another value", "Test 2");
         db.saveDocument(doc);
 
-        /**/
         Map<String, Object> m = new HashMap<String, Object>();
         m.put("name", "Stefan & Sarah");
         db.saveDocument(m);
@@ -40,13 +41,17 @@ public class Test {
         for (ViewResultRow r : result) {
             System.out.println(r);
         }
-
+		*/
         System.err.println("==========================================");
-
-        result = db.fetchAllDocuments(true);
+        Database db = CouchDB.serverInstance("corelin1.contact-energy.co.nz").getDatabase("notes");
+        ViewResult result = db.fetchAllDocuments(true);
         for (ViewResultRow r : result) {
             System.out.println(r);
         }
-
+        
+        System.err.println("==========================================");
+        View view = View.builder().name("notes/by_ref").build();
+        result = db.fetchView(view);
+        System.out.println(result);
     }
 }

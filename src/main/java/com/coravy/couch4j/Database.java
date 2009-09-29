@@ -4,6 +4,8 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
+ * Represents a single logical CouchDB database.
+ * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
 public interface Database {
@@ -23,6 +25,8 @@ public interface Database {
     ViewResult fetchAllDocuments();
 
     ViewResult fetchAllDocuments(boolean includeDocs);
+    
+    ViewResult fetchView(View v);
     
     ServerResponse delete();
 }

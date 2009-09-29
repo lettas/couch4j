@@ -1,7 +1,7 @@
 package com.coravy.couch4j;
 
 /**
- * @author Stefan Saasen <stefan@coravy.com>
+ * @author Stefan Saasen
  */
 public interface Attachment {
     boolean isStub();

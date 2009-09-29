@@ -6,6 +6,9 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.coravy.couch4j.View;
+
+
 public class ViewBuilderTest {
 
     @Before
@@ -18,22 +21,22 @@ public class ViewBuilderTest {
 
     @Test
     public final void testViewBuilder() {
-        assertEquals("_all_docs", new ViewBuilder("_all_docs").toString());
+        assertEquals("_all_docs", View.builder("_all_docs").toString());
     }
 
     @Test
     public final void testDocument() {
-        assertEquals("_design/design/_view/test", new ViewBuilder("test").document("design").toString());
+        assertEquals("_design/design/_view/test", View.builder("test").document("design").toString());
     }
     
     @Test
     public final void testDocumentCombined() {
-        assertEquals("_design/design/_view/test", new ViewBuilder("design/test").toString());
+        assertEquals("_design/design/_view/test", View.builder("design/test").toString());
     }
     
     @Test(expected=IllegalArgumentException.class)
     public final void testDocumentCombinedInvalid() {
-        new ViewBuilder("design/test/abc");
+        View.builder("design/test/abc");
     }
 
 //    @Test
@@ -53,7 +56,7 @@ public class ViewBuilderTest {
 
     @Test
     public final void testIncludeDocs() {
-        assertEquals("_all_docs?include_docs=true", new ViewBuilder("_all_docs").includeDocs(true).toString());
+        assertEquals("_all_docs?include_docs=true", View.builder("_all_docs").includeDocs(true).toString());
     }
 
 //    @Test
