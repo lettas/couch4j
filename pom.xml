@@ -28,6 +28,18 @@
 		<system>Hudson</system>
 		<url>https://ci.coravy.com/hudson/job/couch4j/</url>
 	</ciManagement>
+	<developers>
+		<developer>
+			<id>stefan</id>
+			<name>Stefan Saasen</name>
+			<email>stefan@coravy.com</email>
+			<organization>coravy. Ltd</organization>
+			<organizationUrl>http://coravy.com</organizationUrl>
+			<timezone>+12</timezone>
+			<roles>
+			</roles>
+		</developer>
+	</developers>
 
 	<organization>
 		<name>coravy. Limited</name>
