@@ -24,6 +24,10 @@
 			</resource>
 		</resources>
 	</build>
+	<ciManagement>
+		<system>Hudson</system>
+		<url>https://ci.coravy.com/hudson/job/couch4j/</url>
+	</ciManagement>
 
 	<organization>
 		<name>coravy. Limited</name>
