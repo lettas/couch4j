@@ -31,7 +31,11 @@ public class CouchDB {
     private final String host;
     private final int port;
 
-    CouchDB(final String host, final int port) {
+    public CouchDB() {
+        this(DEFAULT_HOST, DEFAULT_PORT);
+    }
+    
+    public CouchDB(final String host, final int port) {
         this.host = host;
         this.port = port;
     }
