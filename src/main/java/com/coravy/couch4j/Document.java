@@ -3,7 +3,7 @@ package com.coravy.couch4j;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.gson.Gson;
+import net.sf.json.JSONObject;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
@@ -46,7 +46,7 @@ public class Document {
         this.attributes.putAll(attributes);
     }
 
-    public Object get(final String key) {
+    public Object get(String key) {
         return this.attributes.get(key);
     }
 
@@ -54,9 +54,5 @@ public class Document {
         return attributes;
     }
 
-    @Override
-    public String toString() {
-        return new Gson().toJson(this.attributes.toString());
-    }
 
 }

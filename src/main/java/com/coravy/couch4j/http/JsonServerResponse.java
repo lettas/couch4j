@@ -1,7 +1,6 @@
 package com.coravy.couch4j.http;
 
 import com.coravy.couch4j.ServerResponse;
-import com.google.gson.Gson;
 
 /**
  * 
@@ -31,9 +30,11 @@ public class JsonServerResponse extends ServerResponse {
         return rev;
     }
 
-    @Override
-    public String toString() {
-        return new Gson().toJson(this); // TODO replace with json attribute
+    void setId(String id) {
+        this.id = id;
     }
 
+    void setRev(String rev) {
+        this.rev = rev;
+    }
 }

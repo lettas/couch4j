@@ -8,9 +8,4 @@ public abstract class ServerResponse {
 
 	public abstract String getRev();
 
-	/**
-	 * @return JSON string representation of the viewresult
-	 */
-	@Override
-	public abstract String toString();
 }

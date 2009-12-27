@@ -1,11 +1,10 @@
 package com.coravy.couch4j.http;
 
-import java.util.Map;
+import net.sf.json.JSONObject;
 
 import com.coravy.core.annotations.Immutable;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResultRow;
-import com.google.gson.Gson;
 
 /**
  * @author Stefan Saasen <stefan@coravy.com>
@@ -14,17 +13,17 @@ import com.google.gson.Gson;
 final class JsonViewResultRow implements ViewResultRow {
     private String id;
     private String key;
-    private Map<String, Object> doc;
+    private JSONObject json;
 
     // private final JSONObject json;
 
     /**
      * @param next
      */
-    JsonViewResultRow() {
-        // this.json = json;
-        // this.key = json.getString("key");
-        // this.id = json.getString("id");
+    JsonViewResultRow(JSONObject json) {
+        this.json = json;
+        this.key = json.getString("key");
+        this.id = json.getString("id");
     }
 
     public String getId() {
@@ -36,15 +35,10 @@ final class JsonViewResultRow implements ViewResultRow {
     }
 
     public Document getDocument() {
-        if (doc != null) {
-            return new Document(doc);
+        if (json != null) {
+            return new ResponseDocument(json.getJSONObject("value"));
         }
         return null; // TODO Fetch from database
-    }
-
-    @Override
-    public String toString() {
-        return new Gson().toJson(this); // TODO replace with json attribute
     }
 
 }

@@ -3,14 +3,17 @@ package com.coravy.couch4j.http;
 import java.util.Iterator;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
+
 import net.sf.json.JSONObject;
 
 import com.coravy.couch4j.Document;
+import com.coravy.couch4j.JsonExportable;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class ResponseDocument extends Document {
+public class ResponseDocument extends Document implements JsonExportable {
     private String _id;
     private String _rev;
 
@@ -25,6 +28,13 @@ public class ResponseDocument extends Document {
     public ResponseDocument(final String json) {
         this.json = json;
         jsonObject = JSONObject.fromObject(json);
+        this._id = jsonObject.getString("_id");
+        this._rev = jsonObject.getString("_id");
+    }
+
+    public ResponseDocument(final JSONObject jsonObject) {
+        this.json = "";
+        this.jsonObject = jsonObject;
         this._id = jsonObject.getString("_id");
         this._rev = jsonObject.getString("_id");
     }
@@ -56,11 +66,20 @@ public class ResponseDocument extends Document {
 
     @Override
     public void putAll(final Map<? extends Object, ? extends Object> attributes) {
-        for (Iterator iterator = attributes.keySet().iterator(); iterator
-                .hasNext();) {
+        for (Iterator iterator = attributes.keySet().iterator(); iterator.hasNext();) {
             Object key = iterator.next();
             jsonObject.put(key.toString(), attributes.get(key));
         }
+    }
+
+    public String toJson() {
+        if (null != jsonObject) {
+            return jsonObject.toString();
+        }
+        if (StringUtils.isNotBlank(json)) {
+            return json;
+        }
+        return "";
     }
 
 }

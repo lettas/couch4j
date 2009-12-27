@@ -3,19 +3,18 @@ package com.coravy.couch4j.http;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
-import com.google.gson.Gson;
 
 class JsonViewResultWrapper implements ViewResult {
 
 	private JsonViewResult wrappedResult;
 	private final String json;
-	private final Gson gson;
 
-	JsonViewResultWrapper(String json, Gson gson) {
+	JsonViewResultWrapper(String json) {
 		this.json = json;
-		this.gson = gson;
 	}
 
 	public int getOffset() {
@@ -45,7 +44,8 @@ class JsonViewResultWrapper implements ViewResult {
 
 	private void checkWrappedResult() {
 		if (null == wrappedResult) {
-			wrappedResult = gson.fromJson(json, JsonViewResult.class);
+            JSONObject jsonObject = JSONObject.fromObject(this.json);
+            wrappedResult = new JsonViewResult(jsonObject);
 		}
 	}
 
