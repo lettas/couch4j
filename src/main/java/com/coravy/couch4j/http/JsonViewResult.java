@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import com.coravy.couch4j.ViewResult;
@@ -34,6 +33,7 @@ class JsonViewResult implements ViewResult {
         return offset;
     }
 
+    @SuppressWarnings("unchecked")
     public List<ViewResultRow> getRows() {
         List<ViewResultRow> r = new ArrayList<ViewResultRow>();
         for (Iterator iterator = json.getJSONArray("rows").iterator(); iterator.hasNext();) {

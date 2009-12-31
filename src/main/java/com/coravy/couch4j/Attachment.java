@@ -1,5 +1,9 @@
 package com.coravy.couch4j;
 
+import java.io.IOException;
+
+import com.coravy.couch4j.Database.StreamContext;
+
 /**
  * @author Stefan Saasen
  */
@@ -13,4 +17,6 @@ public interface Attachment {
     String getName();
 
     String getContentId();
+    
+    void withAttachmentAsStream(StreamContext sc) throws IOException;
 }

@@ -1,9 +1,8 @@
 package com.coravy.couch4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
-
-import net.sf.json.JSONObject;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
@@ -14,6 +13,7 @@ public class Document {
 
     public Document() {
         this.attributes = new HashMap<Object, Object>();
+
     }
 
     public Document(Map<? extends Object, ? extends Object> attributes) {
@@ -41,7 +41,7 @@ public class Document {
     public void put(Object key, Object value) {
         this.attributes.put(key, value);
     }
-    
+
     public void putAll(Map<? extends Object, ? extends Object> attributes) {
         this.attributes.putAll(attributes);
     }
@@ -54,5 +54,16 @@ public class Document {
         return attributes;
     }
 
+    public Attachment getAttachment(final String name) {
+        throw new UnsupportedOperationException("");
+    }
+
+    public List<Attachment> getAttachments() {
+        throw new UnsupportedOperationException("");
+    }
+
+    public List<String> getAttachmentNames() {
+        throw new UnsupportedOperationException("");
+    }
 
 }

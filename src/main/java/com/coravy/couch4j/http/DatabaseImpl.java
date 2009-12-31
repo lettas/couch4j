@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import com.coravy.core.io.StreamUtils;
+import com.coravy.couch4j.Attachment;
 import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
@@ -33,16 +34,10 @@ import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
 
 /**
- * 
- * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
 public class DatabaseImpl implements Database {
-
-    // TODO replace with Log4J
-    private final static Logger logger = Logger.getLogger(DatabaseImpl.class
-            .getName());
-
+    private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
 
     private final String name;
     private final CouchDB server;
@@ -83,7 +78,6 @@ public class DatabaseImpl implements Database {
     }
 
     public ServerResponse delete() {
-        // TODO Auto-generated method stub
         return null;
     }
 
@@ -94,12 +88,7 @@ public class DatabaseImpl implements Database {
     }
 
     public ViewResult fetchAllDocuments(boolean includeDocs) {
-        return new JsonViewResultWrapper(jsonForPath(View.builder("_all_docs")
-                .includeDocs(true).toString()));
-        /*
-         * return gson.fromJson(jsonForPath(View.builder("_all_docs")
-         * .includeDocs(true).toString()), JsonViewResult.class);
-         */
+        return new JsonViewResultWrapper(jsonForPath(View.builder("_all_docs").includeDocs(true).toString()));
     }
 
     /*
@@ -114,7 +103,9 @@ public class DatabaseImpl implements Database {
         try {
             byte[] data = getResponseForUrl(url);
             if (null != data) {
-                return new ResponseDocument(new String(data));
+                ResponseDocument d = new ResponseDocument(new String(data));
+                d.setDatabase(this);
+                return d;
             }
         } catch (NotFoundException nfe) {
             logger.log(Level.FINER, nfe.getLocalizedMessage());
@@ -141,14 +132,14 @@ public class DatabaseImpl implements Database {
             method = new PutMethod(urlForPath(doc.getId()));
         }
         try {
-            
+
             String json = "";
-            if(doc instanceof JsonExportable) {
-                json = ((JsonExportable)doc).toJson();
+            if (doc instanceof JsonExportable) {
+                json = ((JsonExportable) doc).toJson();
             } else {
                 json = JSONSerializer.toJSON(doc.getAttributes()).toString();
             }
-            
+
             RequestEntity re = new StringRequestEntity(json, "application/json", "UTF-8");
             method.setRequestEntity(re);
 
@@ -159,7 +150,7 @@ public class DatabaseImpl implements Database {
             // Read the response body.
             byte[] responseBody = method.getResponseBody();
             JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-            JsonServerResponse response = (JsonServerResponse)JSONObject.toBean(jsonObject, JsonServerResponse.class);
+            JsonServerResponse response = (JsonServerResponse) JSONObject.toBean(jsonObject, JsonServerResponse.class);
             doc.put("_id", response.getId());
             doc.put("_rev", response.getRev());
             return response;
@@ -172,16 +163,15 @@ public class DatabaseImpl implements Database {
 
     public ServerResponse saveDocument(Map<String, Object> doc) {
         EntityEnclosingMethod method;
-        final String id = (String) (doc.get("id") != null ? doc.get("id") : doc
-                .get("_id"));
+        final String id = (String) (doc.get("id") != null ? doc.get("id") : doc.get("_id"));
         if (null == id) {
             method = new PostMethod(getUrl());
         } else {
             method = new PutMethod(urlForPath(id));
         }
         try {
-            RequestEntity re = new StringRequestEntity(JSONSerializer.toJSON(doc).toString(),
-                    "application/json", "UTF-8");
+            RequestEntity re = new StringRequestEntity(JSONSerializer.toJSON(doc).toString(), "application/json",
+                    "UTF-8");
             method.setRequestEntity(re);
 
             client.executeMethod(method);
@@ -210,8 +200,7 @@ public class DatabaseImpl implements Database {
     public ServerResponse saveDocument(String json) {
         EntityEnclosingMethod method = new PostMethod(getUrl());
         try {
-            RequestEntity re = new StringRequestEntity(json,
-                    "application/json", "UTF-8");
+            RequestEntity re = new StringRequestEntity(json, "application/json", "UTF-8");
             method.setRequestEntity(re);
 
             client.executeMethod(method);
@@ -238,8 +227,7 @@ public class DatabaseImpl implements Database {
         GetMethod method = new GetMethod(url);
         // System.err.println("url: " + url);
         // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER,
-                new DefaultHttpMethodRetryHandler(3, false));
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
 
         try {
             // Execute the method.
@@ -283,13 +271,40 @@ public class DatabaseImpl implements Database {
         return url;
     }
 
+    public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
+        // Create an instance of HttpClient.
+        HttpClient client = new HttpClient();
+        StringBuilder sb = new StringBuilder();
+        sb.append(this.getUrl());
+        sb.append("/");
+        sb.append(a.getContentId());
+        sb.append("/");
+        sb.append(a.getName());
+        GetMethod method = new GetMethod(sb.toString());
+
+        // Provide custom retry handler is necessary
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+
+        try {
+            // Execute the method.
+            int statusCode = client.executeMethod(method);
+            if (statusCode != HttpStatus.SC_OK) {
+                logger.warning("Method failed: " + method.getStatusLine());
+            }
+            ctx.withResponseStream(method.getResponseBodyAsStream());
+        } catch (HttpException e) {
+            logger.warning("Fatal protocol violation: " + e.getMessage());
+        } catch (IOException e) {
+            logger.warning("Fatal transport error: " + e.getMessage());
+        } finally {
+            // Release the connection.
+            method.releaseConnection();
+        }
+    }
+
     private String jsonForPath(final String path) {
         return new String(getResponseForUrl(urlForPath(path)));
     }
-
-    // private String jsonForUrl(final String url) {
-    // return new String(getResponseForUrl(url));
-    // }
 
     private String urlForPath(final String path) {
         return getUrl() + "/" + path;
