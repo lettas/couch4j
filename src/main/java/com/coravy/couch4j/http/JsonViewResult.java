@@ -12,7 +12,7 @@ import com.coravy.couch4j.ViewResultRow;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-class JsonViewResult implements ViewResult {
+final class JsonViewResult implements ViewResult {
     private int total_rows;
     private int offset;
     private List<ViewResultRow> rows;

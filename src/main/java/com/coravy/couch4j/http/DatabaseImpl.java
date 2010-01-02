@@ -11,7 +11,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
@@ -153,7 +152,7 @@ public class DatabaseImpl implements Database {
             // Read the response body.
             byte[] responseBody = method.getResponseBody();
             JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-            JsonServerResponse response = (JsonServerResponse) JSONObject.toBean(jsonObject, JsonServerResponse.class);
+            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
             doc.put("_id", response.getId());
             doc.put("_rev", response.getRev());
             return response;
@@ -185,7 +184,7 @@ public class DatabaseImpl implements Database {
             byte[] responseBody = method.getResponseBody();
 
             JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-            JsonServerResponse response = (JsonServerResponse) JSONObject.toBean(jsonObject, JsonServerResponse.class);
+            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
             doc.put("_id", response.getId());
             doc.put("_rev", response.getRev());
             return response;
@@ -214,7 +213,7 @@ public class DatabaseImpl implements Database {
             byte[] responseBody = method.getResponseBody();
 
             JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-            return (JsonServerResponse) JSONObject.toBean(jsonObject, JsonServerResponse.class);
+            return JsonServerResponse.fromJson(jsonObject);
         } catch (IOException e) {
             throw new RuntimeException(e); // TODO replace
         } finally {
@@ -327,7 +326,7 @@ public class DatabaseImpl implements Database {
             byte[] responseBody = method.getResponseBody();
 
             JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-            JsonServerResponse response = (JsonServerResponse) JSONObject.toBean(jsonObject, JsonServerResponse.class);
+            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
             doc.put("_id", id);
             doc.put("_rev", response.getRev());
             return response;

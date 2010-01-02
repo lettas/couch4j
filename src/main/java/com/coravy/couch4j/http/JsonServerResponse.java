@@ -1,5 +1,7 @@
 package com.coravy.couch4j.http;
 
+import net.sf.json.JSONObject;
+
 import com.coravy.couch4j.ServerResponse;
 
 /**
@@ -7,34 +9,32 @@ import com.coravy.couch4j.ServerResponse;
  * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class JsonServerResponse extends ServerResponse {
+final class JsonServerResponse extends ServerResponse {
 
-    private String id;
-    private String rev;
-    private boolean ok;
+    static JsonServerResponse fromJson(JSONObject json) {
+        return new JsonServerResponse(json.getString("id"), json.getString("rev"), json.getBoolean("ok"));
+    }
+
+    JsonServerResponse(String id, String rev, boolean ok) {
+        this.id = id;
+        this.rev = rev;
+        this.ok = ok;
+    }
+
+    private final String id;
+    private final String rev;
+    private final boolean ok;
 
     public String getId() {
         return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
     }
 
     public String getRev() {
         return rev;
     }
 
-    public void setRev(String rev) {
-        this.rev = rev;
-    }
-
     public boolean isOk() {
         return ok;
-    }
-
-    public void setOk(boolean ok) {
-        this.ok = ok;
     }
 
 }
