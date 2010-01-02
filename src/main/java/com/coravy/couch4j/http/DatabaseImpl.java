@@ -1,8 +1,15 @@
 package com.coravy.couch4j.http;
 
+import static com.coravy.core.collections.CollectionUtils.map;
+
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -15,6 +22,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
@@ -100,16 +108,11 @@ public class DatabaseImpl implements Database {
         if (null == url) {
             return null;
         }
-        try {
-            byte[] data = getResponseForUrl(url);
-            if (null != data) {
-                ResponseDocument d = new ResponseDocument(new String(data));
-                d.setDatabase(this);
-                return d;
-            }
-        } catch (NotFoundException nfe) {
-            logger.log(Level.FINER, nfe.getLocalizedMessage());
-            return null;
+        byte[] data = getResponseForUrl(url);
+        if (null != data) {
+            ResponseDocument d = new ResponseDocument(new String(data));
+            d.setDatabase(this);
+            return d;
         }
         return null;
     }
@@ -291,7 +294,9 @@ public class DatabaseImpl implements Database {
             if (statusCode != HttpStatus.SC_OK) {
                 logger.warning("Method failed: " + method.getStatusLine());
             }
-            ctx.withResponseStream(method.getResponseBodyAsStream());
+            InputStream is = method.getResponseBodyAsStream();
+            ctx.withResponseStream(is);
+            StreamUtils.closeSilently(is);
         } catch (HttpException e) {
             logger.warning("Fatal protocol violation: " + e.getMessage());
         } catch (IOException e) {
@@ -302,12 +307,69 @@ public class DatabaseImpl implements Database {
         }
     }
 
+    public ServerResponse deleteDocument(Document doc) {
+        final String id = doc.getId();
+        final String rev = doc.getRev();
+        HttpMethod method = new DeleteMethod(urlForPath(id, map("rev", rev)));
+        try {
+            int statusCode = client.executeMethod(method);
+            switch (statusCode) {
+            case HttpStatus.SC_NOT_FOUND:
+                throw new NotFoundException();
+            case HttpStatus.SC_OK:
+
+                break;
+            default:
+                throw new RuntimeException(); // TODO change
+            }
+
+            // Read the response body.
+            byte[] responseBody = method.getResponseBody();
+
+            JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
+            JsonServerResponse response = (JsonServerResponse) JSONObject.toBean(jsonObject, JsonServerResponse.class);
+            doc.put("_id", id);
+            doc.put("_rev", response.getRev());
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e); // TODO replace
+        } finally {
+            method.releaseConnection();
+        }
+    }
+
     private String jsonForPath(final String path) {
         return new String(getResponseForUrl(urlForPath(path)));
     }
 
     private String urlForPath(final String path) {
-        return getUrl() + "/" + path;
+        Map<String, String> p = Collections.emptyMap();
+        return this.urlForPath(path, p);
+    }
+
+    private String urlForPath(final String path, final Map<String, String> params) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(getUrl());
+        sb.append("/");
+        sb.append(path);
+        if (!params.isEmpty()) {
+            sb.append("?");
+            try {
+
+                for (Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext();) {
+                    final String key = iterator.next();
+                    sb.append(URLEncoder.encode(key, "UTF-8"));
+                    sb.append("=");
+                    sb.append(URLEncoder.encode(params.get(key), "UTF-8"));
+                    if (iterator.hasNext()) {
+                        sb.append("&");
+                    }
+                }
+            } catch (UnsupportedEncodingException ue) {
+                // ignore - UTF-8 is mandatory
+            }
+        }
+        return sb.toString();
     }
 
 }

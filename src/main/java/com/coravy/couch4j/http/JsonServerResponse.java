@@ -11,30 +11,30 @@ public class JsonServerResponse extends ServerResponse {
 
     private String id;
     private String rev;
+    private boolean ok;
 
-    /*
-     * (non-Javadoc)
-     * @see com.coravy.couch4j.ServerResponse#getId()
-     */
-    @Override
     public String getId() {
         return id;
     }
 
-    /*
-     * (non-Javadoc)
-     * @see com.coravy.couch4j.ServerResponse#getRev()
-     */
-    @Override
+    public void setId(String id) {
+        this.id = id;
+    }
+
     public String getRev() {
         return rev;
     }
 
-    void setId(String id) {
-        this.id = id;
-    }
-
-    void setRev(String rev) {
+    public void setRev(String rev) {
         this.rev = rev;
     }
+
+    public boolean isOk() {
+        return ok;
+    }
+
+    public void setOk(boolean ok) {
+        this.ok = ok;
+    }
+
 }

@@ -16,6 +16,11 @@ public class Document {
 
     }
 
+    public Document(String id) {
+        this();
+        this.attributes.put("_id", id);
+    }
+    
     public Document(Map<? extends Object, ? extends Object> attributes) {
         if (null != attributes) {
             this.attributes = attributes;

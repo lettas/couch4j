@@ -16,6 +16,12 @@ public interface Database {
         void withResponseStream(InputStream is) throws IOException;
     }
 
+    /**
+     * 
+     * @param string
+     * @return
+     * @throws NotFoundException
+     */
     Document fetchDocument(String string);
 
     ServerResponse saveDocument(Document doc);
@@ -37,4 +43,6 @@ public interface Database {
     ServerResponse delete();
 
     void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException;
+
+    ServerResponse deleteDocument(Document doc);
 }

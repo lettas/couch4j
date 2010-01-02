@@ -1,8 +1,6 @@
 package com.coravy.couch4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -12,20 +10,40 @@ import java.util.UUID;
 
 import net.sf.json.JSONArray;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Database.StreamContext;
+import com.coravy.couch4j.http.NotFoundException;
 
 public class Couch4jTest {
 
+    private static final String NEW_DOCUMENT_ID = "new_document";
     private Database test;
 
     @Before
     public void setUp() throws Exception {
         test = CouchDB.localServerInstance().getDatabase("couch4j");
         assertNotNull(test);
+
+        // // Save
+        // Document d = new Document();
+        // final String rand = UUID.randomUUID().toString();
+        // final String key = "rand_test_str";
+        // d.put(key, rand);
+        // test.saveDocument(d);
+    }
+
+    @After
+    public void teardown() {
+        try {
+            Document d = test.fetchDocument(NEW_DOCUMENT_ID);
+            test.deleteDocument(d);
+        } catch (NotFoundException nfe) {
+            // ignore
+        }
     }
 
     @Test
@@ -33,26 +51,22 @@ public class Couch4jTest {
         Document d = test.fetchDocument("test1");
         assertDocumentTest1(d);
     }
-    
+
     @Test
-    public void testFetchDocumentWithAttachment() throws Exception {
-        
+    public void testWithAttachmentAsStream() throws Exception {
         final int CONTENT_LENGTH = 9276;
-        
+
         final String docId = "test3_with_attachment";
         Document d = test.fetchDocument(docId);
         assertEquals(docId, d.getId());
-        
-        
+
         final String attachmentId = "Icon-128x128.png";
         Attachment a = d.getAttachment(attachmentId);
         assertNotNull(a);
         assertEquals("image/png", a.getContentType());
         assertEquals(CONTENT_LENGTH, a.getLength());
         assertTrue(a.isStub());
-        
-        // Retrieve InputStream!
-        
+
         a.withAttachmentAsStream(new StreamContext() {
             public void withResponseStream(InputStream is) throws IOException {
                 assertNotNull(is);
@@ -60,6 +74,8 @@ public class Couch4jTest {
                 StreamUtils.copy(is, baos);
                 byte[] b = baos.toByteArray();
                 assertEquals(CONTENT_LENGTH, b.length);
+
+                is.close();
             }
         });
     }
@@ -79,13 +95,61 @@ public class Couch4jTest {
     }
 
     @Test
-    public void testSaveDocument() throws Exception {
+    public void testSaveExistingDocument() throws Exception {
         Document d = test.fetchDocument("test2");
         final String rand = UUID.randomUUID().toString();
         final String key = "rand_test_str";
         d.put(key, rand);
 
-        System.out.println(d.getClass());
+        // Save
+        test.saveDocument(d);
+
+        // Fetch again
+        d = test.fetchDocument("test2");
+        assertEquals(rand, d.get(key));
+    }
+
+    @Test
+    public void testDeleteDocument() throws Exception {
+        final String documentId = UUID.randomUUID().toString();
+        Document d = new Document(documentId);
+        test.saveDocument(d);
+
+        d = test.fetchDocument(documentId);
+        assertEquals(documentId, d.getId());
+
+        test.deleteDocument(d);
+
+        try {
+            d = test.fetchDocument(documentId);
+            // Should throw NotFoundException - but only here
+            fail("NotFoundException expected");
+        } catch (NotFoundException nfe) {
+
+        }
+    }
+
+    @Test
+    public void testSaveNewDocument() throws Exception {
+        Document d = new Document(NEW_DOCUMENT_ID);
+        final String rand = UUID.randomUUID().toString();
+        final String key = "rand_test_str";
+        d.put(key, rand);
+
+        // Save
+        test.saveDocument(d);
+
+        // Fetch again
+        d = test.fetchDocument(NEW_DOCUMENT_ID);
+        assertEquals(rand, d.get(key));
+    }
+
+    @Test
+    public void testDelete() throws Exception {
+        Document d = test.fetchDocument("test2");
+        final String rand = UUID.randomUUID().toString();
+        final String key = "rand_test_str";
+        d.put(key, rand);
 
         // Save
         test.saveDocument(d);

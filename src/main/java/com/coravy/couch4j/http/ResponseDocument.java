@@ -44,7 +44,7 @@ public class ResponseDocument extends Document implements JsonExportable, Databa
         this.json = "";
         this.jsonObject = jsonObject;
         this._id = jsonObject.getString("_id");
-        this._rev = jsonObject.getString("_id");
+        this._rev = jsonObject.getString("_rev");
         if (jsonObject.has("_attachments")) {
             attachments = jsonObject.getJSONObject("_attachments");
         } else {
