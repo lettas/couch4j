@@ -3,8 +3,11 @@ package com.coravy.couch4j.http;
 import static com.coravy.core.collections.CollectionUtils.map;
 
 import java.io.ByteArrayOutputStream;
+import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.Collection;
@@ -117,8 +120,8 @@ public class DatabaseImpl implements Database<Document> {
      */
     public Document fetchDocument(String id) {
         String url = urlForPath(id);
-        byte[] data = getResponseForUrl(url);
-        ResponseDocument d = new ResponseDocument(new String(data));
+        char[] response = getResponseForUrl(url);
+        ResponseDocument d = new ResponseDocument(String.valueOf(response));
         d.setDatabase(this);
         return d;
     }
@@ -216,13 +219,15 @@ public class DatabaseImpl implements Database<Document> {
         }
     }
 
-    private byte[] getResponseForUrl(final String url) {
+    private char[] getResponseForUrl(final String url) {
         // Create a method instance.
         GetMethod method = new GetMethod(url);
         // System.err.println("url: " + url);
         // Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(2, false));
 
+        Reader reader = null;
+        CharArrayWriter w = null;
         try {
             // Execute the method.
             int statusCode = client.executeMethod(method);
@@ -233,9 +238,10 @@ public class DatabaseImpl implements Database<Document> {
             if (HttpStatus.SC_NOT_FOUND == statusCode) {
                 throw new DocumentNotFoundException(method.getStatusLine().toString());
             }
-            ByteArrayOutputStream bos = new ByteArrayOutputStream();
-            StreamUtils.copy(method.getResponseBodyAsStream(), bos);
-            return bos.toByteArray();
+            reader = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet()); 
+            w = new  CharArrayWriter();
+            StreamUtils.copy(reader, w);
+            return w.toCharArray();
         } catch (HttpException e) {
             logger.warning("Fatal protocol violation: " + e.getMessage());
         } catch (IOException e) {
@@ -243,8 +249,10 @@ public class DatabaseImpl implements Database<Document> {
         } finally {
             // Release the connection.
             method.releaseConnection();
+            StreamUtils.closeSilently(reader);
+            StreamUtils.closeSilently(w);
         }
-        return new byte[0];
+        return new char[0];
     }
 
     private String getUrl() {
@@ -300,7 +308,7 @@ public class DatabaseImpl implements Database<Document> {
     public ServerResponse deleteDocument(Document doc) {
         final String id = doc.getId();
         final String rev = doc.getRev();
-        HttpMethod method = new DeleteMethod(urlForPath(id, map("rev", rev)));
+        DeleteMethod method = new DeleteMethod(urlForPath(id, map("rev", rev)));
         try {
             int statusCode = client.executeMethod(method);
             switch (statusCode) {
@@ -314,9 +322,7 @@ public class DatabaseImpl implements Database<Document> {
             }
 
             // Read the response body.
-            byte[] responseBody = method.getResponseBody();
-
-            JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
+            JSONObject jsonObject = fromResponseStream(method.getResponseBodyAsStream(), method.getResponseCharSet());
             JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
             doc.put("_id", id);
             doc.put("_rev", response.getRev());
@@ -328,8 +334,18 @@ public class DatabaseImpl implements Database<Document> {
         }
     }
 
+    private JSONObject fromResponseStream(InputStream is, String charset) throws IOException {
+        Reader reader = new InputStreamReader(is, charset); 
+        CharArrayWriter w = new  CharArrayWriter();
+        StreamUtils.copy(reader, w);
+        JSONObject json = JSONObject.fromObject(w.toString());
+        StreamUtils.closeSilently(reader);
+        StreamUtils.closeSilently(w);
+        return json;
+    }
+    
     private String jsonForPath(final String path) {
-        return new String(getResponseForUrl(urlForPath(path)));
+        return String.valueOf(getResponseForUrl(urlForPath(path)));
     }
 
     private String urlForPath(final String path) {
