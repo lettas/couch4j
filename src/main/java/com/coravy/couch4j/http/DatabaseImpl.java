@@ -33,6 +33,7 @@ import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
+import com.coravy.core.annotations.ThreadSafe;
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Attachment;
 import com.coravy.couch4j.CouchDB;
@@ -46,6 +47,7 @@ import com.coravy.couch4j.ViewResult;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
+@ThreadSafe
 public class DatabaseImpl implements Database<Document> {
     private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
 
@@ -59,7 +61,10 @@ public class DatabaseImpl implements Database<Document> {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         params.setIntParameter("maxHostConnections", 10);
-        client = new HttpClient();
+        
+        logger.info("Creating new database instance. Please reuse the CouchDB instance - there should only be a single database instance per CouchDB database.");
+        
+        client = new HttpClient(params);
         
         this.name = name;
         this.server = server;
