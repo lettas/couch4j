@@ -30,6 +30,7 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
+import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import com.coravy.core.io.StreamUtils;
@@ -50,11 +51,16 @@ public class DatabaseImpl implements Database<Document> {
 
     private final String name;
     private final CouchDB server;
-    private final HttpClient client = new HttpClient();
+    private final HttpClient client;
 
     private String url;
 
     public DatabaseImpl(CouchDB server, String name) {
+        HttpClientParams params = new HttpClientParams();
+        params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
+        params.setIntParameter("maxHostConnections", 10);
+        client = new HttpClient();
+        
         this.name = name;
         this.server = server;
         // Check if the database exists
@@ -206,14 +212,11 @@ public class DatabaseImpl implements Database<Document> {
     }
 
     private byte[] getResponseForUrl(final String url) {
-        // Create an instance of HttpClient.
-        HttpClient client = new HttpClient();
-
         // Create a method instance.
         GetMethod method = new GetMethod(url);
         // System.err.println("url: " + url);
         // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
+        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(2, false));
 
         try {
             // Execute the method.
@@ -259,7 +262,6 @@ public class DatabaseImpl implements Database<Document> {
 
     public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
         // Create an instance of HttpClient.
-        HttpClient client = new HttpClient();
         StringBuilder sb = new StringBuilder();
         sb.append(this.getUrl());
         sb.append("/");

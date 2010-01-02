@@ -4,7 +4,7 @@
 	<groupId>com.coravy</groupId>
 	<artifactId>couch4j</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6.3-SNAPSHOT</version>
+	<version>0.7.0-SNAPSHOT</version>
 	<name>couch4j</name>
 	<url>http://github.com/juretta/couch4j</url>
 	<build>

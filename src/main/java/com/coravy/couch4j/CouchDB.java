@@ -1,16 +1,30 @@
 package com.coravy.couch4j;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import com.coravy.couch4j.http.DatabaseImpl;
 
 /**
  * The CouchDB database server.
- *  
+ * 
  * @author Stefan Saasen
  */
 public class CouchDB {
 
+    private final Object lock = new Object();
+
+    private final Map<String, Database<Document>> instances = new HashMap<String, Database<Document>>();
+
     public Database<Document> getDatabase(final String databaseName) {
-        return new DatabaseImpl(this, databaseName);
+        synchronized (lock) {
+            if (instances.containsKey(databaseName)) {
+                return instances.get(databaseName);
+            }
+            Database<Document> d = new DatabaseImpl(this, databaseName);
+            instances.put(databaseName, d);
+            return d;
+        }
     }
 
     private final static String DEFAULT_HOST = "localhost";
@@ -34,7 +48,7 @@ public class CouchDB {
     public CouchDB() {
         this(DEFAULT_HOST, DEFAULT_PORT);
     }
-    
+
     public CouchDB(final String host, final int port) {
         this.host = host;
         this.port = port;
