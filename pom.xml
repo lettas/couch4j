@@ -47,16 +47,6 @@
 	</organization>
 	<repositories>
 		<repository>
-			<id>gson</id>
-			<url>http://google-gson.googlecode.com/svn/mavenrepo</url>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-		</repository>
-		<repository>
 			<id>coravy-opensource-snapshots</id>
 			<name>coravy. opensource</name>
 			<url>http://snapshots.coravy.com/maven2/</url>
