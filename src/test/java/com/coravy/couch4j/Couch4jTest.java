@@ -40,7 +40,7 @@ public class Couch4jTest {
         try {
             Document d = test.fetchDocument(NEW_DOCUMENT_ID);
             test.deleteDocument(d);
-        } catch (NotFoundException nfe) {
+        } catch (DocumentNotFoundException nfe) {
             // ignore
         }
     }
@@ -123,7 +123,7 @@ public class Couch4jTest {
             d = test.fetchDocument(documentId);
             // Should throw NotFoundException - but only here
             fail("NotFoundException expected");
-        } catch (NotFoundException nfe) {
+        } catch (DocumentNotFoundException nfe) {
 
         }
     }

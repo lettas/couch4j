@@ -36,7 +36,7 @@ import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.JsonExportable;
-import com.coravy.couch4j.NotFoundException;
+import com.coravy.couch4j.DocumentNotFoundException;
 import com.coravy.couch4j.ServerResponse;
 import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
@@ -240,7 +240,7 @@ public class DatabaseImpl implements Database {
                 logger.warning("Method failed: " + method.getStatusLine());
             }
             if (HttpStatus.SC_NOT_FOUND == statusCode) {
-                throw new NotFoundException(method.getStatusLine().toString());
+                throw new DocumentNotFoundException(method.getStatusLine().toString());
             }
             ByteArrayOutputStream bos = new ByteArrayOutputStream();
             StreamUtils.copy(method.getResponseBodyAsStream(), bos);
@@ -315,7 +315,7 @@ public class DatabaseImpl implements Database {
             int statusCode = client.executeMethod(method);
             switch (statusCode) {
             case HttpStatus.SC_NOT_FOUND:
-                throw new NotFoundException();
+                throw new DocumentNotFoundException();
             case HttpStatus.SC_OK:
 
                 break;

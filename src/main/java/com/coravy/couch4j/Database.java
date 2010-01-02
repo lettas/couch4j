@@ -20,7 +20,7 @@ public interface Database {
      * 
      * @param string
      * @return
-     * @throws NotFoundException
+     * @throws DocumentNotFoundException
      */
     Document fetchDocument(String string);
 
