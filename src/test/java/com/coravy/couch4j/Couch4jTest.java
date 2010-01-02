@@ -24,7 +24,7 @@ public class Couch4jTest {
 
     @Before
     public void setUp() throws Exception {
-        test = CouchDB.serverInstance("macbookpro").getDatabase("couch4j");
+        test = CouchDB.localServerInstance().getDatabase("couch4j");
         assertNotNull(test);
 
         // // Save
