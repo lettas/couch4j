@@ -13,7 +13,7 @@ import java.util.Map;
 public interface Database {
 
     public interface StreamContext {
-        void withResponseStream(InputStream is) throws IOException;
+        void withInputStream(InputStream is) throws IOException;
     }
 
     /**

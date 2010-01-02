@@ -76,7 +76,7 @@ class AttachmentImpl implements Attachment {
         return this.doc.getId();
     }
 
-    public void withAttachmentAsStream(StreamContext sc) throws IOException {
+    public void retrieve(StreamContext sc) throws IOException {
         database.withAttachmentAsStream(this, sc);
     }
 }

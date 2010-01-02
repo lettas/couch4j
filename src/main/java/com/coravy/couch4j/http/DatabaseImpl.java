@@ -295,7 +295,7 @@ public class DatabaseImpl implements Database {
                 logger.warning("Method failed: " + method.getStatusLine());
             }
             InputStream is = method.getResponseBodyAsStream();
-            ctx.withResponseStream(is);
+            ctx.withInputStream(is);
             StreamUtils.closeSilently(is);
         } catch (HttpException e) {
             logger.warning("Fatal protocol violation: " + e.getMessage());

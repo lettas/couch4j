@@ -67,15 +67,15 @@ public class Couch4jTest {
         assertEquals(CONTENT_LENGTH, a.getLength());
         assertTrue(a.isStub());
 
-        a.withAttachmentAsStream(new StreamContext() {
-            public void withResponseStream(InputStream is) throws IOException {
+        a.retrieve(new StreamContext() {
+            public void withInputStream(InputStream is) throws IOException {
                 assertNotNull(is);
                 ByteArrayOutputStream baos = new ByteArrayOutputStream();
                 StreamUtils.copy(is, baos);
                 byte[] b = baos.toByteArray();
                 assertEquals(CONTENT_LENGTH, b.length);
 
-                is.close();
+                // is.close(); will be closed automatically
             }
         });
     }
