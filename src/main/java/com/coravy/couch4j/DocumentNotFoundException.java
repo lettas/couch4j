@@ -3,7 +3,7 @@ package com.coravy.couch4j;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class DocumentNotFoundException extends RuntimeException {
+public class DocumentNotFoundException extends Couch4JException {
 
     private static final long serialVersionUID = 2164358807772048808L;
 
