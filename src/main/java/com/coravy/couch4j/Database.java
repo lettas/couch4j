@@ -43,4 +43,10 @@ public interface Database<T> {
     void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException;
 
     ServerResponse deleteDocument(T doc);
+
+    /**
+     * Disconnect this database client. After calling {@code disconnect} the
+     * database client can not be used any more.
+     */
+    void disconnect();
 }

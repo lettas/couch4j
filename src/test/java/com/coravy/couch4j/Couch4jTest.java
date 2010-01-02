@@ -44,6 +44,7 @@ public class Couch4jTest {
         } catch (DocumentNotFoundException nfe) {
             // ignore
         }
+        test.disconnect();
     }
 
     @Test

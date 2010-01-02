@@ -2,7 +2,6 @@ package com.coravy.couch4j.http;
 
 import static com.coravy.core.collections.CollectionUtils.map;
 
-import java.io.ByteArrayOutputStream;
 import java.io.CharArrayWriter;
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +25,7 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.DeleteMethod;
 import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
 import org.apache.commons.httpclient.methods.GetMethod;
@@ -64,11 +64,12 @@ public class DatabaseImpl implements Database<Document> {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         params.setIntParameter("maxHostConnections", 10);
-        
-        logger.info("Creating new database instance. Please reuse the CouchDB instance - there should only be a single database instance per CouchDB database.");
-        
+
+        logger
+                .info("Creating new database instance. Please reuse the CouchDB instance - there should only be a single database instance per CouchDB database.");
+
         client = new HttpClient(params);
-        
+
         this.name = name;
         this.server = server;
         // Check if the database exists
@@ -238,8 +239,8 @@ public class DatabaseImpl implements Database<Document> {
             if (HttpStatus.SC_NOT_FOUND == statusCode) {
                 throw new DocumentNotFoundException(method.getStatusLine().toString());
             }
-            reader = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet()); 
-            w = new  CharArrayWriter();
+            reader = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
+            w = new CharArrayWriter();
             StreamUtils.copy(reader, w);
             return w.toCharArray();
         } catch (HttpException e) {
@@ -335,15 +336,15 @@ public class DatabaseImpl implements Database<Document> {
     }
 
     private JSONObject fromResponseStream(InputStream is, String charset) throws IOException {
-        Reader reader = new InputStreamReader(is, charset); 
-        CharArrayWriter w = new  CharArrayWriter();
+        Reader reader = new InputStreamReader(is, charset);
+        CharArrayWriter w = new CharArrayWriter();
         StreamUtils.copy(reader, w);
         JSONObject json = JSONObject.fromObject(w.toString());
         StreamUtils.closeSilently(reader);
         StreamUtils.closeSilently(w);
         return json;
     }
-    
+
     private String jsonForPath(final String path) {
         return String.valueOf(getResponseForUrl(urlForPath(path)));
     }
@@ -376,6 +377,10 @@ public class DatabaseImpl implements Database<Document> {
             }
         }
         return sb.toString();
+    }
+
+    public void disconnect() {
+        ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
     }
 
 }

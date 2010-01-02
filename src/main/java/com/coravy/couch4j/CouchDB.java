@@ -16,7 +16,7 @@ public class CouchDB {
 
     private final Object lock = new Object();
 
-    private final Map<String, Database<Document>> instances = new HashMap<String, Database<Document>>();
+    private Map<String, Database<Document>> instances = new HashMap<String, Database<Document>>();
 
     public Database<Document> getDatabase(final String databaseName) {
         synchronized (lock) {
@@ -62,6 +62,13 @@ public class CouchDB {
 
     public int getPort() {
         return port;
+    }
+
+    public void disconnect() {
+        for (Map.Entry<String, Database<Document>> e : this.instances.entrySet()) {
+            e.getValue().disconnect();
+        }
+        instances = new HashMap<String, Database<Document>>();
     }
 
 }
