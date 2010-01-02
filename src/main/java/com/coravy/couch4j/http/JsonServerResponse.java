@@ -9,7 +9,7 @@ import com.coravy.couch4j.ServerResponse;
  * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
-final class JsonServerResponse extends ServerResponse {
+final class JsonServerResponse implements ServerResponse {
 
     static JsonServerResponse fromJson(JSONObject json) {
         return new JsonServerResponse(json.getString("id"), json.getString("rev"), json.getBoolean("ok"));
