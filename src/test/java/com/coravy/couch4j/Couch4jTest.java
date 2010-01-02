@@ -16,7 +16,6 @@ import org.junit.Test;
 
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Database.StreamContext;
-import com.coravy.couch4j.http.NotFoundException;
 
 public class Couch4jTest {
 

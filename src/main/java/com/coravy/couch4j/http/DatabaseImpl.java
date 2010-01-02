@@ -36,6 +36,7 @@ import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.JsonExportable;
+import com.coravy.couch4j.NotFoundException;
 import com.coravy.couch4j.ServerResponse;
 import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;

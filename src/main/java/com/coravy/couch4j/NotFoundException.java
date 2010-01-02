@@ -1,4 +1,4 @@
-package com.coravy.couch4j.http;
+package com.coravy.couch4j;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
