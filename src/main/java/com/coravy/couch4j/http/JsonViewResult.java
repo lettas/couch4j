@@ -19,7 +19,7 @@ final class JsonViewResult implements ViewResult {
 
     private final JSONObject json;
 
-    public JsonViewResult(final JSONObject json) {
+    JsonViewResult(final JSONObject json) {
         this.json = json;
         this.offset = json.getInt("offset");
         this.total_rows = json.getInt("total_rows");
@@ -53,5 +53,9 @@ final class JsonViewResult implements ViewResult {
 
     public void setRows(List<ViewResultRow> rows) {
         this.rows = rows;
+    }
+
+    public String toJson() {
+        return json.toString();
     }
 }

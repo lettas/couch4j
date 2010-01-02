@@ -3,7 +3,7 @@ package com.coravy.couch4j;
 /**
  * @author Stefan Saasen <stefan@coravy.com>
  */
-public interface ViewResultRow {
+public interface ViewResultRow extends JsonExportable {
 
     String getId();
 

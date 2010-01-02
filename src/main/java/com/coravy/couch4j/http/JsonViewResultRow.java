@@ -41,4 +41,8 @@ final class JsonViewResultRow implements ViewResultRow {
         return null; // TODO Fetch from database
     }
 
+    public String toJson() {
+        return json.toString();
+    }
+
 }

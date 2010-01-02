@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
@@ -64,11 +65,11 @@ public class DatabaseImpl implements Database {
             if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 m = new PutMethod(getUrl());
                 statusCode = client.executeMethod(m);
-                System.err.println(statusCode);
+                logger.log(Level.WARNING, String.format("Failed to create the database %s on %s. "
+                        + "Failed with status code %d", name, server, statusCode));
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Unable to connect to database: " + name);
         } finally {
             if (null != m) {
                 m.releaseConnection();

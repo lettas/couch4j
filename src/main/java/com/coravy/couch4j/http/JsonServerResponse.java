@@ -12,18 +12,20 @@ import com.coravy.couch4j.ServerResponse;
 final class JsonServerResponse implements ServerResponse {
 
     static JsonServerResponse fromJson(JSONObject json) {
-        return new JsonServerResponse(json.getString("id"), json.getString("rev"), json.getBoolean("ok"));
+        return new JsonServerResponse(json);
     }
 
-    JsonServerResponse(String id, String rev, boolean ok) {
-        this.id = id;
-        this.rev = rev;
-        this.ok = ok;
+    JsonServerResponse(JSONObject json) {
+        this.id = json.getString("id");
+        this.rev = json.getString("rev");
+        this.ok = json.getBoolean("ok");
+        this.json = json;
     }
 
     private final String id;
     private final String rev;
     private final boolean ok;
+    private final JSONObject json;
 
     public String getId() {
         return id;
@@ -35,6 +37,10 @@ final class JsonServerResponse implements ServerResponse {
 
     public boolean isOk() {
         return ok;
+    }
+
+    public String toJson() {
+        return json.toString();
     }
 
 }

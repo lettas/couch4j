@@ -24,7 +24,7 @@ public class Couch4jTest {
 
     @Before
     public void setUp() throws Exception {
-        test = CouchDB.localServerInstance().getDatabase("couch4j");
+        test = CouchDB.serverInstance("macbookpro").getDatabase("couch4j");
         assertNotNull(test);
 
         // // Save
@@ -84,7 +84,7 @@ public class Couch4jTest {
         View v = View.builder("test/t1").build();
         List<ViewResultRow> l = test.fetchView(v).getRows();
         assertNotNull(l);
-        assertEquals(1, l.size());
+        assertEquals(3, l.size());
 
         ViewResultRow row = l.get(0);
         assertEquals("test1", row.getId());

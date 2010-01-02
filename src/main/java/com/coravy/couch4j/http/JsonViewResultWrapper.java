@@ -10,43 +10,47 @@ import com.coravy.couch4j.ViewResultRow;
 
 class JsonViewResultWrapper implements ViewResult {
 
-	private JsonViewResult wrappedResult;
-	private final String json;
+    private JsonViewResult wrappedResult;
+    private final String json;
 
-	JsonViewResultWrapper(String json) {
-		this.json = json;
-	}
+    JsonViewResultWrapper(String json) {
+        this.json = json;
+    }
 
-	public int getOffset() {
-		checkWrappedResult();
-		return wrappedResult.getOffset();
-	}
+    public int getOffset() {
+        checkWrappedResult();
+        return wrappedResult.getOffset();
+    }
 
-	public List<ViewResultRow> getRows() {
-		checkWrappedResult();
-		return wrappedResult.getRows();
-	}
+    public List<ViewResultRow> getRows() {
+        checkWrappedResult();
+        return wrappedResult.getRows();
+    }
 
-	public int getTotalRows() {
-		checkWrappedResult();
-		return wrappedResult.getTotalRows();
-	}
+    public int getTotalRows() {
+        checkWrappedResult();
+        return wrappedResult.getTotalRows();
+    }
 
-	public Iterator<ViewResultRow> iterator() {
-		checkWrappedResult();
-		return wrappedResult.iterator();
-	}
+    public Iterator<ViewResultRow> iterator() {
+        checkWrappedResult();
+        return wrappedResult.iterator();
+    }
 
-	@Override
-	public String toString() {
-		return this.json;
-	}
+    @Override
+    public String toString() {
+        return this.json;
+    }
 
-	private void checkWrappedResult() {
-		if (null == wrappedResult) {
+    private void checkWrappedResult() {
+        if (null == wrappedResult) {
             JSONObject jsonObject = JSONObject.fromObject(this.json);
             wrappedResult = new JsonViewResult(jsonObject);
-		}
-	}
+        }
+    }
+
+    public String toJson() {
+        return this.json;
+    }
 
 }
