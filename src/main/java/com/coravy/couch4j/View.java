@@ -4,6 +4,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map.Entry;
 
 import com.coravy.core.util.StringUtils;
 
@@ -145,23 +146,15 @@ public abstract class View {
 			if (!params.isEmpty()) {
 				sb.append("?");
 				try {
-
-					for (Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext();) {
-						final String key = iterator.next();
-						sb.append(URLEncoder.encode(key, "UTF-8"));
-						sb.append("=");
-						sb.append(URLEncoder.encode(params.get(key), "UTF-8"));
-						if (iterator.hasNext()) {
-							sb.append("&");
-						}
-					}
-
-					// for (Map.Entry<String, String> e : params.entrySet()) {
-					// sb.append(URLEncoder.encode(e.getKey(), "UTF-8"));
-					// sb.append("=");
-					// sb.append(URLEncoder.encode(e.getValue(), "UTF-8"));
-					// sb.append("&");
-					// }
+	                for (Iterator<Entry<String,String>> iterator = params.entrySet().iterator(); iterator.hasNext();) {
+	                    final Entry<String,String> entry = iterator.next();
+	                    sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+	                    sb.append("=");
+	                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+	                    if (iterator.hasNext()) {
+	                        sb.append("&");
+	                    }
+	                }
 				}
 				catch (UnsupportedEncodingException ue) {
 					// ignore

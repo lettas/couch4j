@@ -1,46 +1,38 @@
 package com.coravy.couch4j.http;
 
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.apache.commons.lang.StringUtils;
-
 import com.coravy.couch4j.Attachment;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
-import com.coravy.couch4j.JsonExportable;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class ResponseDocument extends Document implements JsonExportable, DatabaseAware<Document> {
+public class ResponseDocument extends Document implements DatabaseAware<Document> {
     private String _id;
     private String _rev;
 
     private final JSONObject attachments;
-    private String json;
     private final JSONObject jsonObject;
 
     private Database<Document> database;
-    
+
     public ResponseDocument() {
-        this.json = "";
         jsonObject = new JSONObject();
         this.attachments = new JSONObject();
     }
 
     public ResponseDocument(final String json) {
         this(JSONObject.fromObject(json));
-        this.json = json;
     }
 
     public ResponseDocument(final JSONObject jsonObject) {
-        this.json = "";
         this.jsonObject = jsonObject;
         this._id = jsonObject.getString("_id");
         this._rev = jsonObject.getString("_rev");
@@ -63,7 +55,7 @@ public class ResponseDocument extends Document implements JsonExportable, Databa
 
     @Override
     public String toString() {
-        return json;
+        return toJson();
     }
 
     @Override
@@ -78,18 +70,17 @@ public class ResponseDocument extends Document implements JsonExportable, Databa
 
     @Override
     public void putAll(final Map<? extends Object, ? extends Object> attributes) {
-        for (Iterator<? extends Object> iterator = attributes.keySet().iterator(); iterator.hasNext();) {
-            Object key = iterator.next();
-            jsonObject.put(key.toString(), attributes.get(key));
+        if(null == attributes) {
+            return;
+        }
+        for(Map.Entry<? extends Object, ? extends Object> e : attributes.entrySet()) {
+            jsonObject.put(e.getKey().toString(), e.getValue());
         }
     }
 
     public String toJson() {
         if (null != jsonObject) {
             return jsonObject.toString();
-        }
-        if (StringUtils.isNotBlank(json)) {
-            return json;
         }
         return "";
     }

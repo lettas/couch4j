@@ -24,6 +24,7 @@ final class JsonViewResult implements ViewResult<Document> {
         this.json = json;
         this.offset = json.getInt("offset");
         this.total_rows = json.getInt("total_rows");
+        rows = new ArrayList<ViewResultRow<Document>>();
     }
 
     public int getTotalRows() {
@@ -36,12 +37,15 @@ final class JsonViewResult implements ViewResult<Document> {
 
     @SuppressWarnings("unchecked")
     public List<ViewResultRow<Document>> getRows() {
-        List<ViewResultRow<Document>> r = new ArrayList<ViewResultRow<Document>>();
-        for (Iterator iterator = json.getJSONArray("rows").iterator(); iterator.hasNext();) {
-            JSONObject viewResultRow = (JSONObject) iterator.next();
-            r.add(new JsonViewResultRow(viewResultRow));
+        if (rows.isEmpty() && total_rows > 0) {
+            List<ViewResultRow<Document>> r = new ArrayList<ViewResultRow<Document>>();
+            for (Iterator iterator = json.getJSONArray("rows").iterator(); iterator.hasNext();) {
+                JSONObject viewResultRow = (JSONObject) iterator.next();
+                r.add(new JsonViewResultRow(viewResultRow));
+            }
+            rows = r;
         }
-        return r;
+        return rows;
     }
 
     public Iterator<ViewResultRow<Document>> iterator() {

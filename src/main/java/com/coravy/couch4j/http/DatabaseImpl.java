@@ -11,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -37,7 +38,6 @@ import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.DocumentNotFoundException;
-import com.coravy.couch4j.JsonExportable;
 import com.coravy.couch4j.ServerResponse;
 import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
@@ -106,16 +106,10 @@ public class DatabaseImpl implements Database<Document> {
      */
     public Document fetchDocument(String id) {
         String url = urlForPath(id);
-        if (null == url) {
-            return null;
-        }
         byte[] data = getResponseForUrl(url);
-        if (null != data) {
-            ResponseDocument d = new ResponseDocument(new String(data));
-            d.setDatabase(this);
-            return d;
-        }
-        return null;
+        ResponseDocument d = new ResponseDocument(new String(data));
+        d.setDatabase(this);
+        return d;
     }
 
     public ViewResult<Document> fetchView(View v) {
@@ -136,15 +130,7 @@ public class DatabaseImpl implements Database<Document> {
             method = new PutMethod(urlForPath(doc.getId()));
         }
         try {
-
-            String json = "";
-            if (doc instanceof JsonExportable) {
-                json = ((JsonExportable) doc).toJson();
-            } else {
-                json = JSONSerializer.toJSON(doc.getAttributes()).toString();
-            }
-
-            RequestEntity re = new StringRequestEntity(json, "application/json", "UTF-8");
+            RequestEntity re = new StringRequestEntity(doc.toJson(), "application/json", "UTF-8");
             method.setRequestEntity(re);
 
             client.executeMethod(method);
@@ -250,7 +236,7 @@ public class DatabaseImpl implements Database<Document> {
             // Release the connection.
             method.releaseConnection();
         }
-        return null;
+        return new byte[0];
     }
 
     private String getUrl() {
@@ -353,11 +339,11 @@ public class DatabaseImpl implements Database<Document> {
             sb.append("?");
             try {
 
-                for (Iterator<String> iterator = params.keySet().iterator(); iterator.hasNext();) {
-                    final String key = iterator.next();
-                    sb.append(URLEncoder.encode(key, "UTF-8"));
+                for (Iterator<Entry<String, String>> iterator = params.entrySet().iterator(); iterator.hasNext();) {
+                    final Entry<String, String> entry = iterator.next();
+                    sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
                     sb.append("=");
-                    sb.append(URLEncoder.encode(params.get(key), "UTF-8"));
+                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
                     if (iterator.hasNext()) {
                         sb.append("&");
                     }
