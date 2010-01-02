@@ -18,7 +18,7 @@ import com.coravy.couch4j.JsonExportable;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class ResponseDocument extends Document implements JsonExportable {
+public class ResponseDocument extends Document implements JsonExportable, DatabaseAware {
     private String _id;
     private String _rev;
 
