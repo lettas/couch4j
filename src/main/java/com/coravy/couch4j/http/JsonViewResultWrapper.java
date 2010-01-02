@@ -5,10 +5,11 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
 
-class JsonViewResultWrapper implements ViewResult {
+class JsonViewResultWrapper implements ViewResult<Document> {
 
     private JsonViewResult wrappedResult;
     private final String json;
@@ -22,7 +23,7 @@ class JsonViewResultWrapper implements ViewResult {
         return wrappedResult.getOffset();
     }
 
-    public List<ViewResultRow> getRows() {
+    public List<ViewResultRow<Document>> getRows() {
         checkWrappedResult();
         return wrappedResult.getRows();
     }
@@ -32,7 +33,7 @@ class JsonViewResultWrapper implements ViewResult {
         return wrappedResult.getTotalRows();
     }
 
-    public Iterator<ViewResultRow> iterator() {
+    public Iterator<ViewResultRow<Document>> iterator() {
         checkWrappedResult();
         return wrappedResult.iterator();
     }

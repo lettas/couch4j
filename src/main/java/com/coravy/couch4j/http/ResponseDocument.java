@@ -18,7 +18,7 @@ import com.coravy.couch4j.JsonExportable;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class ResponseDocument extends Document implements JsonExportable, DatabaseAware {
+public class ResponseDocument extends Document implements JsonExportable, DatabaseAware<Document> {
     private String _id;
     private String _rev;
 
@@ -26,7 +26,7 @@ public class ResponseDocument extends Document implements JsonExportable, Databa
     private String json;
     private final JSONObject jsonObject;
 
-    private Database database;
+    private Database<Document> database;
     
     public ResponseDocument() {
         this.json = "";
@@ -113,11 +113,11 @@ public class ResponseDocument extends Document implements JsonExportable, Databa
         return Collections.emptyList();
     }
 
-    public Database getDatabase() {
+    public Database<Document> getDatabase() {
         return database;
     }
 
-    public void setDatabase(Database d) {
+    public void setDatabase(Database<Document> d) {
         this.database = d;
     }
 }

@@ -4,7 +4,7 @@
 	<groupId>com.coravy</groupId>
 	<artifactId>couch4j</artifactId>
 	<packaging>jar</packaging>
-	<version>0.6.2-SNAPSHOT</version>
+	<version>0.6.3-SNAPSHOT</version>
 	<name>couch4j</name>
 	<url>http://github.com/juretta/couch4j</url>
 	<build>
@@ -64,11 +64,6 @@
 			<groupId>commons-httpclient</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>3.1</version>
-		</dependency>
-		<dependency>
-			<groupId>commons-lang</groupId>
-			<artifactId>commons-lang</artifactId>
-			<version>2.4</version>
 		</dependency>
 		<dependency>
 			<groupId>com.coravy</groupId>

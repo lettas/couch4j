@@ -9,7 +9,7 @@ import com.coravy.couch4j.http.DatabaseImpl;
  */
 public class CouchDB {
 
-    public Database getDatabase(final String databaseName) {
+    public Database<Document> getDatabase(final String databaseName) {
         return new DatabaseImpl(this, databaseName);
     }
 

@@ -6,16 +6,17 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-final class JsonViewResult implements ViewResult {
+final class JsonViewResult implements ViewResult<Document> {
     private int total_rows;
     private int offset;
-    private List<ViewResultRow> rows;
+    private List<ViewResultRow<Document>> rows;
 
     private final JSONObject json;
 
@@ -34,8 +35,8 @@ final class JsonViewResult implements ViewResult {
     }
 
     @SuppressWarnings("unchecked")
-    public List<ViewResultRow> getRows() {
-        List<ViewResultRow> r = new ArrayList<ViewResultRow>();
+    public List<ViewResultRow<Document>> getRows() {
+        List<ViewResultRow<Document>> r = new ArrayList<ViewResultRow<Document>>();
         for (Iterator iterator = json.getJSONArray("rows").iterator(); iterator.hasNext();) {
             JSONObject viewResultRow = (JSONObject) iterator.next();
             r.add(new JsonViewResultRow(viewResultRow));
@@ -43,7 +44,7 @@ final class JsonViewResult implements ViewResult {
         return r;
     }
 
-    public Iterator<ViewResultRow> iterator() {
+    public Iterator<ViewResultRow<Document>> iterator() {
         return rows.iterator();
     }
 
@@ -51,7 +52,7 @@ final class JsonViewResult implements ViewResult {
         this.offset = offset;
     }
 
-    public void setRows(List<ViewResultRow> rows) {
+    public void setRows(List<ViewResultRow<Document>> rows) {
         this.rows = rows;
     }
 

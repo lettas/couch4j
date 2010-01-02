@@ -4,10 +4,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONObject;
+
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class Document {
+public class Document implements JsonExportable {
 
     private final Map attributes;
 
@@ -69,6 +71,10 @@ public class Document {
 
     public List<String> getAttachmentNames() {
         throw new UnsupportedOperationException("");
+    }
+
+    public String toJson() {
+        return JSONObject.fromObject(this.attributes).toString();
     }
 
 }

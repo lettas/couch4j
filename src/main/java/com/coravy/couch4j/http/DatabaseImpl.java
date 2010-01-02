@@ -45,7 +45,7 @@ import com.coravy.couch4j.ViewResult;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class DatabaseImpl implements Database {
+public class DatabaseImpl implements Database<Document> {
     private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
 
     private final String name;
@@ -90,13 +90,13 @@ public class DatabaseImpl implements Database {
         return null;
     }
 
-    public ViewResult fetchAllDocuments() {
+    public ViewResult<Document> fetchAllDocuments() {
         // _all_docs
         // return gson.fromJson(jsonForPath("_all_docs"), JsonViewResult.class);
         return new JsonViewResultWrapper(jsonForPath("_all_docs"));
     }
 
-    public ViewResult fetchAllDocuments(boolean includeDocs) {
+    public ViewResult<Document> fetchAllDocuments(boolean includeDocs) {
         return new JsonViewResultWrapper(jsonForPath(View.builder("_all_docs").includeDocs(true).toString()));
     }
 
@@ -118,7 +118,7 @@ public class DatabaseImpl implements Database {
         return null;
     }
 
-    public ViewResult fetchView(View v) {
+    public ViewResult<Document> fetchView(View v) {
         return new JsonViewResultWrapper(jsonForPath(v.queryString()));
     }
 
@@ -195,10 +195,6 @@ public class DatabaseImpl implements Database {
         } finally {
             method.releaseConnection();
         }
-    }
-
-    public ServerResponse saveDocument(Object object) {
-        return saveDocument(JSONSerializer.toJSON(object).toString());
     }
 
     public ServerResponse saveDocument(String json) {

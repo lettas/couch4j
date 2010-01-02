@@ -7,10 +7,10 @@ import java.util.List;
  * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public interface ViewResult extends Iterable<ViewResultRow>, JsonExportable {
+public interface ViewResult<T> extends Iterable<ViewResultRow<T>>, JsonExportable {
     int getTotalRows();
 
     int getOffset();
 
-    List<ViewResultRow> getRows();
+    List<ViewResultRow<T>> getRows();
 }

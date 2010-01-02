@@ -19,8 +19,9 @@ import com.coravy.couch4j.Database.StreamContext;
 
 public class Couch4jTest {
 
+    static final String VALID_DOC_ID = "test1";
     private static final String NEW_DOCUMENT_ID = "new_document";
-    private Database test;
+    private Database<Document> test;
 
     @Before
     public void setUp() throws Exception {
@@ -47,7 +48,7 @@ public class Couch4jTest {
 
     @Test
     public void testFetchDocumentById() throws Exception {
-        Document d = test.fetchDocument("test1");
+        Document d = test.fetchDocument(VALID_DOC_ID);
         assertDocumentTest1(d);
     }
 
@@ -82,12 +83,12 @@ public class Couch4jTest {
     @Test
     public void testFetchView() throws Exception {
         View v = View.builder("test/t1").build();
-        List<ViewResultRow> l = test.fetchView(v).getRows();
+        List<ViewResultRow<Document>> l = test.fetchView(v).getRows();
         assertNotNull(l);
         assertEquals(3, l.size());
 
-        ViewResultRow row = l.get(0);
-        assertEquals("test1", row.getId());
+        ViewResultRow<Document> row = l.get(0);
+        assertEquals(VALID_DOC_ID, row.getId());
 
         Document d = row.getDocument();
         assertDocumentTest1(d);
@@ -159,7 +160,7 @@ public class Couch4jTest {
     }
 
     private void assertDocumentTest1(Document d) {
-        assertEquals("test1", d.getId());
+        assertEquals(VALID_DOC_ID, d.getId());
 
         JSONArray ary = (JSONArray) d.get("a");
         assertEquals(1, ary.get(0));

@@ -3,11 +3,11 @@ package com.coravy.couch4j;
 /**
  * @author Stefan Saasen <stefan@coravy.com>
  */
-public interface ViewResultRow extends JsonExportable {
+public interface ViewResultRow<T> extends JsonExportable {
 
     String getId();
 
     String getKey();
 
-    Document getDocument();
+    T getDocument();
 }

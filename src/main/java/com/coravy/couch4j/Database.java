@@ -10,7 +10,7 @@ import java.util.Map;
  * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public interface Database {
+public interface Database<T> {
 
     public interface StreamContext {
         void withInputStream(InputStream is) throws IOException;
@@ -22,27 +22,25 @@ public interface Database {
      * @return
      * @throws DocumentNotFoundException
      */
-    Document fetchDocument(String string);
+    T fetchDocument(String string);
 
-    ServerResponse saveDocument(Document doc);
+    ServerResponse saveDocument(T doc);
 
     ServerResponse saveDocument(Map<String, Object> doc);
 
     ServerResponse saveDocument(String json);
 
-    ServerResponse saveDocument(Object obj);
+    ServerResponse bulkSave(Collection<T> docs);
 
-    ServerResponse bulkSave(Collection<Document> docs);
+    ViewResult<T> fetchAllDocuments();
 
-    ViewResult fetchAllDocuments();
+    ViewResult<T> fetchAllDocuments(boolean includeDocs);
 
-    ViewResult fetchAllDocuments(boolean includeDocs);
-
-    ViewResult fetchView(View v);
+    ViewResult<T> fetchView(View v);
 
     ServerResponse delete();
 
     void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException;
 
-    ServerResponse deleteDocument(Document doc);
+    ServerResponse deleteDocument(T doc);
 }
