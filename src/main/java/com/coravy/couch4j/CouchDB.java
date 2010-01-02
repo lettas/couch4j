@@ -3,6 +3,7 @@ package com.coravy.couch4j;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.coravy.core.annotations.ThreadSafe;
 import com.coravy.couch4j.http.DatabaseImpl;
 
 /**
@@ -10,6 +11,7 @@ import com.coravy.couch4j.http.DatabaseImpl;
  * 
  * @author Stefan Saasen
  */
+@ThreadSafe
 public class CouchDB {
 
     private final Object lock = new Object();
