@@ -17,6 +17,6 @@ public interface Attachment {
     String getName();
 
     String getContentId();
-    
+
     void withAttachmentAsStream(StreamContext sc) throws IOException;
 }

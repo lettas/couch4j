@@ -5,21 +5,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.coravy.couch4j.Attachment;
 import com.coravy.couch4j.Database;
-import com.coravy.couch4j.DatabaseAware;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.JsonExportable;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class ResponseDocument extends Document implements JsonExportable, DatabaseAware {
+public class ResponseDocument extends Document implements JsonExportable {
     private String _id;
     private String _rev;
 

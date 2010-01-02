@@ -8,7 +8,6 @@ import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
 import com.coravy.couch4j.Attachment;
 import com.coravy.couch4j.Database;
-import com.coravy.couch4j.DatabaseAware;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.Database.StreamContext;
 
@@ -25,15 +24,15 @@ class AttachmentImpl implements Attachment {
     private final Document doc;
 
     private Database database;
-    
+
     AttachmentImpl(JSONObject json, String name, Document doc) {
         this.doc = doc;
         this.name = name;
         stub = json.getBoolean("stub");
         contentType = json.getString("content_type");
         length = json.getLong("length");
-        if(doc instanceof DatabaseAware) {
-            database = ((DatabaseAware)doc).getDatabase();
+        if (doc instanceof DatabaseAware) {
+            database = ((DatabaseAware) doc).getDatabase();
         }
     }
 
