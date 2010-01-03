@@ -49,4 +49,9 @@ public interface Database<T> {
      * database client can not be used any more.
      */
     void disconnect();
+
+    /**
+     * @return The name of the database
+     */
+    String getName();
 }

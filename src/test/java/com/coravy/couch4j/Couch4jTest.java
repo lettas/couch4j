@@ -7,9 +7,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
+import java.util.logging.Level;
 
 import net.sf.json.JSONArray;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.commons.httpclient.methods.PutMethod;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,13 +27,25 @@ public class Couch4jTest {
 
     static final String VALID_DOC_ID = "test1";
     private static final String NEW_DOCUMENT_ID = "new_document";
+    
+    private static final String EMPTY_DATABASE_NAME = "couch4j-empty";
+    
+    private CouchDB server;
     private Database<Document> test;
+    private Database<Document> testEmpty;
 
     @Before
     public void setUp() throws Exception {
-        test = CouchDB.localServerInstance().getDatabase("couch4j");
+        
+        server = CouchDB.localServerInstance();
+        
+        test = server.getDatabase("couch4j");
         assertNotNull(test);
 
+        testEmpty = server.getDatabase(EMPTY_DATABASE_NAME);
+        assertNotNull(testEmpty);
+
+        
         // // Save
         // Document d = new Document();
         // final String rand = UUID.randomUUID().toString();
@@ -86,7 +104,7 @@ public class Couch4jTest {
         View v = View.builder("test/t1").build();
         List<ViewResultRow<Document>> l = test.fetchView(v).getRows();
         assertNotNull(l);
-        assertEquals(3, l.size());
+        assertEquals(4, l.size());
 
         ViewResultRow<Document> row = l.get(0);
         assertEquals(VALID_DOC_ID, row.getId());
@@ -108,6 +126,25 @@ public class Couch4jTest {
         // Fetch again
         d = test.fetchDocument("test2");
         assertEquals(rand, d.get(key));
+    }
+    
+    
+    @Test//(expected=DocumentUpdateConflictException.class)
+    public void testSaveExistingDocumentWithUpdateConflict() throws Exception {
+        Document d1 = test.fetchDocument("test3");
+        Document d = test.fetchDocument("test3");
+        final String rand = UUID.randomUUID().toString();
+        final String key = "rand_test_str";
+        d.put(key, rand);
+
+        // Save
+        test.saveDocument(d);
+        
+        // Save the first document instance - should throw a conflict exception
+        try {
+            test.saveDocument(d1);
+            fail("Expected DocumentUpdateConflictException"); 
+        } catch(DocumentUpdateConflictException ce) {}
     }
 
     @Test
@@ -158,6 +195,26 @@ public class Couch4jTest {
         // Fetch again
         d = test.fetchDocument("test2");
         assertEquals(rand, d.get(key));
+    }
+    
+    @Test
+    public void testDeleteDatabase() throws Exception {
+        testEmpty.delete();
+        // Check if the database exists...
+        HttpClient client = new HttpClient();
+        // Check if the database exists
+        HttpMethod m = null;
+        try {
+            m = new GetMethod(server.toString() + "/" + testEmpty.getName());
+            int statusCode = client.executeMethod(m);
+            assertEquals(HttpStatus.SC_NOT_FOUND, statusCode);
+        } catch (IOException e) {
+            fail(e.getLocalizedMessage());
+        } finally {
+            if (null != m) {
+                m.releaseConnection();
+            }
+        }
     }
 
     private void assertDocumentTest1(Document d) {

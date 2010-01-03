@@ -71,4 +71,18 @@ public class CouchDB {
         instances = new HashMap<String, Database<Document>>();
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("http");
+        /*
+         * if (useSsl) { sb.append("s"); }
+         */
+        sb.append("://");
+        sb.append(getHost());
+        sb.append(":");
+        sb.append(getPort());
+        return sb.toString();
+    }
+
 }

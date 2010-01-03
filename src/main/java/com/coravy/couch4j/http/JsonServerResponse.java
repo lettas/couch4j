@@ -16,8 +16,8 @@ final class JsonServerResponse implements ServerResponse {
     }
 
     JsonServerResponse(JSONObject json) {
-        this.id = json.getString("id");
-        this.rev = json.getString("rev");
+        this.id = json.containsKey("id") ? json.getString("id") : null;
+        this.rev = json.containsKey("rev") ? json.getString("rev") : null;
         this.ok = json.getBoolean("ok");
         this.json = json;
     }

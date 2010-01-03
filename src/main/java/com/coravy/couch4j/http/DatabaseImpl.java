@@ -43,6 +43,7 @@ import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.DocumentNotFoundException;
+import com.coravy.couch4j.DocumentUpdateConflictException;
 import com.coravy.couch4j.ServerResponse;
 import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
@@ -102,7 +103,28 @@ public class DatabaseImpl implements Database<Document> {
     }
 
     public ServerResponse delete() {
-        return null;
+        DeleteMethod method = new DeleteMethod(getUrl());
+        try {
+            int statusCode = client.executeMethod(method);
+            switch (statusCode) {
+            case HttpStatus.SC_NOT_FOUND:
+                break;
+            case HttpStatus.SC_OK:
+
+                break;
+            default:
+                throw new RuntimeException(); // TODO change
+            }
+
+            // Read the response body.
+            JSONObject jsonObject = fromResponseStream(method.getResponseBodyAsStream(), method.getResponseCharSet());
+            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
+            return response;
+        } catch (IOException e) {
+            throw new RuntimeException(e); // TODO replace
+        } finally {
+            method.releaseConnection();
+        }
     }
 
     public ViewResult<Document> fetchAllDocuments() {
@@ -148,13 +170,15 @@ public class DatabaseImpl implements Database<Document> {
             RequestEntity re = new StringRequestEntity(doc.toJson(), "application/json", "UTF-8");
             method.setRequestEntity(re);
 
-            client.executeMethod(method);
-
-            // int statusCode = client.executeMethod(method);
-
+            int statusCode = client.executeMethod(method);
             // Read the response body.
             byte[] responseBody = method.getResponseBody();
             JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
+
+            switch (statusCode) {
+            case HttpStatus.SC_CONFLICT:
+                throw new DocumentUpdateConflictException(jsonObject.getString("error"), jsonObject.getString("reason"));
+            }
             JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
             doc.put("_id", response.getId());
             doc.put("_rev", response.getRev());
@@ -381,6 +405,10 @@ public class DatabaseImpl implements Database<Document> {
 
     public void disconnect() {
         ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
+    }
+
+    public String getName() {
+        return name;
     }
 
 }
