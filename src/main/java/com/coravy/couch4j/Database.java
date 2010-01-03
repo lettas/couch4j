@@ -3,6 +3,7 @@ package com.coravy.couch4j;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -12,6 +13,23 @@ import java.util.Map;
  */
 public interface Database<T> {
 
+    /**
+     * @couchdb 0.10.?
+     */
+    public interface ChangeEvent {
+        boolean isDeleted();
+        String getId();
+        String getSeq();
+        List<String> changeRevs();
+    }
+    
+    /**
+     * @couchdb 0.10.?
+     */
+    public interface ChangeListener {
+        void onChange(ChangeEvent event);
+    }
+    
     public interface StreamContext {
         void withInputStream(InputStream is) throws IOException;
     }
@@ -54,6 +72,16 @@ public interface Database<T> {
      * @return The name of the database
      */
     String getName();
+    
+    /**
+     * @couchdb 0.10.?
+     */
+    void addChangeListener(ChangeListener listener);
+    
+    /**
+     * @couchdb 0.10.?
+     */
+    void removeChangeListener(ChangeListener listener);
     
     DatabaseInfo getDatabaseInfo();
 }
