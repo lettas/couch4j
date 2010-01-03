@@ -24,6 +24,7 @@ import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
 import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpException;
 import org.apache.commons.httpclient.HttpMethod;
+import org.apache.commons.httpclient.HttpMethodBase;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
 import org.apache.commons.httpclient.methods.DeleteMethod;
@@ -39,6 +40,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import com.coravy.core.annotations.ThreadSafe;
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Attachment;
+import com.coravy.couch4j.Couch4JException;
 import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
@@ -66,8 +68,8 @@ public class DatabaseImpl implements Database<Document> {
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         params.setIntParameter("maxHostConnections", 10);
 
-        logger
-                .info("Creating new database instance. Please reuse the CouchDB instance - there should only be a single database instance per CouchDB database.");
+        logger.info("Creating new database instance. Please reuse the CouchDB instance - there should "
+                + "only be a single database instance per CouchDB database.");
 
         client = new HttpClient(params);
 
@@ -103,33 +105,10 @@ public class DatabaseImpl implements Database<Document> {
     }
 
     public ServerResponse delete() {
-        DeleteMethod method = new DeleteMethod(getUrl());
-        try {
-            int statusCode = client.executeMethod(method);
-            switch (statusCode) {
-            case HttpStatus.SC_NOT_FOUND:
-                break;
-            case HttpStatus.SC_OK:
-
-                break;
-            default:
-                throw new RuntimeException(); // TODO change
-            }
-
-            // Read the response body.
-            JSONObject jsonObject = fromResponseStream(method.getResponseBodyAsStream(), method.getResponseCharSet());
-            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
-            return response;
-        } catch (IOException e) {
-            throw new RuntimeException(e); // TODO replace
-        } finally {
-            method.releaseConnection();
-        }
+        return executeMethod(new DeleteMethod(getUrl()));
     }
 
     public ViewResult<Document> fetchAllDocuments() {
-        // _all_docs
-        // return gson.fromJson(jsonForPath("_all_docs"), JsonViewResult.class);
         return new JsonViewResultWrapper(jsonForPath("_all_docs"));
     }
 
@@ -166,28 +145,17 @@ public class DatabaseImpl implements Database<Document> {
         } else {
             method = new PutMethod(urlForPath(doc.getId()));
         }
+        RequestEntity re;
         try {
-            RequestEntity re = new StringRequestEntity(doc.toJson(), "application/json", "UTF-8");
+            re = new StringRequestEntity(doc.toJson(), "application/json", "UTF-8");
             method.setRequestEntity(re);
-
-            int statusCode = client.executeMethod(method);
-            // Read the response body.
-            byte[] responseBody = method.getResponseBody();
-            JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-
-            switch (statusCode) {
-            case HttpStatus.SC_CONFLICT:
-                throw new DocumentUpdateConflictException(jsonObject.getString("error"), jsonObject.getString("reason"));
-            }
-            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
-            doc.put("_id", response.getId());
-            doc.put("_rev", response.getRev());
-            return response;
-        } catch (IOException e) {
-            throw new RuntimeException(e); // TODO replace
-        } finally {
-            method.releaseConnection();
+        } catch (UnsupportedEncodingException e) {
+            throw new Couch4JException(e);
         }
+        ServerResponse response = executeMethod(method);
+        doc.put("_id", response.getId());
+        doc.put("_rev", response.getRev());
+        return response;
     }
 
     public ServerResponse saveDocument(Map<String, Object> doc) {
@@ -224,24 +192,14 @@ public class DatabaseImpl implements Database<Document> {
 
     public ServerResponse saveDocument(String json) {
         EntityEnclosingMethod method = new PostMethod(getUrl());
+        RequestEntity re;
         try {
-            RequestEntity re = new StringRequestEntity(json, "application/json", "UTF-8");
-            method.setRequestEntity(re);
-
-            client.executeMethod(method);
-
-            // int statusCode = client.executeMethod(method);
-
-            // Read the response body.
-            byte[] responseBody = method.getResponseBody();
-
-            JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-            return JsonServerResponse.fromJson(jsonObject);
-        } catch (IOException e) {
-            throw new RuntimeException(e); // TODO replace
-        } finally {
-            method.releaseConnection();
+            re = new StringRequestEntity(json, "application/json", "UTF-8");
+        } catch (UnsupportedEncodingException e) {
+            throw new Couch4JException(e);
         }
+        method.setRequestEntity(re);
+        return executeMethod(method);
     }
 
     private char[] getResponseForUrl(final String url) {
@@ -334,24 +292,27 @@ public class DatabaseImpl implements Database<Document> {
         final String id = doc.getId();
         final String rev = doc.getRev();
         DeleteMethod method = new DeleteMethod(urlForPath(id, map("rev", rev)));
+        ServerResponse response = executeMethod(method);
+        doc.put("_id", id);
+        doc.put("_rev", response.getRev());
+        return response;
+    }
+
+    private ServerResponse executeMethod(HttpMethodBase method) {
         try {
             int statusCode = client.executeMethod(method);
+            // Read the response body.
+            JSONObject jsonObject = fromResponseStream(method.getResponseBodyAsStream(), method.getResponseCharSet());
             switch (statusCode) {
             case HttpStatus.SC_NOT_FOUND:
                 throw new DocumentNotFoundException();
+            case HttpStatus.SC_CONFLICT:
+                throw new DocumentUpdateConflictException(jsonObject.getString("error"), jsonObject.getString("reason"));
             case HttpStatus.SC_OK:
-
+            case HttpStatus.SC_CREATED:
                 break;
-            default:
-                throw new RuntimeException(); // TODO change
             }
-
-            // Read the response body.
-            JSONObject jsonObject = fromResponseStream(method.getResponseBodyAsStream(), method.getResponseCharSet());
-            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
-            doc.put("_id", id);
-            doc.put("_rev", response.getRev());
-            return response;
+            return JsonServerResponse.fromJson(jsonObject);
         } catch (IOException e) {
             throw new RuntimeException(e); // TODO replace
         } finally {
