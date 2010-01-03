@@ -56,7 +56,8 @@ import com.coravy.couch4j.ViewResult;
 @ThreadSafe
 public class DatabaseImpl implements Database<Document> {
     private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
-
+    private static final int MAX_HOST_CONNECTIONS = 10;
+    
     private final String name;
     private final CouchDB server;
     private final HttpClient client;
@@ -66,7 +67,7 @@ public class DatabaseImpl implements Database<Document> {
     public DatabaseImpl(CouchDB server, String name) {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
-        params.setIntParameter("maxHostConnections", 10);
+        params.setIntParameter("maxHostConnections", MAX_HOST_CONNECTIONS);
 
         logger.info("Creating new database instance. Please reuse the CouchDB instance - there should "
                 + "only be a single database instance per CouchDB database.");
