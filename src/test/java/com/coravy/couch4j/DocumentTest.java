@@ -8,12 +8,14 @@ import org.junit.Before;
 import org.junit.Test;
 
 public class DocumentTest {
-
+    private CouchDB server;
     private Database<Document> test;
 
     @Before
     public void setUp() throws Exception {
-        test = CouchDB.localServerInstance().getDatabase("couch4j");
+        server = Couch4jTest.testDbInstance();
+        
+        test = server.getDatabase("couch4j");
         assertNotNull(test);
     }
 

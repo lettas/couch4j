@@ -7,7 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
-import java.util.logging.Level;
 
 import net.sf.json.JSONArray;
 
@@ -15,7 +14,6 @@ import org.apache.commons.httpclient.HttpClient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,32 +24,30 @@ import com.coravy.couch4j.Database.StreamContext;
 public class Couch4jTest {
 
     static final String VALID_DOC_ID = "test1";
-    private static final String NEW_DOCUMENT_ID = "new_document";
-    
-    private static final String EMPTY_DATABASE_NAME = "couch4j-empty";
-    
+    static final String NEW_DOCUMENT_ID = "new_document";
+
+    static final String EMPTY_DATABASE_NAME = "couch4j-empty";
+    static final String TEST_DATABASE_NAME = "couch4j";
+
     private CouchDB server;
     private Database<Document> test;
     private Database<Document> testEmpty;
 
+    static CouchDB testDbInstance() {
+        return CouchDB.localServerInstance(); // CouchDB 0.9.0
+        //return new CouchDB("localhost", 59810);
+    }
+    
     @Before
     public void setUp() throws Exception {
-        
-        server = CouchDB.localServerInstance();
-        
-        test = server.getDatabase("couch4j");
+
+        server = testDbInstance();
+
+        test = server.getDatabase(TEST_DATABASE_NAME);
         assertNotNull(test);
 
         testEmpty = server.getDatabase(EMPTY_DATABASE_NAME);
         assertNotNull(testEmpty);
-
-        
-        // // Save
-        // Document d = new Document();
-        // final String rand = UUID.randomUUID().toString();
-        // final String key = "rand_test_str";
-        // d.put(key, rand);
-        // test.saveDocument(d);
     }
 
     @After
@@ -62,7 +58,7 @@ public class Couch4jTest {
         } catch (DocumentNotFoundException nfe) {
             // ignore
         }
-        test.disconnect();
+        server.disconnect();
     }
 
     @Test
@@ -127,9 +123,9 @@ public class Couch4jTest {
         d = test.fetchDocument("test2");
         assertEquals(rand, d.get(key));
     }
-    
-    
-    @Test//(expected=DocumentUpdateConflictException.class)
+
+    @Test
+    // (expected=DocumentUpdateConflictException.class)
     public void testSaveExistingDocumentWithUpdateConflict() throws Exception {
         Document d1 = test.fetchDocument("test3");
         Document d = test.fetchDocument("test3");
@@ -139,12 +135,13 @@ public class Couch4jTest {
 
         // Save
         test.saveDocument(d);
-        
+
         // Save the first document instance - should throw a conflict exception
         try {
             test.saveDocument(d1);
-            fail("Expected DocumentUpdateConflictException"); 
-        } catch(DocumentUpdateConflictException ce) {}
+            fail("Expected DocumentUpdateConflictException");
+        } catch (DocumentUpdateConflictException ce) {
+        }
     }
 
     @Test
@@ -196,7 +193,7 @@ public class Couch4jTest {
         d = test.fetchDocument("test2");
         assertEquals(rand, d.get(key));
     }
-    
+
     @Test
     public void testDeleteDatabase() throws Exception {
         testEmpty.delete();

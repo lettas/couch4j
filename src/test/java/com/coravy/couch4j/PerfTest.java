@@ -17,7 +17,8 @@ public class PerfTest {
     
     @Test(timeout=7000) // ~ 2700 ms on a 3.06 Core 2 Duo
     public void fetchMultipleDocuments() throws Exception {
-        Database<Document> test = CouchDB.localServerInstance().getDatabase("couch4j");
+        CouchDB server = Couch4jTest.testDbInstance();
+        Database<Document> test = server.getDatabase("couch4j");
         final int UPPER = 1000;
         long start = System.currentTimeMillis();
         for (int i = 0; i <= UPPER; i++) {

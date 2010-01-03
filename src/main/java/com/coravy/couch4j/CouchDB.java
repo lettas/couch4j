@@ -68,7 +68,9 @@ public class CouchDB {
         for (Map.Entry<String, Database<Document>> e : this.instances.entrySet()) {
             e.getValue().disconnect();
         }
-        instances = new HashMap<String, Database<Document>>();
+        synchronized (lock) {
+            instances = new HashMap<String, Database<Document>>();
+        }
     }
 
     @Override
@@ -83,6 +85,34 @@ public class CouchDB {
         sb.append(":");
         sb.append(getPort());
         return sb.toString();
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((host == null) ? 0 : host.hashCode());
+        result = prime * result + port;
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof CouchDB))
+            return false;
+        CouchDB other = (CouchDB) obj;
+        if (host == null) {
+            if (other.host != null)
+                return false;
+        } else if (!host.equals(other.host))
+            return false;
+        if (port != other.port)
+            return false;
+        return true;
     }
 
 }
