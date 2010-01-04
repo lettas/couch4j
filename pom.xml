@@ -4,9 +4,22 @@
 	<groupId>com.coravy</groupId>
 	<artifactId>couch4j</artifactId>
 	<packaging>jar</packaging>
-	<version>0.7.1-SNAPSHOT</version>
+	<version>0.7.1</version>
 	<name>couch4j</name>
-	<url>http://github.com/juretta/couch4j</url>
+	<url>http://dev.coravy.com/wiki/display/OpenSource/couch4j</url>
+	<ciManagement>
+		<system>Hudson</system>
+		<url>https://ci.coravy.com/hudson/job/couch4j/</url>
+	</ciManagement>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -24,10 +37,6 @@
 			</resource>
 		</resources>
 	</build>
-	<ciManagement>
-		<system>Hudson</system>
-		<url>https://ci.coravy.com/hudson/job/couch4j/</url>
-	</ciManagement>
 	<developers>
 		<developer>
 			<id>stefan</id>
@@ -50,6 +59,22 @@
 			<id>coravy-opensource-snapshots</id>
 			<name>coravy. opensource</name>
 			<url>http://snapshots.coravy.com/maven2/</url>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+			</snapshots>
+		</repository>
+
+		<repository>
+			<id>coravy-opensource</id>
+			<name>coravy. opensource</name>
+			<url>http://repository.coravy.com/maven2/</url>
+			<releases>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 	</repositories>
 
@@ -68,7 +93,7 @@
 		<dependency>
 			<groupId>com.coravy</groupId>
 			<artifactId>core</artifactId>
-			<version>0.2.2-SNAPSHOT</version>
+			<version>0.2.2</version>
 		</dependency>
 		<dependency>
 			<groupId>net.sf.json-lib</groupId>
@@ -89,28 +114,11 @@
 				<version>1.2</version>
 				<configuration>
 					<xmlOutput>true</xmlOutput>
-					<!--
-        <xmlOutputDirectory></xmlOutputDirectory>
-    -->
 					<threshold>Low</threshold>
 					<effort>Default</effort>
-					<!--
-						<excludeFilterFile>findbugs-exclude.xml</excludeFilterFile>
-						<includeFilterFile>findbugs-include.xml</includeFilterFile>
-					-->
-					<!--
-						<visitors>FindDeadLocalStores,UnreadFields</visitors>
-						<omitVisitors>FindDeadLocalStores,UnreadFields</omitVisitors>
-						<onlyAnalyze>org.codehaus.mojo.findbugs.*</onlyAnalyze>
-						<pluginList>/libs/fb-contrib/fb-contrib-2.8.0.jar</pluginList>
-					-->
 					<debug>true</debug>
 					<relaxed>false</relaxed>
 					<findbugsXmlOutput>true</findbugsXmlOutput>
-					<!--
-						<findbugsXmlOutputDirectory>directory location of findbugs legact
-						xml format report</findbugsXmlOutputDirectory>
-					-->
 				</configuration>
 			</plugin>
 			<plugin>
