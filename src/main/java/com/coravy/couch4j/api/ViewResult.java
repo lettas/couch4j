@@ -1,6 +1,7 @@
-package com.coravy.couch4j;
+package com.coravy.couch4j.api;
 
 import java.util.List;
+
 
 /**
  * 

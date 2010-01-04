@@ -2,7 +2,7 @@ package com.coravy.couch4j.http;
 
 import net.sf.json.JSONObject;
 
-import com.coravy.couch4j.ServerResponse;
+import com.coravy.couch4j.api.ServerResponse;
 
 /**
  * 

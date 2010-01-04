@@ -7,10 +7,10 @@ import java.util.List;
 import net.sf.json.JSONObject;
 
 import com.coravy.core.annotations.Immutable;
-import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
-import com.coravy.couch4j.ViewResult;
-import com.coravy.couch4j.ViewResultRow;
+import com.coravy.couch4j.api.Database;
+import com.coravy.couch4j.api.ViewResult;
+import com.coravy.couch4j.api.ViewResultRow;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)

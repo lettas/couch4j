@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.coravy.core.annotations.ThreadSafe;
+import com.coravy.couch4j.api.Database;
 import com.coravy.couch4j.http.DatabaseImpl;
 
 /**

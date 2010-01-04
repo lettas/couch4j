@@ -1,9 +1,12 @@
-package com.coravy.couch4j;
+package com.coravy.couch4j.api;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
+
+import com.coravy.couch4j.DocumentNotFoundException;
+import com.coravy.couch4j.View;
 
 /**
  * Represents a single logical CouchDB database.

@@ -4,6 +4,8 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import com.coravy.couch4j.api.Database;
+
 /**
  * Run on the same machine
  * 

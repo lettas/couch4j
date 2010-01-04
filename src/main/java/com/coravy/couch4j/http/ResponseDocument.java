@@ -7,9 +7,9 @@ import java.util.Map;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import com.coravy.couch4j.Attachment;
-import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
+import com.coravy.couch4j.api.Attachment;
+import com.coravy.couch4j.api.Database;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)

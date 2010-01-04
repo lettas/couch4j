@@ -19,7 +19,11 @@ import org.junit.Before;
 import org.junit.Test;
 
 import com.coravy.core.io.StreamUtils;
-import com.coravy.couch4j.Database.StreamContext;
+import com.coravy.couch4j.api.Attachment;
+import com.coravy.couch4j.api.Database;
+import com.coravy.couch4j.api.ViewResult;
+import com.coravy.couch4j.api.ViewResultRow;
+import com.coravy.couch4j.api.Database.StreamContext;
 
 public class Couch4jTest {
 

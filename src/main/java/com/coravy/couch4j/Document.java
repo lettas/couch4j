@@ -6,6 +6,9 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+import com.coravy.couch4j.api.Attachment;
+import com.coravy.couch4j.api.JsonExportable;
+
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
@@ -15,14 +18,13 @@ public class Document implements JsonExportable {
 
     public Document() {
         this.attributes = new HashMap<Object, Object>();
-
     }
 
     public Document(String id) {
         this();
         this.attributes.put("_id", id);
     }
-    
+
     public Document(Map<? extends Object, ? extends Object> attributes) {
         if (null != attributes) {
             this.attributes = attributes;
@@ -80,5 +82,4 @@ public class Document implements JsonExportable {
     public JSONObject toJSONObject() {
         return JSONObject.fromObject(this.attributes);
     }
-    
 }

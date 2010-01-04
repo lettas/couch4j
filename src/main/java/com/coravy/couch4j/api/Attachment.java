@@ -1,8 +1,9 @@
-package com.coravy.couch4j;
+package com.coravy.couch4j.api;
 
 import java.io.IOException;
 
-import com.coravy.couch4j.Database.StreamContext;
+import com.coravy.couch4j.api.Database.StreamContext;
+
 
 /**
  * @author Stefan Saasen

@@ -7,6 +7,8 @@ import net.sf.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.coravy.couch4j.api.Database;
+
 public class DocumentTest {
     private CouchDB server;
     private Database<Document> test;
