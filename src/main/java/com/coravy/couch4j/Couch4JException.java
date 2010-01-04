@@ -1,8 +1,6 @@
 package com.coravy.couch4j;
 
 /**
- * 
- * 
  * @author Stefan Saasen
  */
 public class Couch4JException extends RuntimeException {

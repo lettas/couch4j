@@ -14,12 +14,10 @@ import com.coravy.couch4j.http.DatabaseImpl;
 @ThreadSafe
 public class CouchDB {
 
-    private final Object lock = new Object();
-
     private Map<String, Database<Document>> instances = new HashMap<String, Database<Document>>();
 
     public Database<Document> getDatabase(final String databaseName) {
-        synchronized (lock) {
+        synchronized (instances) {
             if (instances.containsKey(databaseName)) {
                 return instances.get(databaseName);
             }
@@ -68,8 +66,8 @@ public class CouchDB {
         for (Map.Entry<String, Database<Document>> e : this.instances.entrySet()) {
             e.getValue().disconnect();
         }
-        synchronized (lock) {
-            instances = new HashMap<String, Database<Document>>();
+        synchronized (instances) {
+            instances.clear();
         }
     }
 
