@@ -60,6 +60,7 @@ public class DatabaseImpl implements Database<Document> {
     private final String name;
     private final HttpClient client;
 
+    private DatabaseChangeNotificationService changesService;
     private final UrlResolver urlResolver;
 
     public DatabaseImpl(CouchDB server, String name) {
@@ -73,6 +74,7 @@ public class DatabaseImpl implements Database<Document> {
         this.name = name;
 
         urlResolver = new UrlResolverImpl(server, name);
+        changesService = new DatabaseChangeNotificationService(client, urlResolver, this);
 
         // Check if the database exists
         HttpMethod m = null;
@@ -321,6 +323,14 @@ public class DatabaseImpl implements Database<Document> {
 
     public String getName() {
         return name;
+    }
+
+    public void addChangeListener(ChangeListener listener) {
+        changesService.addChangeListener(listener);
+    }
+
+    public void removeChangeListener(ChangeListener listener) {
+        changesService.removeChangeListener(listener);
     }
 
     public DatabaseInfo getDatabaseInfo() {
