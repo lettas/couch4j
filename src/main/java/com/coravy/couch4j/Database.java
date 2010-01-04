@@ -54,4 +54,6 @@ public interface Database<T> {
      * @return The name of the database
      */
     String getName();
+    
+    DatabaseInfo getDatabaseInfo();
 }

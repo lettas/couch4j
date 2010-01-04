@@ -8,12 +8,10 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.Date;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,6 +41,7 @@ import com.coravy.couch4j.Attachment;
 import com.coravy.couch4j.Couch4JException;
 import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Database;
+import com.coravy.couch4j.DatabaseInfo;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.DocumentNotFoundException;
 import com.coravy.couch4j.DocumentUpdateConflictException;
@@ -57,35 +56,36 @@ import com.coravy.couch4j.ViewResult;
 public class DatabaseImpl implements Database<Document> {
     private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
     private static final int MAX_HOST_CONNECTIONS = 10;
-    
+
     private final String name;
-    private final CouchDB server;
     private final HttpClient client;
 
-    private String url;
+    private final UrlResolver urlResolver;
 
     public DatabaseImpl(CouchDB server, String name) {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         params.setIntParameter("maxHostConnections", MAX_HOST_CONNECTIONS);
-
-        logger.info("Creating new database instance. Please reuse the CouchDB instance - there should "
-                + "only be a single database instance per CouchDB database.");
+        
+        logger.info("Creating new database instance. Please reuse this object for the same CouchDB database.");
 
         client = new HttpClient(params);
-
         this.name = name;
-        this.server = server;
+
+        urlResolver = new UrlResolverImpl(server, name);
+
         // Check if the database exists
         HttpMethod m = null;
         try {
-            m = new GetMethod(getUrl());
+            m = new GetMethod(urlResolver.baseUrl());
             int statusCode = client.executeMethod(m);
             if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                m = new PutMethod(getUrl());
+                m = new PutMethod(urlResolver.baseUrl());
                 statusCode = client.executeMethod(m);
-                logger.log(Level.WARNING, String.format("Failed to create the database %s on %s. "
-                        + "Failed with status code %d", name, server, statusCode));
+                if (statusCode != HttpStatus.SC_CREATED) {
+                    logger.log(Level.WARNING, String.format("Failed to create the database %s on %s. "
+                            + "Failed with status code %d", name, server, statusCode));
+                }
             }
         } catch (IOException e) {
             logger.log(Level.SEVERE, "Unable to connect to database: " + name);
@@ -106,7 +106,7 @@ public class DatabaseImpl implements Database<Document> {
     }
 
     public ServerResponse delete() {
-        return executeMethod(new DeleteMethod(getUrl()));
+        return executeMethod(new DeleteMethod(urlResolver.baseUrl()));
     }
 
     public ViewResult<Document> fetchAllDocuments() {
@@ -142,7 +142,7 @@ public class DatabaseImpl implements Database<Document> {
 
         EntityEnclosingMethod method;
         if (null == doc.getId()) {
-            method = new PostMethod(getUrl());
+            method = new PostMethod(urlResolver.baseUrl());
         } else {
             method = new PutMethod(urlForPath(doc.getId()));
         }
@@ -163,7 +163,7 @@ public class DatabaseImpl implements Database<Document> {
         EntityEnclosingMethod method;
         final String id = (String) (doc.get("id") != null ? doc.get("id") : doc.get("_id"));
         if (null == id) {
-            method = new PostMethod(getUrl());
+            method = new PostMethod(urlResolver.baseUrl());
         } else {
             method = new PutMethod(urlForPath(id));
         }
@@ -192,7 +192,7 @@ public class DatabaseImpl implements Database<Document> {
     }
 
     public ServerResponse saveDocument(String json) {
-        EntityEnclosingMethod method = new PostMethod(getUrl());
+        EntityEnclosingMethod method = new PostMethod(urlResolver.baseUrl());
         RequestEntity re;
         try {
             re = new StringRequestEntity(json, "application/json", "UTF-8");
@@ -239,33 +239,8 @@ public class DatabaseImpl implements Database<Document> {
         return new char[0];
     }
 
-    private String getUrl() {
-        if (null == url) {
-            StringBuilder sb = new StringBuilder();
-            sb.append("http");
-            /*
-             * if (useSsl) { sb.append("s"); }
-             */
-            sb.append("://");
-            sb.append(server.getHost());
-            sb.append(":");
-            sb.append(server.getPort());
-            sb.append("/");
-            sb.append(this.name);
-            url = sb.toString();
-        }
-        return url;
-    }
-
     public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
-        // Create an instance of HttpClient.
-        StringBuilder sb = new StringBuilder();
-        sb.append(this.getUrl());
-        sb.append("/");
-        sb.append(a.getContentId());
-        sb.append("/");
-        sb.append(a.getName());
-        GetMethod method = new GetMethod(sb.toString());
+        GetMethod method = new GetMethod(urlResolver.urlForPath("/" + a.getContentId() + "/" + a.getName()));
 
         // Provide custom retry handler is necessary
         method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
@@ -292,7 +267,7 @@ public class DatabaseImpl implements Database<Document> {
     public ServerResponse deleteDocument(Document doc) {
         final String id = doc.getId();
         final String rev = doc.getRev();
-        DeleteMethod method = new DeleteMethod(urlForPath(id, map("rev", rev)));
+        DeleteMethod method = new DeleteMethod(urlResolver.urlForPath(id, map("rev", rev)));
         ServerResponse response = executeMethod(method);
         doc.put("_id", id);
         doc.put("_rev", response.getRev());
@@ -337,32 +312,7 @@ public class DatabaseImpl implements Database<Document> {
 
     private String urlForPath(final String path) {
         Map<String, String> p = Collections.emptyMap();
-        return this.urlForPath(path, p);
-    }
-
-    private String urlForPath(final String path, final Map<String, String> params) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(getUrl());
-        sb.append("/");
-        sb.append(path);
-        if (!params.isEmpty()) {
-            sb.append("?");
-            try {
-
-                for (Iterator<Entry<String, String>> iterator = params.entrySet().iterator(); iterator.hasNext();) {
-                    final Entry<String, String> entry = iterator.next();
-                    sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-                    sb.append("=");
-                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-                    if (iterator.hasNext()) {
-                        sb.append("&");
-                    }
-                }
-            } catch (UnsupportedEncodingException ue) {
-                // ignore - UTF-8 is mandatory
-            }
-        }
-        return sb.toString();
+        return urlResolver.urlForPath(path, p);
     }
 
     public void disconnect() {
@@ -371,6 +321,56 @@ public class DatabaseImpl implements Database<Document> {
 
     public String getName() {
         return name;
+    }
+
+    public DatabaseInfo getDatabaseInfo() {
+        final JSONObject json = JSONObject.fromObject(String.valueOf(getResponseForUrl(urlResolver.baseUrl())));
+
+        /*
+         * {"db_name":"couch4j","doc_count":9,"doc_del_count":7,"update_seq":65,
+         * "purge_seq"
+         * :0,"compact_running":false,"disk_size":192601,"instance_start_time"
+         * :"1262491923790998", "disk_format_version":4}
+         */
+
+        return new DatabaseInfo() {
+
+            public int getDiskFormatVersion() {
+                return json.getInt("disk_format_version");
+            }
+
+            public int getDiskSize() {
+                return json.getInt("disk_size");
+            }
+
+            public int getDocCount() {
+                return json.getInt("doc_count");
+            }
+
+            public int getDocDelCountr() {
+                return json.getInt("doc_del_count");
+            }
+
+            public Date getInstanceStartTime() {
+                return new Date(json.getLong("instance_start_time"));
+            }
+
+            public String getName() {
+                return json.getString("db_name");
+            }
+
+            public int getPurgeSeq() {
+                return json.getInt("purge_seq");
+            }
+
+            public int getUpdateSeq() {
+                return json.getInt("update_seq");
+            }
+
+            public boolean isCompactRunning() {
+                return json.getBoolean("compact_running");
+            }
+        };
     }
 
 }
