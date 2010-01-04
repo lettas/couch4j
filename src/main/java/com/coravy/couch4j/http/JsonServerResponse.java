@@ -43,4 +43,8 @@ final class JsonServerResponse implements ServerResponse {
         return json.toString();
     }
 
+    public JSONObject toJSONObject() {
+        return json;
+    }
+
 }

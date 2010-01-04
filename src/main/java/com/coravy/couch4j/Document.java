@@ -74,7 +74,11 @@ public class Document implements JsonExportable {
     }
 
     public String toJson() {
-        return JSONObject.fromObject(this.attributes).toString();
+        return toJSONObject().toString();
     }
 
+    public JSONObject toJSONObject() {
+        return JSONObject.fromObject(this.attributes);
+    }
+    
 }

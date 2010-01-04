@@ -110,11 +110,11 @@ public class DatabaseImpl implements Database<Document> {
     }
 
     public ViewResult<Document> fetchAllDocuments() {
-        return new JsonViewResultWrapper(jsonForPath("_all_docs"));
+        return this.fetchAllDocuments(false);
     }
 
     public ViewResult<Document> fetchAllDocuments(boolean includeDocs) {
-        return new JsonViewResultWrapper(jsonForPath(View.builder("_all_docs").includeDocs(true).toString()));
+        return new JsonViewResult(jsonForPath(View.builder("_all_docs").includeDocs(true).toString()), this);
     }
 
     /*
@@ -124,13 +124,13 @@ public class DatabaseImpl implements Database<Document> {
     public Document fetchDocument(String id) {
         String url = urlForPath(id);
         char[] response = getResponseForUrl(url);
-        ResponseDocument d = new ResponseDocument(String.valueOf(response));
+        ResponseDocument d = new ResponseDocument(JSONObject.fromObject(String.valueOf(response)));
         d.setDatabase(this);
         return d;
     }
 
     public ViewResult<Document> fetchView(View v) {
-        return new JsonViewResultWrapper(jsonForPath(v.queryString()));
+        return new JsonViewResult(jsonForPath(v.queryString()), this);
     }
 
     /*

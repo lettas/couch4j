@@ -15,32 +15,36 @@ import com.coravy.couch4j.Document;
  * @author Stefan Saasen (stefan@coravy.com)
  */
 public class ResponseDocument extends Document implements DatabaseAware<Document> {
-    private String _id;
-    private String _rev;
+    private final String _id;
+    private final String _rev;
+    private boolean isAvailable;
 
-    private final JSONObject attachments;
-    private final JSONObject jsonObject;
+    private JSONObject attachments;
+    private JSONObject jsonObject;
 
     private Database<Document> database;
 
-    public ResponseDocument() {
-        jsonObject = new JSONObject();
-        this.attachments = new JSONObject();
-    }
-
-    public ResponseDocument(final String json) {
-        this(JSONObject.fromObject(json));
+    public ResponseDocument(final String id, final String rev) {
+        if (null == id || null == rev) {
+            throw new IllegalArgumentException("'id' and 'rev' are required to create a ResponseDocument instance.");
+        }
+        this._id = id;
+        this._rev = rev;
     }
 
     public ResponseDocument(final JSONObject jsonObject) {
+        this(jsonObject.getString("_id"), jsonObject.getString("_rev"));
+        load(jsonObject);
+    }
+
+    private void load(final JSONObject jsonObject) {
         this.jsonObject = jsonObject;
-        this._id = jsonObject.getString("_id");
-        this._rev = jsonObject.getString("_rev");
         if (jsonObject.has("_attachments")) {
             attachments = jsonObject.getJSONObject("_attachments");
         } else {
             attachments = null;
         }
+        isAvailable = true;
     }
 
     @Override
@@ -55,30 +59,35 @@ public class ResponseDocument extends Document implements DatabaseAware<Document
 
     @Override
     public String toString() {
+        fetchDocument();
         return toJson();
     }
 
     @Override
     public Object get(String key) {
+        fetchDocument();
         return jsonObject.get(key);
     }
 
     @Override
     public void put(Object key, Object value) {
+        fetchDocument();
         jsonObject.put(key.toString(), value);
     }
 
     @Override
     public void putAll(final Map<? extends Object, ? extends Object> attributes) {
-        if(null == attributes) {
+        fetchDocument();
+        if (null == attributes) {
             return;
         }
-        for(Map.Entry<? extends Object, ? extends Object> e : attributes.entrySet()) {
+        for (Map.Entry<? extends Object, ? extends Object> e : attributes.entrySet()) {
             jsonObject.put(e.getKey().toString(), e.getValue());
         }
     }
 
     public String toJson() {
+        fetchDocument();
         if (null != jsonObject) {
             return jsonObject.toString();
         }
@@ -86,6 +95,7 @@ public class ResponseDocument extends Document implements DatabaseAware<Document
     }
 
     public Attachment getAttachment(final String name) {
+        fetchDocument();
         if (null != attachments && !attachments.isEmpty() && !attachments.isNullObject()) {
             try {
                 return new AttachmentImpl(attachments.getJSONObject(name), name, this);
@@ -97,10 +107,12 @@ public class ResponseDocument extends Document implements DatabaseAware<Document
     }
 
     public List<Attachment> getAttachments() {
+        fetchDocument();
         return Collections.emptyList();
     }
 
     public List<String> getAttachmentNames() {
+        fetchDocument();
         return Collections.emptyList();
     }
 
@@ -111,4 +123,26 @@ public class ResponseDocument extends Document implements DatabaseAware<Document
     public void setDatabase(Database<Document> d) {
         this.database = d;
     }
+
+    private void fetchDocument() {
+        if (isAvailable) {
+            return;
+        }
+        if (null == this.database) {
+            throw new IllegalStateException(
+                    "Database instance is not available. Unable to lazily load the response document.");
+        }
+
+        Document d = database.fetchDocument(this._id);
+        this.jsonObject = d.toJSONObject();
+        this.isAvailable = true;
+    }
+
+    @Override
+    public JSONObject toJSONObject() {
+        fetchDocument();
+        return jsonObject;
+    }
+    
+    
 }

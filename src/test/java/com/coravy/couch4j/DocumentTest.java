@@ -26,4 +26,11 @@ public class DocumentTest {
         assertEquals(d.toJson(), json.toString());
     }
     
+    
+    @Test
+    public void testDocumentToJSONObject() throws Exception {
+        Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
+        JSONObject json = d.toJSONObject();
+        assertEquals(d.getId(), json.getString("_id"));
+    }
 }

@@ -6,6 +6,8 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import com.coravy.core.annotations.Immutable;
+import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
@@ -13,18 +15,21 @@ import com.coravy.couch4j.ViewResultRow;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
+@Immutable
 final class JsonViewResult implements ViewResult<Document> {
-    private int total_rows;
-    private int offset;
-    private List<ViewResultRow<Document>> rows;
+    private final int total_rows;
+    private final int offset;
+    private final List<ViewResultRow<Document>> rows;
+    private final Database<Document> database;
 
     private final JSONObject json;
 
-    JsonViewResult(final JSONObject json) {
-        this.json = json;
+    JsonViewResult(final String jsonString, Database<Document> database) {
+        this.json = JSONObject.fromObject(jsonString);
         this.offset = json.getInt("offset");
         this.total_rows = json.getInt("total_rows");
         rows = new ArrayList<ViewResultRow<Document>>();
+        this.database = database;
     }
 
     public int getTotalRows() {
@@ -35,32 +40,31 @@ final class JsonViewResult implements ViewResult<Document> {
         return offset;
     }
 
-    @SuppressWarnings("unchecked")
     public List<ViewResultRow<Document>> getRows() {
-        if (rows.isEmpty() && total_rows > 0) {
-            List<ViewResultRow<Document>> r = new ArrayList<ViewResultRow<Document>>();
-            for (Iterator iterator = json.getJSONArray("rows").iterator(); iterator.hasNext();) {
-                JSONObject viewResultRow = (JSONObject) iterator.next();
-                r.add(new JsonViewResultRow(viewResultRow));
-            }
-            rows = r;
-        }
+        loadRowsIfNecessary();
         return rows;
     }
 
     public Iterator<ViewResultRow<Document>> iterator() {
+        loadRowsIfNecessary();
         return rows.iterator();
-    }
-
-    public void setOffset(int offset) {
-        this.offset = offset;
-    }
-
-    public void setRows(List<ViewResultRow<Document>> rows) {
-        this.rows = rows;
     }
 
     public String toJson() {
         return json.toString();
+    }
+
+    @SuppressWarnings("unchecked")
+    private void loadRowsIfNecessary() {
+        if (rows.isEmpty() && total_rows > 0) {
+            for (Iterator<JSONObject> iterator = json.getJSONArray("rows").iterator(); iterator.hasNext();) {
+                JSONObject viewResultRow = iterator.next();
+                rows.add(new JsonViewResultRow(viewResultRow, this.database));
+            }
+        }
+    }
+
+    public JSONObject toJSONObject() {
+        return json;
     }
 }

@@ -1,6 +1,7 @@
 package com.coravy.couch4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import com.coravy.core.annotations.ThreadSafe;
@@ -60,6 +61,10 @@ public class CouchDB {
 
     public int getPort() {
         return port;
+    }
+
+    public List<String> databaseNames() {
+        throw new UnsupportedOperationException(); // FIXME implement
     }
 
     public void disconnect() {
