@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Map;
 
-import com.coravy.couch4j.DocumentNotFoundException;
 import com.coravy.couch4j.View;
+import com.coravy.couch4j.exceptions.DocumentNotFoundException;
 
 /**
  * Represents a single logical CouchDB database.

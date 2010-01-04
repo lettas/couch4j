@@ -37,17 +37,17 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import com.coravy.core.annotations.ThreadSafe;
 import com.coravy.core.io.StreamUtils;
-import com.coravy.couch4j.Couch4JException;
 import com.coravy.couch4j.CouchDB;
 import com.coravy.couch4j.Document;
-import com.coravy.couch4j.DocumentNotFoundException;
-import com.coravy.couch4j.DocumentUpdateConflictException;
 import com.coravy.couch4j.View;
 import com.coravy.couch4j.api.Attachment;
 import com.coravy.couch4j.api.Database;
 import com.coravy.couch4j.api.DatabaseInfo;
 import com.coravy.couch4j.api.ServerResponse;
 import com.coravy.couch4j.api.ViewResult;
+import com.coravy.couch4j.exceptions.Couch4JException;
+import com.coravy.couch4j.exceptions.DocumentNotFoundException;
+import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)

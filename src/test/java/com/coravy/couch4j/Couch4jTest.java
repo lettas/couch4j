@@ -24,6 +24,8 @@ import com.coravy.couch4j.api.Database;
 import com.coravy.couch4j.api.ViewResult;
 import com.coravy.couch4j.api.ViewResultRow;
 import com.coravy.couch4j.api.Database.StreamContext;
+import com.coravy.couch4j.exceptions.DocumentNotFoundException;
+import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
 
 public class Couch4jTest {
 

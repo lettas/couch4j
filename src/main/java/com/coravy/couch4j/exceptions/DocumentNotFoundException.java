@@ -1,4 +1,4 @@
-package com.coravy.couch4j;
+package com.coravy.couch4j.exceptions;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)
