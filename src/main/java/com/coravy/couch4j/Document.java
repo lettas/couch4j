@@ -6,8 +6,6 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-import com.coravy.couch4j.api.Attachment;
-import com.coravy.couch4j.api.JsonExportable;
 
 /**
  * @author Stefan Saasen (stefan@coravy.com)

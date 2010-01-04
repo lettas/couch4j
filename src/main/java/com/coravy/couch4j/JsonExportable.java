@@ -1,4 +1,4 @@
-package com.coravy.couch4j.api;
+package com.coravy.couch4j;
 
 import net.sf.json.JSONObject;
 

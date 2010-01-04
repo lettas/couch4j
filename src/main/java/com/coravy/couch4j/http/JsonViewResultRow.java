@@ -3,9 +3,9 @@ package com.coravy.couch4j.http;
 import net.sf.json.JSONObject;
 
 import com.coravy.core.annotations.Immutable;
+import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
-import com.coravy.couch4j.api.Database;
-import com.coravy.couch4j.api.ViewResultRow;
+import com.coravy.couch4j.ViewResultRow;
 
 /**
  * @author Stefan Saasen <stefan@coravy.com>

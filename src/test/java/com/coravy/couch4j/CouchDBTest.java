@@ -6,7 +6,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import com.coravy.couch4j.api.Database;
 
 public class CouchDBTest {
 

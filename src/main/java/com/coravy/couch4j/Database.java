@@ -1,4 +1,4 @@
-package com.coravy.couch4j.api;
+package com.coravy.couch4j;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -6,7 +6,6 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
-import com.coravy.couch4j.View;
 import com.coravy.couch4j.exceptions.DocumentNotFoundException;
 
 /**

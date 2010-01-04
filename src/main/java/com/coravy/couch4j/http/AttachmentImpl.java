@@ -6,10 +6,10 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
 
+import com.coravy.couch4j.Attachment;
+import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
-import com.coravy.couch4j.api.Attachment;
-import com.coravy.couch4j.api.Database;
-import com.coravy.couch4j.api.Database.StreamContext;
+import com.coravy.couch4j.Database.StreamContext;
 
 /**
  * @author Stefan Saasen <stefan@coravy.com>

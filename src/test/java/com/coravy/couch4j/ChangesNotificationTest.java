@@ -12,9 +12,8 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.coravy.couch4j.api.Database;
-import com.coravy.couch4j.api.Database.ChangeEvent;
-import com.coravy.couch4j.api.Database.ChangeListener;
+import com.coravy.couch4j.Database.ChangeEvent;
+import com.coravy.couch4j.Database.ChangeListener;
 
 @Ignore
 public class ChangesNotificationTest {
