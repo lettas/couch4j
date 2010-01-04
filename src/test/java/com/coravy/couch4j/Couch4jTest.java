@@ -41,11 +41,9 @@ public class Couch4jTest {
     private Database<Document> test;
     private Database<Document> testEmpty;
     
-    
-
     static CouchDB testDbInstance() {
-        //return CouchDB.localServerInstance(); // CouchDB 0.9.0
-        return new CouchDB("localhost", 59810); // CouchDB 0.10.1
+        return CouchDB.localServerInstance(); // CouchDB 0.9.0
+        //return new CouchDB("localhost", 59810); // CouchDB 0.10.1
     }
     
     @Before
