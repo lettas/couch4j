@@ -39,10 +39,12 @@ public class ViewBuilderTest {
         View.builder("design/test/abc");
     }
 
-//    @Test
-//    public final void testKey() {
-//        fail("Not yet implemented");
-//    }
+    @Test
+    public final void testKey() {
+        final String key = "/web/test.jsp";
+        View v = View.builder("design/test").key(key).build();
+        assertEquals("_design/design/_view/test?key=%22%2Fweb%2Ftest.jsp%22", v.queryString());
+    }
 //
 //    @Test
 //    public final void testEndkey() {
