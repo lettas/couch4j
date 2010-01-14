@@ -67,7 +67,7 @@ public class DatabaseImpl implements Database {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         params.setIntParameter("maxHostConnections", MAX_HOST_CONNECTIONS);
-        
+
         logger.info("Creating new database instance. Please reuse this object for the same CouchDB database.");
 
         client = new HttpClient(params);
@@ -111,11 +111,11 @@ public class DatabaseImpl implements Database {
         return executeMethod(new DeleteMethod(urlResolver.baseUrl()));
     }
 
-    public ViewResult<Document> fetchAllDocuments() {
+    public ViewResult fetchAllDocuments() {
         return this.fetchAllDocuments(false);
     }
 
-    public ViewResult<Document> fetchAllDocuments(boolean includeDocs) {
+    public ViewResult fetchAllDocuments(boolean includeDocs) {
         return new JsonViewResult(jsonForPath(View.builder("_all_docs").includeDocs(true).toString()), this);
     }
 
@@ -131,7 +131,7 @@ public class DatabaseImpl implements Database {
         return d;
     }
 
-    public ViewResult<Document> fetchView(View v) {
+    public ViewResult fetchView(View v) {
         return new JsonViewResult(jsonForPath(v.queryString()), this);
     }
 

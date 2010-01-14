@@ -11,7 +11,7 @@ import com.coravy.couch4j.ViewResultRow;
  * @author Stefan Saasen <stefan@coravy.com>
  */
 @Immutable
-final class JsonViewResultRow implements ViewResultRow<Document> {
+final class JsonViewResultRow implements ViewResultRow {
     private final String id;
     private final String key;
     private final JSONObject json;

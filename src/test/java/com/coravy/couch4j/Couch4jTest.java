@@ -67,16 +67,16 @@ public class Couch4jTest {
 
     @Test
     public void testFetchAllDocuments() throws Exception {
-        ViewResult<Document> rows = test.fetchAllDocuments();
+        ViewResult rows = test.fetchAllDocuments();
         assertEquals(NUM_ALL_DOCS, rows.getTotalRows());
     }
 
     @Test
     public void testFetchAllDocumentsIterateViewResultRows() throws Exception {
-        ViewResult<Document> rows = test.fetchAllDocuments();
+        ViewResult rows = test.fetchAllDocuments();
 
         boolean iterate = false;
-        for (ViewResultRow<Document> row : rows) {
+        for (ViewResultRow row : rows) {
             iterate = true;
             assertNotNull(row);
             assertNotNull(row.getId());
@@ -125,11 +125,11 @@ public class Couch4jTest {
     @Test
     public void testFetchView() throws Exception {
         View v = View.builder("test/t1").build();
-        List<ViewResultRow<Document>> l = test.fetchView(v).getRows();
+        List<ViewResultRow> l = test.fetchView(v).getRows();
         assertNotNull(l);
         assertEquals(4, l.size());
 
-        ViewResultRow<Document> row = l.get(0);
+        ViewResultRow row = l.get(0);
         assertEquals(VALID_DOC_ID, row.getId());
 
         Document d = row.getDocument();

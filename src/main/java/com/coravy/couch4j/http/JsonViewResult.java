@@ -8,7 +8,6 @@ import net.sf.json.JSONObject;
 
 import com.coravy.core.annotations.Immutable;
 import com.coravy.couch4j.Database;
-import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.ViewResultRow;
 
@@ -16,10 +15,10 @@ import com.coravy.couch4j.ViewResultRow;
  * @author Stefan Saasen (stefan@coravy.com)
  */
 @Immutable
-final class JsonViewResult implements ViewResult<Document> {
+final class JsonViewResult implements ViewResult {
     private final int total_rows;
     private final int offset;
-    private final List<ViewResultRow<Document>> rows;
+    private final List<ViewResultRow> rows;
     private final Database database;
 
     private final JSONObject json;
@@ -28,7 +27,7 @@ final class JsonViewResult implements ViewResult<Document> {
         this.json = JSONObject.fromObject(jsonString);
         this.offset = json.getInt("offset");
         this.total_rows = json.getInt("total_rows");
-        rows = new ArrayList<ViewResultRow<Document>>();
+        rows = new ArrayList<ViewResultRow>();
         this.database = database;
     }
 
@@ -40,12 +39,12 @@ final class JsonViewResult implements ViewResult<Document> {
         return offset;
     }
 
-    public List<ViewResultRow<Document>> getRows() {
+    public List<ViewResultRow> getRows() {
         loadRowsIfNecessary();
         return rows;
     }
 
-    public Iterator<ViewResultRow<Document>> iterator() {
+    public Iterator<ViewResultRow> iterator() {
         loadRowsIfNecessary();
         return rows.iterator();
     }
