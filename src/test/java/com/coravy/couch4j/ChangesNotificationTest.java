@@ -19,7 +19,7 @@ import com.coravy.couch4j.Database.ChangeListener;
 public class ChangesNotificationTest {
 
     private CouchDB server;
-    private Database<Document> test;
+    private Database test;
 
     @Before
     public final void setup() {

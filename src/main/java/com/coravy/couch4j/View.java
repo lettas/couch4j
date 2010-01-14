@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map.Entry;
 
-import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
 import com.coravy.core.util.StringUtils;
@@ -85,7 +84,7 @@ public abstract class View {
 		}
 
 		public ViewBuilder endkey(final String key) {
-			params.put("endkey", key);
+			params.put("endkey", JSONUtils.quote(key));
 			return this;
 		}
 
@@ -120,7 +119,7 @@ public abstract class View {
 		}
 
 		public ViewBuilder startkey(final String key) {
-			params.put("startkey", key);
+			params.put("startkey", JSONUtils.quote(key));
 			return this;
 		}
 

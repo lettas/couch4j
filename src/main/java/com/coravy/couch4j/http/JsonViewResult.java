@@ -20,11 +20,11 @@ final class JsonViewResult implements ViewResult<Document> {
     private final int total_rows;
     private final int offset;
     private final List<ViewResultRow<Document>> rows;
-    private final Database<Document> database;
+    private final Database database;
 
     private final JSONObject json;
 
-    JsonViewResult(final String jsonString, Database<Document> database) {
+    JsonViewResult(final String jsonString, Database database) {
         this.json = JSONObject.fromObject(jsonString);
         this.offset = json.getInt("offset");
         this.total_rows = json.getInt("total_rows");

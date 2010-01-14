@@ -15,14 +15,14 @@ final class JsonViewResultRow implements ViewResultRow<Document> {
     private final String id;
     private final String key;
     private final JSONObject json;
-    private final Database<Document> database;
+    private final Database database;
 
     // private final JSONObject json;
 
     /**
      * @param next
      */
-    JsonViewResultRow(JSONObject json, Database<Document> database) {
+    JsonViewResultRow(JSONObject json, Database database) {
         this.json = json;
         this.key = json.getString("key");
         this.id = json.getString("id");

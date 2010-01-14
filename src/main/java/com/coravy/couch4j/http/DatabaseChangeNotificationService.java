@@ -26,7 +26,6 @@ import org.apache.commons.httpclient.params.HttpClientParams;
 
 import com.coravy.core.annotations.Immutable;
 import com.coravy.couch4j.Database;
-import com.coravy.couch4j.Document;
 import com.coravy.couch4j.Database.ChangeEvent;
 import com.coravy.couch4j.Database.ChangeListener;
 import com.coravy.couch4j.exceptions.Couch4JException;
@@ -44,9 +43,9 @@ final class DatabaseChangeNotificationService {
 
     private final HttpClient client;
     private final UrlResolver urlResolver;
-    private final Database<Document> database;
+    private final Database database;
 
-    DatabaseChangeNotificationService(final HttpClient c, final UrlResolver urlResolver, Database<Document> database) {
+    DatabaseChangeNotificationService(final HttpClient c, final UrlResolver urlResolver, Database database) {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         this.client = new HttpClient(params);

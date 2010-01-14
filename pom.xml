@@ -4,7 +4,7 @@
 	<groupId>com.coravy</groupId>
 	<artifactId>couch4j</artifactId>
 	<packaging>jar</packaging>
-	<version>0.7.3</version>
+	<version>0.7.5-SNAPSHOT</version>
 	<name>couch4j</name>
 	<url>http://dev.coravy.com/wiki/display/OpenSource/couch4j</url>
 	<ciManagement>

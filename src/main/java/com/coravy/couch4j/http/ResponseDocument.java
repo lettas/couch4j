@@ -14,7 +14,7 @@ import com.coravy.couch4j.Document;
 /**
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public class ResponseDocument extends Document implements DatabaseAware<Document> {
+public class ResponseDocument extends Document implements DatabaseAware {
     private final String _id;
     private final String _rev;
     private boolean isAvailable;
@@ -22,7 +22,7 @@ public class ResponseDocument extends Document implements DatabaseAware<Document
     private JSONObject attachments;
     private JSONObject jsonObject;
 
-    private Database<Document> database;
+    private Database database;
 
     public ResponseDocument(final String id, final String rev) {
         if (null == id || null == rev) {
@@ -116,11 +116,11 @@ public class ResponseDocument extends Document implements DatabaseAware<Document
         return Collections.emptyList();
     }
 
-    public Database<Document> getDatabase() {
+    public Database getDatabase() {
         return database;
     }
 
-    public void setDatabase(Database<Document> d) {
+    public void setDatabase(Database d) {
         this.database = d;
     }
 

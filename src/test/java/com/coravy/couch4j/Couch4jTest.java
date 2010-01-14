@@ -32,16 +32,16 @@ public class Couch4jTest {
     static final String TEST_DATABASE_NAME = "couch4j";
 
     private static final int NUM_ALL_DOCS = 5;
-    
+
     private CouchDB server;
-    private Database<Document> test;
-    private Database<Document> testEmpty;
-    
+    private Database test;
+    private Database testEmpty;
+
     static CouchDB testDbInstance() {
         return CouchDB.localServerInstance(); // CouchDB 0.9.0
-        //return new CouchDB("localhost", 59810); // CouchDB 0.10.1
+        // return new CouchDB("localhost", 59810); // CouchDB 0.10.1
     }
-    
+
     @Before
     public void setUp() throws Exception {
 
@@ -70,11 +70,11 @@ public class Couch4jTest {
         ViewResult<Document> rows = test.fetchAllDocuments();
         assertEquals(NUM_ALL_DOCS, rows.getTotalRows());
     }
-    
+
     @Test
     public void testFetchAllDocumentsIterateViewResultRows() throws Exception {
         ViewResult<Document> rows = test.fetchAllDocuments();
-        
+
         boolean iterate = false;
         for (ViewResultRow<Document> row : rows) {
             iterate = true;
@@ -87,7 +87,7 @@ public class Couch4jTest {
         }
         assertTrue("Should iterate over all rows in the ViewResult", iterate);
     }
-    
+
     @Test
     public void testFetchDocumentById() throws Exception {
         Document d = test.fetchDocument(VALID_DOC_ID);

@@ -53,7 +53,7 @@ import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
  * @author Stefan Saasen (stefan@coravy.com)
  */
 @ThreadSafe
-public class DatabaseImpl implements Database<Document> {
+public class DatabaseImpl implements Database {
     private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
     private static final int MAX_HOST_CONNECTIONS = 10;
 

@@ -13,7 +13,7 @@ import com.coravy.couch4j.exceptions.DocumentNotFoundException;
  * 
  * @author Stefan Saasen (stefan@coravy.com)
  */
-public interface Database<T> {
+public interface Database {
 
     /**
      * @couchdb 0.10.?
@@ -42,27 +42,27 @@ public interface Database<T> {
      * @return
      * @throws DocumentNotFoundException
      */
-    T fetchDocument(String string);
+    Document fetchDocument(String string);
 
-    ServerResponse saveDocument(T doc);
+    ServerResponse saveDocument(Document doc);
 
     ServerResponse saveDocument(Map<String, Object> doc);
 
     ServerResponse saveDocument(String json);
 
-    ServerResponse bulkSave(Collection<T> docs);
+    ServerResponse bulkSave(Collection<Document> docs);
 
-    ViewResult<T> fetchAllDocuments();
+    ViewResult fetchAllDocuments();
 
-    ViewResult<T> fetchAllDocuments(boolean includeDocs);
+    ViewResult fetchAllDocuments(boolean includeDocs);
 
-    ViewResult<T> fetchView(View v);
+    ViewResult fetchView(View v);
 
     ServerResponse delete();
 
     void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException;
 
-    ServerResponse deleteDocument(T doc);
+    ServerResponse deleteDocument(Document doc);
 
     /**
      * Disconnect this database client. After calling {@code disconnect} the

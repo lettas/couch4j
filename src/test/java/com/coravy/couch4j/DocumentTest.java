@@ -10,7 +10,7 @@ import org.junit.Test;
 
 public class DocumentTest {
     private CouchDB server;
-    private Database<Document> test;
+    private Database test;
 
     @Before
     public void setUp() throws Exception {

@@ -46,10 +46,12 @@ public class ViewBuilderTest {
         assertEquals("_design/design/_view/test?key=%22%2Fweb%2Ftest.jsp%22", v.queryString());
     }
 //
-//    @Test
-//    public final void testEndkey() {
-//        fail("Not yet implemented");
-//    }
+    @Test
+    public final void testEndkey() {
+        final String key = "/web/test.jsp";
+        View v = View.builder("design/test").endkey(key).build();
+        assertEquals("_design/design/_view/test?endkey=%22%2Fweb%2Ftest.jsp%22", v.queryString());
+    }
 //
 //    @Test
 //    public final void testDescending() {
@@ -81,14 +83,17 @@ public class ViewBuilderTest {
 //        fail("Not yet implemented");
 //    }
 //
-//    @Test
-//    public final void testStartkeyString() {
-//        fail("Not yet implemented");
-//    }
-//
+    @Test
+    public final void testStartkeyString() {
+        final String key = "/web/test.jsp";
+        View v = View.builder("design/test").startkey(key).build();
+        assertEquals("_design/design/_view/test?startkey=%22%2Fweb%2Ftest.jsp%22", v.queryString());
+    }
+
 //    @Test
 //    public final void testStartkeyStringArray() {
-//        fail("Not yet implemented");
+//        View v = View.builder("design/test").startkey("1", "2").build();
+//        assertEquals("_design/design/_view/test?startkey=[%221%22,%222%22]", v.queryString());
 //    }
 //
 //    @Test

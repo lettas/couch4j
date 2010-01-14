@@ -23,7 +23,7 @@ class AttachmentImpl implements Attachment {
     private final String name;
     private final Document doc;
 
-    private Database<Document> database;
+    private Database database;
 
     @SuppressWarnings("unchecked")
     AttachmentImpl(JSONObject json, String name, Document doc) {
@@ -32,8 +32,8 @@ class AttachmentImpl implements Attachment {
         stub = json.getBoolean("stub");
         contentType = json.getString("content_type");
         length = json.getLong("length");
-        if (doc instanceof DatabaseAware<?>) {
-            database = ((DatabaseAware<Document>) doc).getDatabase();
+        if (doc instanceof DatabaseAware) {
+            database = ((DatabaseAware) doc).getDatabase();
         }
     }
 
