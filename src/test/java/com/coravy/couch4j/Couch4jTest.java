@@ -135,6 +135,14 @@ public class Couch4jTest {
         Document d = row.getDocument();
         assertDocumentTest1(d);
     }
+    
+    @Test
+    public void testFetchEmptyView() throws Exception {
+        View v = View.builder("test/empty").build();
+        List<ViewResultRow> l = test.fetchView(v).getRows();
+        assertNotNull(l);
+        assertEquals(0, l.size());
+    }
 
     @Test
     public void testSaveExistingDocument() throws Exception {

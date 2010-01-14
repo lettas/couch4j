@@ -25,10 +25,10 @@ final class JsonViewResult implements ViewResult {
 
     JsonViewResult(final String jsonString, Database database) {
         this.json = JSONObject.fromObject(jsonString);
-        this.offset = json.getInt("offset");
-        this.total_rows = json.getInt("total_rows");
         rows = new ArrayList<ViewResultRow>();
         this.database = database;
+        this.total_rows = json.getInt("total_rows");
+        this.offset = (total_rows > 0) ? json.getInt("offset") : 0;
     }
 
     public int getTotalRows() {
