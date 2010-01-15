@@ -6,14 +6,16 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CouchDBTest {
+public class CouchDBTest extends Couch4jBase {
 
-    private CouchDB server;
     private Database test;
+
+    public CouchDBTest(CouchDB server) {
+        super(server);
+    }
 
     @Before
     public void setUp() throws Exception {
-        server = Couch4jTest.testDbInstance();
         test = server.getDatabase(Couch4jTest.TEST_DATABASE_NAME);
         assertNotNull(test);
     }

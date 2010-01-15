@@ -7,15 +7,16 @@ import net.sf.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
 
+public class DocumentTest extends Couch4jBase {
 
-public class DocumentTest {
-    private CouchDB server;
     private Database test;
+
+    public DocumentTest(CouchDB server) {
+        super(server);
+    }
 
     @Before
     public void setUp() throws Exception {
-        server = Couch4jTest.testDbInstance();
-        
         test = server.getDatabase("couch4j");
         assertNotNull(test);
     }
@@ -26,8 +27,7 @@ public class DocumentTest {
         JSONObject json = JSONObject.fromObject(d.toJson());
         assertEquals(d.toJson(), json.toString());
     }
-    
-    
+
     @Test
     public void testDocumentToJSONObject() throws Exception {
         Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);

@@ -1,4 +1,4 @@
-package com.coravy.couch4j;
+package com.coravy.couch4j.couchdb0_10_1;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -12,6 +12,9 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
+import com.coravy.couch4j.CouchDB;
+import com.coravy.couch4j.Database;
+import com.coravy.couch4j.Document;
 import com.coravy.couch4j.Database.ChangeEvent;
 import com.coravy.couch4j.Database.ChangeListener;
 
@@ -23,11 +26,10 @@ public class ChangesNotificationTest {
 
     @Before
     public final void setup() {
-        server = Couch4jTest.testDbInstance();
+        server = new CouchDB("localhost", 59810);
         test = server.getDatabase("couch4j-changes");
         assertNotNull(test);
-        
-        
+
         test.saveDocument(new Document("test-000"));
         test.saveDocument(new Document("test-001"));
         test.saveDocument(new Document("test-002"));
@@ -42,15 +44,16 @@ public class ChangesNotificationTest {
     @Test
     public void testReceiveChangesNotifications() throws Exception {
         final List<ChangeEvent> receivedChangeEvents = new ArrayList<ChangeEvent>();
-        
+
         test.addChangeListener(new ChangeListener() {
             public void onChange(ChangeEvent event) {
                 receivedChangeEvents.add(event);
             }
         });
-        
-        Thread.sleep(1000); // Wait for the _changes connection to be established...
-        
+
+        Thread.sleep(1000); // Wait for the _changes connection to be
+                            // established...
+
         final int NEW = 5;
         for (int i = 0; i < NEW; i++) {
             test.saveDocument(new Document("test-" + i));
@@ -58,42 +61,43 @@ public class ChangesNotificationTest {
         Thread.sleep(1000);
         assertEquals(NEW, receivedChangeEvents.size());
     }
-    
+
     @Test
     public void testUnsubscribeFromChangesNotifications() throws Exception {
         // Before
         for (int i = 0; i < 3; i++) {
             test.saveDocument(new Document("test-1-" + i));
         }
-        
+
         final List<ChangeEvent> receivedChangeEvents = new ArrayList<ChangeEvent>();
         final ChangeListener l = new ChangeListener() {
             public void onChange(ChangeEvent event) {
                 receivedChangeEvents.add(event);
             }
         };
-        
+
         test.addChangeListener(l);
-        
-        Thread.sleep(1000); // Wait for the _changes connection to be established...
-        
+
+        Thread.sleep(1000); // Wait for the _changes connection to be
+                            // established...
+
         // While subscribed
         for (int i = 0; i < 7; i++) {
             test.saveDocument(new Document("test-2-" + i));
         }
 
         test.removeChangeListener(l);
-        
+
         // After unsubscribing
         for (int i = 0; i < 11; i++) {
             test.saveDocument(new Document("test-3-" + i));
         }
-        
+
         Thread.sleep(1000);
-        
+
         // We should have received 7 notifications...
-        //assertEquals(7, receivedChangeEvents.size());
-        for(ChangeEvent event : receivedChangeEvents) {
+        // assertEquals(7, receivedChangeEvents.size());
+        for (ChangeEvent event : receivedChangeEvents) {
             assertTrue(event.getId().startsWith("test-2-"));
         }
     }

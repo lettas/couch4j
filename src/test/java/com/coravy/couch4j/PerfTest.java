@@ -4,21 +4,25 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
-
 /**
  * Run on the same machine
  * 
  * <p>
  * Check established connections:
+ * 
  * <pre>
  * sudo netstat -tap tcp
  * </pre>
  */
-public class PerfTest {
-    
-    @Test(timeout=7000) // ~ 2700 ms on a 3.06 Core 2 Duo
+public class PerfTest extends Couch4jBase {
+
+    public PerfTest(CouchDB server) {
+        super(server);
+    }
+
+    @Test(timeout = 7000)
+    // ~ 2700 ms on a 3.06 Core 2 Duo
     public void fetchMultipleDocuments() throws Exception {
-        CouchDB server = Couch4jTest.testDbInstance();
         Database test = server.getDatabase("couch4j");
         final int UPPER = 1000;
         long start = System.currentTimeMillis();

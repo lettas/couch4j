@@ -1,6 +1,9 @@
 package com.coravy.couch4j;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -17,13 +20,16 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.junit.runners.Parameterized;
 
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Database.StreamContext;
 import com.coravy.couch4j.exceptions.DocumentNotFoundException;
 import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
 
-public class Couch4jTest {
+@RunWith(Parameterized.class)
+public class Couch4jTest extends Couch4jBase {
 
     static final String VALID_DOC_ID = "test1";
     static final String NEW_DOCUMENT_ID = "new_document";
@@ -33,20 +39,15 @@ public class Couch4jTest {
 
     private static final int NUM_ALL_DOCS = 5;
 
-    private CouchDB server;
     private Database test;
     private Database testEmpty;
 
-    static CouchDB testDbInstance() {
-        return CouchDB.localServerInstance(); // CouchDB 0.9.0
-        // return new CouchDB("localhost", 59810); // CouchDB 0.10.1
+    public Couch4jTest(CouchDB server) {
+        super(server);
     }
 
     @Before
     public void setUp() throws Exception {
-
-        server = testDbInstance();
-
         test = server.getDatabase(TEST_DATABASE_NAME);
         assertNotNull(test);
 
