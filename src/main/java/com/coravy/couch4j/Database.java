@@ -1,7 +1,9 @@
 package com.coravy.couch4j;
 
+import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +54,10 @@ public interface Database {
     ServerResponse saveDocument(Map<String, ? super Object> doc);
 
     ServerResponse saveDocument(String json);
+
+    ServerResponse saveDocument(Serializable json);
+
+    ServerResponse saveDocument(Externalizable json);
 
     ServerResponse bulkSave(Collection<Document> docs);
 
