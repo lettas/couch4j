@@ -90,7 +90,7 @@ public class DatabaseImpl implements Database {
                 }
             }
         } catch (IOException e) {
-            logger.log(Level.SEVERE, "Unable to connect to database: " + name);
+            throw new Couch4JException("Unable to connect to database: " + name);
         } finally {
             if (null != m) {
                 m.releaseConnection();
@@ -161,7 +161,7 @@ public class DatabaseImpl implements Database {
         return response;
     }
 
-    public ServerResponse saveDocument(Map<String, Object> doc) {
+    public ServerResponse saveDocument(Map<String, ? super Object> doc) {
         EntityEnclosingMethod method;
         final String id = (String) (doc.get("id") != null ? doc.get("id") : doc.get("_id"));
         if (null == id) {
@@ -357,7 +357,7 @@ public class DatabaseImpl implements Database {
                 return json.getInt("doc_count");
             }
 
-            public int getDocDelCountr() {
+            public int getDocDelCount() {
                 return json.getInt("doc_del_count");
             }
 

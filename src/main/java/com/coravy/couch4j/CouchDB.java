@@ -22,10 +22,13 @@ public class CouchDB {
             if (instances.containsKey(databaseName)) {
                 return instances.get(databaseName);
             }
-            Database d = new DatabaseImpl(this, databaseName);
-            instances.put(databaseName, d);
-            return d;
         }
+
+        Database d = new DatabaseImpl(this, databaseName);
+        synchronized (instances) {
+            instances.put(databaseName, d);
+        }
+        return d;
     }
 
     private final static String DEFAULT_HOST = "localhost";

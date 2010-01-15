@@ -10,7 +10,7 @@ public interface DatabaseInfo {
 
     int getDocCount();
 
-    int getDocDelCountr();
+    int getDocDelCount();
 
     int getUpdateSeq();
 

@@ -20,18 +20,21 @@ public interface Database {
      */
     public interface ChangeEvent {
         boolean isDeleted();
+
         String getId();
+
         String getSeq();
+
         List<String> changeRevs();
     }
-    
+
     /**
      * @couchdb 0.10.?
      */
     public interface ChangeListener {
         void onChange(ChangeEvent event);
     }
-    
+
     public interface StreamContext {
         void withInputStream(InputStream is) throws IOException;
     }
@@ -46,7 +49,7 @@ public interface Database {
 
     ServerResponse saveDocument(Document doc);
 
-    ServerResponse saveDocument(Map<String, Object> doc);
+    ServerResponse saveDocument(Map<String, ? super Object> doc);
 
     ServerResponse saveDocument(String json);
 
@@ -74,16 +77,16 @@ public interface Database {
      * @return The name of the database
      */
     String getName();
-    
+
     /**
      * @couchdb 0.10.?
      */
     void addChangeListener(ChangeListener listener);
-    
+
     /**
      * @couchdb 0.10.?
      */
     void removeChangeListener(ChangeListener listener);
-    
+
     DatabaseInfo getDatabaseInfo();
 }
