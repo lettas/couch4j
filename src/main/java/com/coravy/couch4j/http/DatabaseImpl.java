@@ -63,7 +63,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import com.coravy.core.annotations.ThreadSafe;
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Attachment;
-import com.coravy.couch4j.CouchDB;
+import com.coravy.couch4j.Server;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.DatabaseInfo;
 import com.coravy.couch4j.Document;
@@ -89,7 +89,7 @@ public class DatabaseImpl implements Database {
     private DatabaseChangeNotificationService changesService;
     private final UrlResolver urlResolver;
 
-    public DatabaseImpl(CouchDB server, String name) {
+    public DatabaseImpl(Server server, String name) {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         params.setIntParameter("maxHostConnections", MAX_HOST_CONNECTIONS);

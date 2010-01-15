@@ -29,11 +29,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class CouchDBTest extends Couch4jBase {
+public class ServerTest extends Couch4jBase {
 
     private Database test;
 
-    public CouchDBTest(CouchDB server) {
+    public ServerTest(Server server) {
         super(server);
     }
 
@@ -55,23 +55,23 @@ public class CouchDBTest extends Couch4jBase {
 
     @Test
     public void testFactoryMethod() throws Exception {
-        server = CouchDB.localServerInstance();
+        server = Server.localServerInstance();
         assertEquals(5984, server.getPort());
         assertEquals("localhost", server.getHost());
 
-        CouchDB server2 = new CouchDB();
+        Server server2 = new Server();
         assertEquals(server, server2);
     }
 
     @Test
     public void testFactoryMethodHost() throws Exception {
-        server = CouchDB.serverInstance("localhost");
+        server = Server.serverInstance("localhost");
         assertEquals(5984, server.getPort());
     }
 
     @Test
     public void testFactoryMethodsHostPort() throws Exception {
-        server = CouchDB.serverInstance("localhost", 1234);
+        server = Server.serverInstance("localhost", 1234);
     }
 
 }

@@ -42,20 +42,20 @@ public abstract class Couch4jBase {
 
     protected final static Logger logger = LoggerFactory.getLogger(Couch4jBase.class);
     
-    protected CouchDB server;
+    protected Server server;
 
-    public Couch4jBase(CouchDB server) {
+    public Couch4jBase(Server server) {
         this.server = server;
     }
 
     @Parameterized.Parameters
-    public static Collection<CouchDB[]> testDatabases() {
-        Collection<CouchDB[]> toTest = Arrays.asList(new CouchDB[][] { { CouchDB.localServerInstance() },
-                { new CouchDB("localhost", 59810) } });
+    public static Collection<Server[]> testDatabases() {
+        Collection<Server[]> toTest = Arrays.asList(new Server[][] { { Server.localServerInstance() },
+                { new Server("localhost", 59810) } });
 
-        Collection<CouchDB[]> instancesRunning = new ArrayList<CouchDB[]>();
-        for (CouchDB[] param : toTest) {
-            CouchDB server = param[0];
+        Collection<Server[]> instancesRunning = new ArrayList<Server[]>();
+        for (Server[] param : toTest) {
+            Server server = param[0];
             try {
                 server.getDatabase("couch4j");
                 instancesRunning.add(param);

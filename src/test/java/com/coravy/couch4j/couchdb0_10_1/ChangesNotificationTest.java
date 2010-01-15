@@ -35,7 +35,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import com.coravy.couch4j.CouchDB;
+import com.coravy.couch4j.Server;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.Database.ChangeEvent;
@@ -44,12 +44,12 @@ import com.coravy.couch4j.Database.ChangeListener;
 @Ignore // FIXME add this back in
 public class ChangesNotificationTest {
 
-    private CouchDB server;
+    private Server server;
     private Database test;
 
     @Before
     public final void setup() {
-        server = new CouchDB("localhost", 59810);
+        server = new Server("localhost", 59810);
         test = server.getDatabase("couch4j-changes");
         assertNotNull(test);
 

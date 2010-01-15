@@ -30,7 +30,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import com.coravy.couch4j.CouchDB;
+import com.coravy.couch4j.Server;
 
 /**
  * @author Stefan Saasen
@@ -39,7 +39,7 @@ class UrlResolverImpl implements UrlResolver {
 
     private String baseUrl;
 
-    UrlResolverImpl(CouchDB server, String databaseName) {
+    UrlResolverImpl(Server server, String databaseName) {
         StringBuilder sb = new StringBuilder();
         sb.append("http");
         /*
