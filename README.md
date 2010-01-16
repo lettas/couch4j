@@ -41,3 +41,9 @@ Maven dependencies
 
 [wiki]: http://dev.coravy.com/wiki/display/opensource/couch4j  "couch4j documentation"
 [quickstart]: http://dev.coravy.com/wiki/display/opensource/couch4j+Quick+Start "5 minute quickstart"
+
+
+License
+-------
+
+The MIT License - see License.txt
