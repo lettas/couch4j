@@ -24,7 +24,6 @@
 package com.coravy.couch4j;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.junit.runner.RunWith;
@@ -35,6 +34,19 @@ import org.slf4j.LoggerFactory;
 import com.coravy.couch4j.exceptions.Couch4JException;
 
 /**
+ * For the test to work at least one running CouchDB instance needs to be there.
+ * <p>
+ * List of ports used in the test case:
+ * <ul>
+ *      <li><strike>5080,      // CouchDB 0.8.0</strike></li>
+ *      <li><strike>5081,      // CouchDB 0.8.1</strike></li>
+ *      <li>5090,      // CouchDB 0.9.0  </li>
+ *      <li>5091,      // CouchDB 0.9.1  </li>
+ *      <li>5092,      // CouchDB 0.9.2  </li>
+ *      <li>50100,     // CouchDB 0.10.0 </li>
+ *      <li>50101      // CouchDB 0.10.1 </li>
+ * </ul>
+ * 
  * @author Stefan Saasen
  */
 @RunWith(Parameterized.class)
@@ -48,20 +60,31 @@ public abstract class Couch4jBase {
         this.server = server;
     }
 
+    private static final int[] PORTS = {
+//        5080,      // CouchDB 0.8.0
+//        5081,      // CouchDB 0.8.1
+        5984,      // CouchDB 0.9.0 (default port)
+        5090,      // CouchDB 0.9.0
+        5091,      // CouchDB 0.9.1
+        5092,      // CouchDB 0.9.2
+        50100,     // CouchDB 0.10.0
+        50101      // CouchDB 0.10.1
+    };
+    
     @Parameterized.Parameters
     public static Collection<Server[]> testDatabases() {
-        Collection<Server[]> toTest = Arrays.asList(new Server[][] { { Server.localServerInstance() },
-                { new Server("localhost", 59810) } });
-
         Collection<Server[]> instancesRunning = new ArrayList<Server[]>();
-        for (Server[] param : toTest) {
-            Server server = param[0];
+        for (int port : PORTS) {
+            Server server = Server.serverInstance("localhost", port);
             try {
                 server.getDatabase("couch4j");
-                instancesRunning.add(param);
+                instancesRunning.add(new Server[]{server});
             } catch (Couch4JException ce) {
                 logger.warn("Ignoring {} - connection failed.", server);
             }
+        }
+        if(instancesRunning.size() < 1) {
+            throw new AssertionError("Unable to run tests without at least one running CouchDB instance.");
         }
         return instancesRunning;
     }
