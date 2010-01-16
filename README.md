@@ -1,6 +1,8 @@
 couch4j
 =======
 
+!This is **ALPHA software** - the API will most likely change - wait for a 1.0 release before using couch4j in production!
+
 couch4j is an easy to use and straightforward client library for Java.
 
 Documentation
