@@ -15,7 +15,7 @@ Quick start tutorial:
 Download
 --------
 
-TODO Link
+[http://github.com/juretta/couch4j/downloads][download]
 
 
 Maven dependencies
@@ -38,12 +38,12 @@ Maven dependencies
 	    </snapshots>
 	</repository>
 	
-
-[wiki]: http://dev.coravy.com/wiki/display/opensource/couch4j  "couch4j documentation"
-[quickstart]: http://dev.coravy.com/wiki/display/opensource/couch4j+Quick+Start "5 minute quickstart"
-
-
 License
 -------
 
-The MIT License - see License.txt
+The MIT License - see *License.txt*
+
+
+[wiki]: http://dev.coravy.com/wiki/display/opensource/couch4j  "couch4j documentation"
+[quickstart]: http://dev.coravy.com/wiki/display/opensource/couch4j+Quick+Start "5 minute quickstart"
+[download]: http://github.com/juretta/couch4j/downloads "Downloads"
