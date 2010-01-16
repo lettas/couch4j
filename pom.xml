@@ -32,6 +32,15 @@
 						<encoding>UTF-8</encoding>
 					</configuration>
 				</plugin>
+				<plugin>
+					<artifactId>maven-assembly-plugin</artifactId>
+					<version>2.2-beta-5</version>
+					<configuration>
+						<descriptorRefs>
+							<descriptorRef>bin</descriptorRef>
+						</descriptorRefs>
+					</configuration>
+				</plugin>
 			</plugins>
 		</pluginManagement>
 		<resources>
