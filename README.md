@@ -1,7 +1,7 @@
 couch4j
 =======
 
-couch4j is am easy to use and starighforward client library for Java.
+couch4j is an easy to use and straightforward client library for Java.
 
 Documentation
 -------------
