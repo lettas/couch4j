@@ -54,9 +54,9 @@ public abstract class Couch4jBase {
 
     protected final static Logger logger = LoggerFactory.getLogger(Couch4jBase.class);
     
-    protected Server server;
+    protected CouchDB server;
 
-    public Couch4jBase(Server server) {
+    public Couch4jBase(CouchDB server) {
         this.server = server;
     }
 
@@ -72,13 +72,13 @@ public abstract class Couch4jBase {
     };
     
     @Parameterized.Parameters
-    public static Collection<Server[]> testDatabases() {
-        Collection<Server[]> instancesRunning = new ArrayList<Server[]>();
+    public static Collection<CouchDB[]> testDatabases() {
+        Collection<CouchDB[]> instancesRunning = new ArrayList<CouchDB[]>();
         for (int port : PORTS) {
-            Server server = Server.serverInstance("localhost", port);
+            CouchDB server = CouchDB.serverInstance("localhost", port);
             try {
                 server.getDatabase("couch4j");
-                instancesRunning.add(new Server[]{server});
+                instancesRunning.add(new CouchDB[]{server});
             } catch (Couch4JException ce) {
                 logger.warn("Ignoring {} - connection failed.", server);
             }

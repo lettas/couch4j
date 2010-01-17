@@ -33,7 +33,7 @@ public class ServerTest extends Couch4jBase {
 
     private Database test;
 
-    public ServerTest(Server server) {
+    public ServerTest(CouchDB server) {
         super(server);
     }
 
@@ -55,23 +55,23 @@ public class ServerTest extends Couch4jBase {
 
     @Test
     public void testFactoryMethod() throws Exception {
-        server = Server.localServerInstance();
+        server = CouchDB.localServerInstance();
         assertEquals(5984, server.getPort());
         assertEquals("localhost", server.getHost());
 
-        Server server2 = new Server();
+        CouchDB server2 = new CouchDB();
         assertEquals(server, server2);
     }
 
     @Test
     public void testFactoryMethodHost() throws Exception {
-        server = Server.serverInstance("localhost");
+        server = CouchDB.serverInstance("localhost");
         assertEquals(5984, server.getPort());
     }
 
     @Test
     public void testFactoryMethodsHostPort() throws Exception {
-        server = Server.serverInstance("localhost", 1234);
+        server = CouchDB.serverInstance("localhost", 1234);
     }
 
 }

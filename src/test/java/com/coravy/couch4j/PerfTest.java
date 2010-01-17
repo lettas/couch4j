@@ -39,7 +39,7 @@ import org.junit.Test;
  */
 public class PerfTest extends Couch4jBase {
 
-    public PerfTest(Server server) {
+    public PerfTest(CouchDB server) {
         super(server);
     }
 

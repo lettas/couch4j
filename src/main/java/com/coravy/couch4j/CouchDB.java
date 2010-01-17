@@ -36,7 +36,7 @@ import com.coravy.couch4j.http.DatabaseImpl;
  * @author Stefan Saasen
  */
 @ThreadSafe
-public class Server {
+public class CouchDB {
 
     private Map<String, Database> instances = new HashMap<String, Database>();
 
@@ -57,26 +57,26 @@ public class Server {
     private final static String DEFAULT_HOST = "localhost";
     private final static int DEFAULT_PORT = 5984;
 
-    public static Server localServerInstance() {
+    public static CouchDB localServerInstance() {
         return serverInstance(DEFAULT_HOST, DEFAULT_PORT);
     }
 
-    public static Server serverInstance(final String host, int port) {
-        return new Server(host, port);
+    public static CouchDB serverInstance(final String host, int port) {
+        return new CouchDB(host, port);
     }
 
-    public static Server serverInstance(final String host) {
+    public static CouchDB serverInstance(final String host) {
         return serverInstance(host, DEFAULT_PORT);
     }
 
     private final String host;
     private final int port;
 
-    public Server() {
+    public CouchDB() {
         this(DEFAULT_HOST, DEFAULT_PORT);
     }
 
-    public Server(final String host, final int port) {
+    public CouchDB(final String host, final int port) {
         this.host = host;
         this.port = port;
     }
@@ -131,9 +131,9 @@ public class Server {
             return true;
         if (obj == null)
             return false;
-        if (!(obj instanceof Server))
+        if (!(obj instanceof CouchDB))
             return false;
-        Server other = (Server) obj;
+        CouchDB other = (CouchDB) obj;
         if (host == null) {
             if (other.host != null)
                 return false;

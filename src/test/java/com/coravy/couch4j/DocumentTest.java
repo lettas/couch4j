@@ -34,7 +34,7 @@ public class DocumentTest extends Couch4jBase {
 
     private Database test;
 
-    public DocumentTest(Server server) {
+    public DocumentTest(CouchDB server) {
         super(server);
     }
 

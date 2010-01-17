@@ -72,6 +72,8 @@ public interface Database {
      */
     Document fetchDocument(String string);
 
+    ServerResponse saveAttachment(Document doc, String name, InputStream data);
+    
     ServerResponse saveDocument(Document doc);
 
     ServerResponse saveDocument(Map<String, ? super Object> doc);
