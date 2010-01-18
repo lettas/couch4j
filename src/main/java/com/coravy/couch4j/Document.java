@@ -34,7 +34,7 @@ import net.sf.json.JSONObject;
  */
 public class Document implements JsonExportable {
 
-    private final Map attributes;
+    private final Map<? super Object, ? super Object> attributes;
 
     public Document() {
         this.attributes = new HashMap<Object, Object>();
@@ -46,11 +46,8 @@ public class Document implements JsonExportable {
     }
 
     public Document(Map<? extends Object, ? extends Object> attributes) {
-        if (null != attributes) {
-            this.attributes = attributes;
-        } else {
-            this.attributes = new HashMap<Object, Object>();
-        }
+        this.attributes = new HashMap<Object, Object>();
+        this.attributes.putAll(attributes);
     }
 
     public String getId() {

@@ -25,6 +25,10 @@ package com.coravy.couch4j;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import net.sf.json.JSONObject;
 
 import org.junit.Before;
@@ -56,5 +60,13 @@ public class DocumentTest extends Couch4jBase {
         Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
         JSONObject json = d.toJSONObject();
         assertEquals(d.getId(), json.getString("_id"));
+    }
+    
+    
+    @Test
+    public void testDocumentConstructorMap() throws Exception {
+        Map<String,String> map = new HashMap<String,String>();
+        map.put("k1", "value1");
+        Document d = new Document(map);
     }
 }
