@@ -57,13 +57,12 @@ import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.PutMethod;
 import org.apache.commons.httpclient.methods.RequestEntity;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.params.HttpClientParams;
 import org.apache.commons.httpclient.params.HttpMethodParams;
 
 import com.coravy.core.annotations.ThreadSafe;
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Attachment;
-import com.coravy.couch4j.CouchDb;
+import com.coravy.couch4j.CouchDbClient;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.DatabaseInfo;
 import com.coravy.couch4j.Document;
@@ -79,40 +78,35 @@ import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
  * @author Stefan Saasen
  */
 @ThreadSafe
-class DatabaseImpl implements Database {
+public class DatabaseImpl implements Database {
     private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
-    private static final int MAX_HOST_CONNECTIONS = 10;
 
+    private final HttpConnectionManager client;
     private final String name;
-    private final HttpClient client;
 
     private DatabaseChangeNotificationService changesService;
     private final UrlResolver urlResolver;
+    private final CouchDbClient couchDb;
+    
+    public DatabaseImpl(CouchDbClient couchDb, HttpClient ht, String databaseName) {
+        this.couchDb = couchDb;
+        this.client = new HttpConnectionManager(ht);
+        this.name = databaseName;
 
-    public DatabaseImpl(CouchDb server, String name) {
-        HttpClientParams params = new HttpClientParams();
-        params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
-        params.setIntParameter("maxHostConnections", MAX_HOST_CONNECTIONS);
-
-        logger.info("Creating new database instance. Please reuse this object for the same CouchDB database.");
-
-        client = new HttpClient(params);
-        this.name = name;
-
-        urlResolver = new UrlResolverImpl(server, name);
-        changesService = new DatabaseChangeNotificationService(client, urlResolver, this);
+        this.urlResolver = new UrlResolverImpl(couchDb, databaseName);
+        changesService = new DatabaseChangeNotificationService(this.client.getHttpClient(), urlResolver, this);
 
         // Check if the database exists
         HttpMethod m = null;
         try {
             m = new GetMethod(urlResolver.baseUrl());
-            int statusCode = client.executeMethod(m);
+            int statusCode = ht.executeMethod(m);
             if (statusCode == HttpStatus.SC_NOT_FOUND) {
                 m = new PutMethod(urlResolver.baseUrl());
-                statusCode = client.executeMethod(m);
+                statusCode = ht.executeMethod(m);
                 if (statusCode != HttpStatus.SC_CREATED) {
                     logger.log(Level.WARNING, String.format("Failed to create the database %s on %s. "
-                            + "Failed with status code %d", name, server, statusCode));
+                            + "Failed with status code %d", name, couchDb, statusCode));
                 }
             }
         } catch (IOException e) {
@@ -134,7 +128,7 @@ class DatabaseImpl implements Database {
     }
 
     public ServerResponse delete() {
-        return executeMethod(new DeleteMethod(urlResolver.baseUrl()));
+        return client.executeMethod(new DeleteMethod(urlResolver.baseUrl()));
     }
 
     public ViewResult fetchAllDocuments() {
@@ -156,7 +150,7 @@ class DatabaseImpl implements Database {
         d.setDatabase(this);
         return d;
     }
-    
+
     public Document fetchDocument(String docId, String rev) {
         String url = urlForPath(docId, map("rev", rev));
         char[] response = getResponseForUrl(url);
@@ -189,7 +183,7 @@ class DatabaseImpl implements Database {
         } catch (UnsupportedEncodingException e) {
             throw new Couch4JException(e);
         }
-        ServerResponse response = executeMethod(method);
+        ServerResponse response = client.executeMethod(method);
         doc.put("_id", response.getId());
         doc.put("_rev", response.getRev());
         return response;
@@ -236,7 +230,7 @@ class DatabaseImpl implements Database {
             throw new Couch4JException(e);
         }
         method.setRequestEntity(re);
-        return executeMethod(method);
+        return client.executeMethod(method);
     }
 
     private char[] getResponseForUrl(final String url) {
@@ -250,7 +244,7 @@ class DatabaseImpl implements Database {
         CharArrayWriter w = null;
         try {
             // Execute the method.
-            int statusCode = client.executeMethod(method);
+            int statusCode = client.getHttpClient().executeMethod(method);
 
             if (statusCode != HttpStatus.SC_OK) {
                 logger.warning("Method failed: " + method.getStatusLine());
@@ -283,7 +277,7 @@ class DatabaseImpl implements Database {
 
         try {
             // Execute the method.
-            int statusCode = client.executeMethod(method);
+            int statusCode = client.getHttpClient().executeMethod(method);
             if (statusCode != HttpStatus.SC_OK) {
                 logger.warning("Method failed: " + method.getStatusLine());
             }
@@ -304,43 +298,13 @@ class DatabaseImpl implements Database {
         final String id = doc.getId();
         final String rev = doc.getRev();
         DeleteMethod method = new DeleteMethod(urlResolver.urlForPath(id, map("rev", rev)));
-        ServerResponse response = executeMethod(method);
+        ServerResponse response = client.executeMethod(method);
         doc.put("_id", id);
         doc.put("_rev", response.getRev());
         return response;
     }
 
-    private ServerResponse executeMethod(HttpMethodBase method) {
-        try {
-            int statusCode = client.executeMethod(method);
-            // Read the response body.
-            JSONObject jsonObject = fromResponseStream(method.getResponseBodyAsStream(), method.getResponseCharSet());
-            switch (statusCode) {
-            case HttpStatus.SC_NOT_FOUND:
-                throw new DocumentNotFoundException();
-            case HttpStatus.SC_CONFLICT:
-                throw new DocumentUpdateConflictException(jsonObject.getString("error"), jsonObject.getString("reason"));
-            case HttpStatus.SC_OK:
-            case HttpStatus.SC_CREATED:
-                break;
-            }
-            return JsonServerResponse.fromJson(jsonObject);
-        } catch (IOException e) {
-            throw new RuntimeException(e); // TODO replace
-        } finally {
-            method.releaseConnection();
-        }
-    }
 
-    private JSONObject fromResponseStream(InputStream is, String charset) throws IOException {
-        Reader reader = new InputStreamReader(is, charset);
-        CharArrayWriter w = new CharArrayWriter();
-        StreamUtils.copy(reader, w);
-        JSONObject json = JSONObject.fromObject(w.toString());
-        StreamUtils.closeSilently(reader);
-        StreamUtils.closeSilently(w);
-        return json;
-    }
 
     private String jsonForPath(final String path) {
         return String.valueOf(getResponseForUrl(urlForPath(path)));
@@ -354,9 +318,9 @@ class DatabaseImpl implements Database {
     private String urlForPath(final String path, Map<String, String> params) {
         return urlResolver.urlForPath(path, params);
     }
-    
+
     public void disconnect() {
-        ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
+        this.couchDb.disconnect(this);
     }
 
     public String getName() {
@@ -435,5 +399,15 @@ class DatabaseImpl implements Database {
 
     public ServerResponse saveAttachment(Document doc, String name, InputStream data) {
         throw new UnsupportedOperationException("Implement!");
+    }
+
+    public <T> T fetchObject(String docId, Class<T> clazz) {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    public <T> T fetchObject(String docId, String rev, Class<T> clazz) {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

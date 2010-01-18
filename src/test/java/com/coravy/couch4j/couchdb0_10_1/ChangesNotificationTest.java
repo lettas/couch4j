@@ -34,23 +34,22 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-
-import com.coravy.couch4j.CouchDb;
 import com.coravy.couch4j.CouchDbClient;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.Database.ChangeEvent;
 import com.coravy.couch4j.Database.ChangeListener;
 
-@Ignore // FIXME add this back in
+@Ignore
+// FIXME add this back in
 public class ChangesNotificationTest {
 
-    private CouchDb server;
+    private CouchDbClient server;
     private Database test;
 
     @Before
     public final void setup() {
-        server = CouchDbClient.newInstance("localhost", 59810);
+        server = new CouchDbClient("localhost", 59810);
         test = server.getDatabase("couch4j-changes");
         assertNotNull(test);
 
@@ -76,7 +75,7 @@ public class ChangesNotificationTest {
         });
 
         Thread.sleep(1000); // Wait for the _changes connection to be
-                            // established...
+        // established...
 
         final int NEW = 5;
         for (int i = 0; i < NEW; i++) {
@@ -103,7 +102,7 @@ public class ChangesNotificationTest {
         test.addChangeListener(l);
 
         Thread.sleep(1000); // Wait for the _changes connection to be
-                            // established...
+        // established...
 
         // While subscribed
         for (int i = 0; i < 7; i++) {

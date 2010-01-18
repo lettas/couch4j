@@ -71,18 +71,48 @@ public interface Database {
      * @throws DocumentNotFoundException
      */
     Document fetchDocument(String docId);
-    
+
     /**
      * Fetch a particular revision of a document.
      * 
-     * @param docId The document id
-     * @param rev The document revision
+     * @param docId
+     *            The document id
+     * @param rev
+     *            The document revision
      * @return
      */
     Document fetchDocument(String docId, String rev);
 
-    ServerResponse saveAttachment(Document doc, String name, InputStream data);
+    /**
+     * Returns an instance of clazz with the properties of the CouchDB document
+     * with the id {@code docId}.
+     * 
+     * @param <T>
+     * @param docId
+     *            The document id
+     * @param clazz
+     * @return T
+     * @see Database#fetchDocument(String)
+     */
+    <T> T fetchObject(String docId, Class<T> clazz);
     
+    /**
+     * Returns an instance of clazz with the properties of the CouchDB document
+     * with the id {@code docId}.
+     * 
+     * @param <T>
+     * @param docId
+     *            The document id
+     * @param rev
+     *            The document revision
+     * @param clazz
+     * @return T
+     * @see Database#fetchDocument(String, String)
+     */
+    <T> T fetchObject(String docId,  String rev, Class<T> clazz);
+
+    ServerResponse saveAttachment(Document doc, String name, InputStream data);
+
     ServerResponse saveDocument(Document doc);
 
     ServerResponse saveDocument(Map<String, ? super Object> doc);
@@ -92,7 +122,7 @@ public interface Database {
     ServerResponse saveDocument(Serializable json);
 
     ServerResponse saveDocument(Externalizable json);
-    
+
     ServerResponse saveDocument(JsonExportable json);
 
     ServerResponse bulkSave(Collection<Document> docs);

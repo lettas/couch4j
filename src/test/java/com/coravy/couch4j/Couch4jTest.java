@@ -65,7 +65,7 @@ public class Couch4jTest extends Couch4jBase {
     private Database test;
     private Database testEmpty;
 
-    public Couch4jTest(CouchDb server) {
+    public Couch4jTest(CouchDbClient server) {
         super(server);
     }
 

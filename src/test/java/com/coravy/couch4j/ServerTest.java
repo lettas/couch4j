@@ -23,7 +23,9 @@
  */
 package com.coravy.couch4j;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 
 import org.junit.After;
 import org.junit.Before;
@@ -33,7 +35,7 @@ public class ServerTest extends Couch4jBase {
 
     private Database test;
 
-    public ServerTest(CouchDb server) {
+    public ServerTest(CouchDbClient server) {
         super(server);
     }
 
@@ -55,20 +57,20 @@ public class ServerTest extends Couch4jBase {
 
     @Test
     public void testFactoryMethod() throws Exception {
-        server = CouchDbClient.newLocalInstance();
-        assertEquals(5984, server.getPort());
-        assertEquals("localhost", server.getHost());
+        server = new CouchDbClient();
+        assertEquals(5984, server.getRemotePort());
+        assertEquals("localhost", server.getRemoteHost());
     }
 
     @Test
     public void testFactoryMethodHost() throws Exception {
-        server = CouchDbClient.newInstance("localhost");
-        assertEquals(5984, server.getPort());
+        server = new CouchDbClient("localhost");
+        assertEquals(5984, server.getRemotePort());
     }
 
     @Test
     public void testFactoryMethodsHostPort() throws Exception {
-        server = CouchDbClient.newInstance("localhost", 1234);
+        server = new CouchDbClient("localhost", 1234);
     }
 
 }

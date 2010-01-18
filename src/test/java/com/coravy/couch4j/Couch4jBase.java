@@ -38,13 +38,13 @@ import com.coravy.couch4j.exceptions.Couch4JException;
  * <p>
  * List of ports used in the test case:
  * <ul>
- *      <li><strike>5080,      // CouchDB 0.8.0</strike></li>
- *      <li><strike>5081,      // CouchDB 0.8.1</strike></li>
- *      <li>5090,      // CouchDB 0.9.0  </li>
- *      <li>5091,      // CouchDB 0.9.1  </li>
- *      <li>5092,      // CouchDB 0.9.2  </li>
- *      <li>50100,     // CouchDB 0.10.0 </li>
- *      <li>50101      // CouchDB 0.10.1 </li>
+ * <li><strike>5080, // CouchDB 0.8.0</strike></li>
+ * <li><strike>5081, // CouchDB 0.8.1</strike></li>
+ * <li>5090, // CouchDB 0.9.0</li>
+ * <li>5091, // CouchDB 0.9.1</li>
+ * <li>5092, // CouchDB 0.9.2</li>
+ * <li>50100, // CouchDB 0.10.0</li>
+ * <li>50101 // CouchDB 0.10.1</li>
  * </ul>
  * 
  * @author Stefan Saasen
@@ -53,37 +53,37 @@ import com.coravy.couch4j.exceptions.Couch4JException;
 public abstract class Couch4jBase {
 
     protected final static Logger logger = LoggerFactory.getLogger(Couch4jBase.class);
-    
-    protected CouchDb server;
 
-    public Couch4jBase(CouchDb server) {
+    protected CouchDbClient server;
+
+    public Couch4jBase(CouchDbClient server) {
         this.server = server;
     }
 
     private static final int[] PORTS = {
-//        5080,      // CouchDB 0.8.0
-//        5081,      // CouchDB 0.8.1
-        5984,      // CouchDB 0.9.0 (default port)
-        5090,      // CouchDB 0.9.0
-        5091,      // CouchDB 0.9.1
-        5092,      // CouchDB 0.9.2
-        50100,     // CouchDB 0.10.0
-        50101      // CouchDB 0.10.1
+            // 5080, // CouchDB 0.8.0
+            // 5081, // CouchDB 0.8.1
+            5984, // CouchDB 0.9.0 (default port)
+            5090, // CouchDB 0.9.0
+            5091, // CouchDB 0.9.1
+            5092, // CouchDB 0.9.2
+            50100, // CouchDB 0.10.0
+            50101 // CouchDB 0.10.1
     };
-    
+
     @Parameterized.Parameters
-    public static Collection<CouchDb[]> testDatabases() {
-        Collection<CouchDb[]> instancesRunning = new ArrayList<CouchDb[]>();
+    public static Collection<CouchDbClient[]> testDatabases() {
+        Collection<CouchDbClient[]> instancesRunning = new ArrayList<CouchDbClient[]>();
         for (int port : PORTS) {
-            CouchDb server = CouchDbClient.newInstance("localhost", port);
+            CouchDbClient server = new CouchDbClient("localhost", port);
             try {
                 server.getDatabase("couch4j");
-                instancesRunning.add(new CouchDb[]{server});
+                instancesRunning.add(new CouchDbClient[] { server });
             } catch (Couch4JException ce) {
                 logger.warn("Ignoring {} - connection failed.", server);
             }
         }
-        if(instancesRunning.size() < 1) {
+        if (instancesRunning.size() < 1) {
             throw new AssertionError("Unable to run tests without at least one running CouchDB instance.");
         }
         return instancesRunning;
