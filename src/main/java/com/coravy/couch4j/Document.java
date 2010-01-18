@@ -29,7 +29,6 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
-
 /**
  * @author Stefan Saasen
  */
@@ -102,5 +101,30 @@ public class Document implements JsonExportable {
 
     public JSONObject toJSONObject() {
         return JSONObject.fromObject(this.attributes);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (!(obj instanceof Document))
+            return false;
+        Document other = (Document) obj;
+        if (attributes == null) {
+            if (other.attributes != null)
+                return false;
+        } else if (!attributes.equals(other.attributes))
+            return false;
+        return true;
     }
 }

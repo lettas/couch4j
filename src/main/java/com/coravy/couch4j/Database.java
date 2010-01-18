@@ -66,11 +66,20 @@ public interface Database {
 
     /**
      * 
-     * @param string
+     * @param docId
      * @return
      * @throws DocumentNotFoundException
      */
-    Document fetchDocument(String string);
+    Document fetchDocument(String docId);
+    
+    /**
+     * Fetch a particular revision of a document.
+     * 
+     * @param docId The document id
+     * @param rev The document revision
+     * @return
+     */
+    Document fetchDocument(String docId, String rev);
 
     ServerResponse saveAttachment(Document doc, String name, InputStream data);
     

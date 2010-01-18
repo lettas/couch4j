@@ -117,6 +117,16 @@ public class Couch4jTest extends Couch4jBase {
         Document d = test.fetchDocument(VALID_DOC_ID);
         assertDocumentTest1(d);
     }
+    
+    @Test
+    public void testFetchDocumentByIdWithRevision() throws Exception {
+        Document d = test.fetchDocument(VALID_DOC_ID);
+        assertDocumentTest1(d);
+        
+        Document d2 = test.fetchDocument(VALID_DOC_ID, d.getRev());
+        assertEquals(d, d2);
+        assertDocumentTest1(d2);
+    }
 
     @Test
     public void testWithAttachmentAsStream() throws Exception {

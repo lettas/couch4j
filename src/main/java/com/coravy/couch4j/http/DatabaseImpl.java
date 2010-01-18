@@ -149,8 +149,16 @@ class DatabaseImpl implements Database {
      * (non-Javadoc)
      * @see com.coravy.couch4j.Database#fetchDocument(java.lang.String)
      */
-    public Document fetchDocument(String id) {
-        String url = urlForPath(id);
+    public Document fetchDocument(String docId) {
+        String url = urlForPath(docId);
+        char[] response = getResponseForUrl(url);
+        ResponseDocument d = new ResponseDocument(JSONObject.fromObject(String.valueOf(response)));
+        d.setDatabase(this);
+        return d;
+    }
+    
+    public Document fetchDocument(String docId, String rev) {
+        String url = urlForPath(docId, map("rev", rev));
         char[] response = getResponseForUrl(url);
         ResponseDocument d = new ResponseDocument(JSONObject.fromObject(String.valueOf(response)));
         d.setDatabase(this);
@@ -343,6 +351,10 @@ class DatabaseImpl implements Database {
         return urlResolver.urlForPath(path, p);
     }
 
+    private String urlForPath(final String path, Map<String, String> params) {
+        return urlResolver.urlForPath(path, params);
+    }
+    
     public void disconnect() {
         ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
     }
