@@ -23,21 +23,51 @@
  */
 package com.coravy.couch4j;
 
-import java.util.List;
+import com.coravy.couch4j.http.CouchDbImpl;
 
 /**
- * The CouchDB database server.
+ * Main entry point for clients...
+ * <p>
+ * 
+ * <pre>
+ * CouchDb couch = CouchDbClient.newInstance(&quot;http://abc.example.com&quot;);
+ * Database db1 = couch.getDatabase(&quot;dbname&quot;);
+ * </pre>
+ * 
+ * In Spring an approriate CouchDb implementation can be created like this:
+ * 
+ * <pre>
+ * &lt;bean id="couchDb"
+ *       class="com.coravy.couch4j.CouchDbClient"
+ *       factory-method="newLocalInstance" />
+ * </pre>
+ * 
+ * Or
+ * 
+ * <pre>
+ * &lt;bean id="couchDb"
+ *       class="com.coravy.couch4j.CouchDbClient"
+ *       factory-method="newInstance">
+ *       &lt;constructor-arg value="http://abc.example.com"/>
+ *       &lt;constructor-arg value="5985"/>
+ * &lt;/bean>
+ * </pre>
  * 
  * @author Stefan Saasen
  */
-public interface CouchDb {
-    String getHost();
+public class CouchDbClient {
+    final static String DEFAULT_HOST = "localhost";
+    final static int DEFAULT_PORT = 5984;
 
-    int getPort();
+    public static CouchDb newLocalInstance() {
+        return newInstance(DEFAULT_HOST, DEFAULT_PORT);
+    }
 
-    void disconnect();
+    public static CouchDb newInstance(final String host) {
+        return newInstance(host, DEFAULT_PORT);
+    }
 
-    Database getDatabase(final String databaseName);
-
-    List<String> databaseNames();
+    public static CouchDb newInstance(final String host, int port) {
+        return new CouchDbImpl(host, port);
+    }
 }

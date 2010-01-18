@@ -63,7 +63,7 @@ import org.apache.commons.httpclient.params.HttpMethodParams;
 import com.coravy.core.annotations.ThreadSafe;
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Attachment;
-import com.coravy.couch4j.CouchDB;
+import com.coravy.couch4j.CouchDb;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.DatabaseInfo;
 import com.coravy.couch4j.Document;
@@ -79,7 +79,7 @@ import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
  * @author Stefan Saasen
  */
 @ThreadSafe
-public class DatabaseImpl implements Database {
+class DatabaseImpl implements Database {
     private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
     private static final int MAX_HOST_CONNECTIONS = 10;
 
@@ -89,7 +89,7 @@ public class DatabaseImpl implements Database {
     private DatabaseChangeNotificationService changesService;
     private final UrlResolver urlResolver;
 
-    public DatabaseImpl(CouchDB server, String name) {
+    public DatabaseImpl(CouchDb server, String name) {
         HttpClientParams params = new HttpClientParams();
         params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         params.setIntParameter("maxHostConnections", MAX_HOST_CONNECTIONS);
