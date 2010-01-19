@@ -23,6 +23,9 @@
  */
 package com.coravy.couch4j;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 /**
  * @author Stefan Saasen
  */
@@ -33,4 +36,8 @@ public interface ViewResultRow extends JsonExportable {
     String getKey();
 
     Document getDocument();
+
+    JSONObject getValueAsObject();
+
+    JSONArray getValueAsArray();
 }

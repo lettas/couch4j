@@ -23,12 +23,15 @@
  */
 package com.coravy.couch4j.http;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import com.coravy.core.annotations.Immutable;
 import com.coravy.couch4j.Database;
 import com.coravy.couch4j.Document;
 import com.coravy.couch4j.ViewResultRow;
+import com.coravy.couch4j.exceptions.Couch4JException;
 
 /**
  * @author Stefan Saasen
@@ -62,26 +65,59 @@ final class JsonViewResultRow implements ViewResultRow {
 
     public Document getDocument() {
         if (json != null) {
-            ResponseDocument d;
-            // If the value includes the document (include_docs = true)
-            // we create a ResponseDocument instance
-            if (json.containsKey("doc")) {
-                d = new ResponseDocument(json.getJSONObject("doc"));
-            } else {
+            try {
+                ResponseDocument d;
+                // If the value includes the document (include_docs = true)
+                // we create a ResponseDocument instance
+                if (json.containsKey("doc")) {
+                    d = new ResponseDocument(json.getJSONObject("doc"));
+                } else {
 
-                // Create a document stub that is able to lazily fetch the
-                // document
-                // content
-
-                JSONObject value = json.getJSONObject("value");
-                final String rev = value.has("_rev") ? value.getString("_rev") : (value.has("rev") ? value
-                        .getString("rev") : null);
-                d = new ResponseDocument(this.id, rev);
+                    // Create a document stub that is able to lazily fetch the
+                    // document
+                    // content
+                    if (json.containsKey("value")) {
+                        JSONObject value = json.getJSONObject("value");
+                        final String rev = value.has("_rev") ? value.getString("_rev") : (value.has("rev") ? value
+                                .getString("rev") : null);
+                        d = new ResponseDocument(this.id, rev);
+                    } else {
+                        return null;
+                    }
+                }
+                d.setDatabase(this.database);
+                return d;
+            } catch (net.sf.json.JSONException e) {
+                throw new Couch4JException(e);
             }
-            d.setDatabase(this.database);
-            return d;
         }
         return null; // TODO Fetch from database
+    }
+
+    public JSONObject getValueAsObject() {
+        try {
+            if (json != null) {
+                if (json.containsKey("value")) {
+                    return json.getJSONObject("value");
+                }
+            }
+            return new JSONObject();
+        } catch (JSONException je) {
+            throw new Couch4JException(je);
+        }
+    }
+
+    public JSONArray getValueAsArray() {
+        try {
+            if (json != null) {
+                if (json.containsKey("value")) {
+                    return json.getJSONArray("value");
+                }
+            }
+            return new JSONArray();
+        } catch (JSONException je) {
+            throw new Couch4JException(je);
+        }
     }
 
     public String toJson() {
@@ -90,6 +126,11 @@ final class JsonViewResultRow implements ViewResultRow {
 
     public JSONObject toJSONObject() {
         return json;
+    }
+
+    @Override
+    public String toString() {
+        return toJson();
     }
 
 }
