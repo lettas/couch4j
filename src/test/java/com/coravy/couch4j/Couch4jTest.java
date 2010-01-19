@@ -49,6 +49,7 @@ import org.junit.runners.Parameterized;
 
 import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Database.StreamContext;
+import com.coravy.couch4j.exceptions.Couch4JException;
 import com.coravy.couch4j.exceptions.DocumentNotFoundException;
 import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
 
@@ -116,6 +117,18 @@ public class Couch4jTest extends Couch4jBase {
     @Test
     public void testFetchDocumentById() throws Exception {
         Document d = test.fetchDocument(VALID_DOC_ID);
+        assertDocumentTest1(d);
+    }
+    
+    @Test(expected=DocumentNotFoundException.class)
+    public void testFetchDocumentByInvalidId() throws Exception {
+        Document d = test.fetchDocument("INVALID_DOC_ID");
+        assertDocumentTest1(d);
+    }
+    
+    @Test(expected=DocumentNotFoundException.class)
+    public void testFetchDocumentByIdWithInvalidRevision() throws Exception {
+        Document d = test.fetchDocument(VALID_DOC_ID, "2-1234");
         assertDocumentTest1(d);
     }
     

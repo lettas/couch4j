@@ -80,16 +80,20 @@ public class Document implements JsonExportable {
         return attributes;
     }
 
+    public List<String> getRevisions() {
+        throw new UnsupportedOperationException("Implement!");
+    }
+    
     public Attachment getAttachment(final String name) {
-        throw new UnsupportedOperationException("");
+        throw new UnsupportedOperationException("Implement!");
     }
 
     public List<Attachment> getAttachments() {
-        throw new UnsupportedOperationException("");
+        throw new UnsupportedOperationException("Implement!");
     }
 
     public List<String> getAttachmentNames() {
-        throw new UnsupportedOperationException("");
+        throw new UnsupportedOperationException("Implement!");
     }
 
     public String toJson() {

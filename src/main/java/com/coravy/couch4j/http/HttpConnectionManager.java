@@ -108,14 +108,14 @@ class HttpConnectionManager {
             JSONObject jsonObject = fromResponseStream(entity);
             switch (statusCode) {
             case HttpStatus.SC_NOT_FOUND:
-                throw new DocumentNotFoundException();
+                throw new DocumentNotFoundException(jsonObject);
             case HttpStatus.SC_CONFLICT:
-                throw new DocumentUpdateConflictException(jsonObject.getString("error"), jsonObject.getString("reason"));
+                throw new DocumentUpdateConflictException(jsonObject);
             case HttpStatus.SC_OK:
             case HttpStatus.SC_CREATED:
                 break;
             default:
-                throw new Couch4JException("Request failed with status: " + statusCode);
+                throw new Couch4JException(jsonObject);
             }
             return JsonServerResponse.fromJson(jsonObject);
         } catch (IOException e) {
@@ -138,15 +138,15 @@ class HttpConnectionManager {
             HttpEntity entity = response.getEntity();
             JSONObject jsonObject = fromResponseStream(entity);
             switch (statusCode) {
-            case HttpStatus.SC_NOT_FOUND:
-                throw new DocumentNotFoundException();
             case HttpStatus.SC_CONFLICT:
-                throw new DocumentUpdateConflictException(jsonObject.getString("error"), jsonObject.getString("reason"));
+                throw new DocumentUpdateConflictException(jsonObject);
             case HttpStatus.SC_OK:
             case HttpStatus.SC_CREATED:
                 break;
+            case HttpStatus.SC_NOT_FOUND:
             default:
-                throw new Couch4JException("Request failed with status: " + statusCode);
+                throw new DocumentNotFoundException(jsonObject);
+//                throw new Couch4JException(jsonObject, statusCode);
             }
             return jsonObject;
         } catch (ConnectException re) {
@@ -159,8 +159,7 @@ class HttpConnectionManager {
     }
 
     JSONObject jsonGet(String url) {
-        HttpRequestBase method = new HttpGet(url);
-        return jsonExecute(method);
+        return jsonExecute(new HttpGet(url));
     }
 
     ServerResponse post(final String url) {
@@ -232,32 +231,33 @@ class HttpConnectionManager {
         }
     }
 
-    char[] getResponseForUrl(final String url) {
-        // Create a method instance.
-        HttpGet method = new HttpGet(url);
-
-        HttpResponse response;
-        Reader reader = null;
-        CharArrayWriter w = null;
-        try {
-            response = client.execute(method);
-            HttpEntity entity = response.getEntity();
-            if (entity != null) {
-                reader = new InputStreamReader(entity.getContent(), EntityUtils.getContentCharSet(entity));
-                w = new CharArrayWriter();
-                StreamUtils.copy(reader, w);
-                return w.toCharArray();
-            }
-        } catch (ClientProtocolException e) {
-            throw new Couch4JException(e);
-        } catch (IOException e) {
-            throw new Couch4JException(e);
-        } finally {
-            StreamUtils.closeSilently(reader);
-            StreamUtils.closeSilently(w);
-        }
-        return new char[0];
-    }
+    // char[] getResponseForUrl(final String url) {
+    // // Create a method instance.
+    // HttpGet method = new HttpGet(url);
+    //
+    // HttpResponse response;
+    // Reader reader = null;
+    // CharArrayWriter w = null;
+    // try {
+    // response = client.execute(method);
+    // HttpEntity entity = response.getEntity();
+    // if (entity != null) {
+    // reader = new InputStreamReader(entity.getContent(),
+    // EntityUtils.getContentCharSet(entity));
+    // w = new CharArrayWriter();
+    // StreamUtils.copy(reader, w);
+    // return w.toCharArray();
+    // }
+    // } catch (ClientProtocolException e) {
+    // throw new Couch4JException(e);
+    // } catch (IOException e) {
+    // throw new Couch4JException(e);
+    // } finally {
+    // StreamUtils.closeSilently(reader);
+    // StreamUtils.closeSilently(w);
+    // }
+    // return new char[0];
+    // }
 
     private JSONObject fromResponseStream(HttpEntity entity) throws IOException {
         InputStream is = entity.getContent();

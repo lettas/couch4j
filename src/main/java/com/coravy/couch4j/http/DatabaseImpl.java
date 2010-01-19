@@ -124,8 +124,7 @@ public class DatabaseImpl implements Database {
 
     public Document fetchDocument(String docId, String rev) {
         String url = urlForPath(docId, map("rev", rev));
-        char[] response = getResponseForUrl(url);
-        ResponseDocument d = new ResponseDocument(JSONObject.fromObject(String.valueOf(response)));
+        ResponseDocument d = new ResponseDocument(this.client.jsonGet(url));
         d.setDatabase(this);
         return d;
     }
@@ -198,10 +197,6 @@ public class DatabaseImpl implements Database {
         }
     }
 
-    private char[] getResponseForUrl(final String url) {
-        return this.client.getResponseForUrl(url);
-    }
-
     public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
         this.client.withAttachmentAsStream(urlResolver.urlForPath("/" + a.getContentId() + "/" + a.getName()), ctx);
     }
@@ -216,7 +211,7 @@ public class DatabaseImpl implements Database {
     }
 
     private String jsonForPath(final String path) {
-        return String.valueOf(getResponseForUrl(urlForPath(path)));
+        return client.jsonGet(urlForPath(path)).toString();
     }
 
     private String urlForPath(final String path) {
@@ -248,7 +243,7 @@ public class DatabaseImpl implements Database {
     }
 
     public DatabaseInfo getDatabaseInfo() {
-        final JSONObject json = JSONObject.fromObject(String.valueOf(getResponseForUrl(urlResolver.baseUrl())));
+        final JSONObject json = client.jsonGet(urlResolver.baseUrl());
 
         /*
          * {"db_name":"couch4j","doc_count":9,"doc_del_count":7,"update_seq":65,
