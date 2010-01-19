@@ -4,9 +4,9 @@
 	<groupId>com.coravy</groupId>
 	<artifactId>couch4j</artifactId>
 	<packaging>jar</packaging>
-	<version>0.8.1-SNAPSHOT</version>
+	<version>0.8.1</version>
 	<name>couch4j</name>
-	<url>http://dev.coravy.com/wiki/display/OpenSource/couch4j</url>
+	<url>http://dev.coravy.com/wiki/display/opensource/couch4j</url>
 	<ciManagement>
 		<system>Hudson</system>
 		<url>https://ci.coravy.com/hudson/job/couch4j/</url>
