@@ -26,7 +26,7 @@ Maven dependencies
 	<dependency>
     	<groupId>com.coravy</groupId>
     	<artifactId>couch4j</artifactId>
-    	<version>0.8</version>
+    	<version>0.8.1</version>
 	</dependency>
 	
 	<repository>
