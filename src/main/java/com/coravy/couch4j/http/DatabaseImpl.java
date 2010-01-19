@@ -25,42 +25,24 @@ package com.coravy.couch4j.http;
 
 import static com.coravy.core.collections.CollectionUtils.map;
 
-import java.io.CharArrayWriter;
 import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.Reader;
 import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
 import net.sf.json.JSONSerializer;
 
-import org.apache.commons.httpclient.DefaultHttpMethodRetryHandler;
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpException;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpMethodBase;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.DeleteMethod;
-import org.apache.commons.httpclient.methods.EntityEnclosingMethod;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.methods.PostMethod;
-import org.apache.commons.httpclient.methods.PutMethod;
-import org.apache.commons.httpclient.methods.RequestEntity;
-import org.apache.commons.httpclient.methods.StringRequestEntity;
-import org.apache.commons.httpclient.params.HttpMethodParams;
+import org.apache.http.entity.StringEntity;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.coravy.core.annotations.ThreadSafe;
-import com.coravy.core.io.StreamUtils;
 import com.coravy.couch4j.Attachment;
 import com.coravy.couch4j.CouchDbClient;
 import com.coravy.couch4j.Database;
@@ -72,14 +54,13 @@ import com.coravy.couch4j.View;
 import com.coravy.couch4j.ViewResult;
 import com.coravy.couch4j.exceptions.Couch4JException;
 import com.coravy.couch4j.exceptions.DocumentNotFoundException;
-import com.coravy.couch4j.exceptions.DocumentUpdateConflictException;
 
 /**
  * @author Stefan Saasen
  */
 @ThreadSafe
 public class DatabaseImpl implements Database {
-    private final static Logger logger = Logger.getLogger(DatabaseImpl.class.getName());
+    private final static Logger logger = LoggerFactory.getLogger(Database.class);
 
     private final HttpConnectionManager client;
     private final String name;
@@ -87,34 +68,26 @@ public class DatabaseImpl implements Database {
     private DatabaseChangeNotificationService changesService;
     private final UrlResolver urlResolver;
     private final CouchDbClient couchDb;
-    
-    public DatabaseImpl(CouchDbClient couchDb, HttpClient ht, String databaseName) {
+
+    public DatabaseImpl(CouchDbClient couchDb, HttpConnectionManager ht, String databaseName) {
         this.couchDb = couchDb;
-        this.client = new HttpConnectionManager(ht);
+        this.client = ht;
         this.name = databaseName;
 
         this.urlResolver = new UrlResolverImpl(couchDb, databaseName);
-        changesService = new DatabaseChangeNotificationService(this.client.getHttpClient(), urlResolver, this);
+        changesService = new DatabaseChangeNotificationService(ht.getHttpClient(), urlResolver, this);
 
-        // Check if the database exists
-        HttpMethod m = null;
+        // Check if the database exists, create if not
         try {
-            m = new GetMethod(urlResolver.baseUrl());
-            int statusCode = ht.executeMethod(m);
-            if (statusCode == HttpStatus.SC_NOT_FOUND) {
-                m = new PutMethod(urlResolver.baseUrl());
-                statusCode = ht.executeMethod(m);
-                if (statusCode != HttpStatus.SC_CREATED) {
-                    logger.log(Level.WARNING, String.format("Failed to create the database %s on %s. "
-                            + "Failed with status code %d", name, couchDb, statusCode));
-                }
+            if (logger.isDebugEnabled()) {
+                logger.debug("Check for database named {}", databaseName);
             }
-        } catch (IOException e) {
-            throw new Couch4JException("Unable to connect to database: " + name);
-        } finally {
-            if (null != m) {
-                m.releaseConnection();
+            ht.jsonGet(urlResolver.baseUrl());
+        } catch (DocumentNotFoundException dnfe) {
+            if (logger.isDebugEnabled()) {
+                logger.debug("Database not found. Create new database '{}'", databaseName);
             }
+            ht.jsonPut(urlResolver.baseUrl());
         }
     }
 
@@ -123,12 +96,11 @@ public class DatabaseImpl implements Database {
      * @see com.coravy.couch4j.Database#bulkSave(java.util.Collection)
      */
     public ServerResponse bulkSave(Collection<Document> docs) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Implement!");
     }
 
     public ServerResponse delete() {
-        return client.executeMethod(new DeleteMethod(urlResolver.baseUrl()));
+        return client.delete(urlResolver.baseUrl());
     }
 
     public ViewResult fetchAllDocuments() {
@@ -145,8 +117,7 @@ public class DatabaseImpl implements Database {
      */
     public Document fetchDocument(String docId) {
         String url = urlForPath(docId);
-        char[] response = getResponseForUrl(url);
-        ResponseDocument d = new ResponseDocument(JSONObject.fromObject(String.valueOf(response)));
+        ResponseDocument d = new ResponseDocument(this.client.jsonGet(url));
         d.setDatabase(this);
         return d;
     }
@@ -170,141 +141,79 @@ public class DatabaseImpl implements Database {
      */
     public ServerResponse saveDocument(Document doc) {
 
-        EntityEnclosingMethod method;
-        if (null == doc.getId()) {
-            method = new PostMethod(urlResolver.baseUrl());
-        } else {
-            method = new PutMethod(urlForPath(doc.getId()));
-        }
-        RequestEntity re;
+        StringEntity entity;
         try {
-            re = new StringRequestEntity(doc.toJson(), "application/json", "UTF-8");
-            method.setRequestEntity(re);
+            entity = new StringEntity(doc.toJson(), "UTF-8");
+            entity.setContentType("application/json");
         } catch (UnsupportedEncodingException e) {
             throw new Couch4JException(e);
         }
-        ServerResponse response = client.executeMethod(method);
+
+        ServerResponse response;
+        if (null == doc.getId()) {
+            response = client.post(urlResolver.baseUrl(), entity);
+        } else {
+            response = client.put(urlForPath(doc.getId()), entity);
+        }
+
         doc.put("_id", response.getId());
         doc.put("_rev", response.getRev());
         return response;
     }
 
     public ServerResponse saveDocument(Map<String, ? super Object> doc) {
-        EntityEnclosingMethod method;
+        HttpConnectionManager.Method method;
+        String url;
         final String id = (String) (doc.get("id") != null ? doc.get("id") : doc.get("_id"));
         if (null == id) {
-            method = new PostMethod(urlResolver.baseUrl());
+            url = urlResolver.baseUrl();
+            method = HttpConnectionManager.Method.POST;
         } else {
-            method = new PutMethod(urlForPath(id));
+            url = urlForPath(id);
+            method = HttpConnectionManager.Method.PUT;
         }
+
+        StringEntity entity;
         try {
-            RequestEntity re = new StringRequestEntity(JSONSerializer.toJSON(doc).toString(), "application/json",
-                    "UTF-8");
-            method.setRequestEntity(re);
+            entity = new StringEntity(JSONSerializer.toJSON(doc).toString(), "UTF-8");
+            entity.setContentType("application/json");
 
-            client.executeMethod(method);
-
-            // int statusCode = client.executeMethod(method);
-
-            // Read the response body.
-            byte[] responseBody = method.getResponseBody();
-
-            JSONObject jsonObject = JSONObject.fromObject(new String(responseBody));
-            JsonServerResponse response = JsonServerResponse.fromJson(jsonObject);
+            ServerResponse response = this.client.execute(url, method, entity);
             doc.put("_id", response.getId());
             doc.put("_rev", response.getRev());
             return response;
-        } catch (IOException e) {
-            throw new RuntimeException(e); // TODO replace
-        } finally {
-            method.releaseConnection();
+        } catch (UnsupportedEncodingException e) {
+            throw new Couch4JException(e); // Should not happen as UTF-8 is
+            // supported on every JVM
         }
     }
 
     public ServerResponse saveDocument(String json) {
-        EntityEnclosingMethod method = new PostMethod(urlResolver.baseUrl());
-        RequestEntity re;
         try {
-            re = new StringRequestEntity(json, "application/json", "UTF-8");
+            StringEntity e = new StringEntity(json, "UTF-8");
+            e.setContentType("application/json");
+            return client.post(urlResolver.baseUrl(), e);
         } catch (UnsupportedEncodingException e) {
             throw new Couch4JException(e);
         }
-        method.setRequestEntity(re);
-        return client.executeMethod(method);
     }
 
     private char[] getResponseForUrl(final String url) {
-        // Create a method instance.
-        GetMethod method = new GetMethod(url);
-        // System.err.println("url: " + url);
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(2, false));
-
-        Reader reader = null;
-        CharArrayWriter w = null;
-        try {
-            // Execute the method.
-            int statusCode = client.getHttpClient().executeMethod(method);
-
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.warning("Method failed: " + method.getStatusLine());
-            }
-            if (HttpStatus.SC_NOT_FOUND == statusCode) {
-                throw new DocumentNotFoundException(method.getStatusLine().toString());
-            }
-            reader = new InputStreamReader(method.getResponseBodyAsStream(), method.getResponseCharSet());
-            w = new CharArrayWriter();
-            StreamUtils.copy(reader, w);
-            return w.toCharArray();
-        } catch (HttpException e) {
-            logger.warning("Fatal protocol violation: " + e.getMessage());
-        } catch (IOException e) {
-            logger.warning("Fatal transport error: " + e.getMessage());
-        } finally {
-            // Release the connection.
-            method.releaseConnection();
-            StreamUtils.closeSilently(reader);
-            StreamUtils.closeSilently(w);
-        }
-        return new char[0];
+        return this.client.getResponseForUrl(url);
     }
 
     public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
-        GetMethod method = new GetMethod(urlResolver.urlForPath("/" + a.getContentId() + "/" + a.getName()));
-
-        // Provide custom retry handler is necessary
-        method.getParams().setParameter(HttpMethodParams.RETRY_HANDLER, new DefaultHttpMethodRetryHandler(3, false));
-
-        try {
-            // Execute the method.
-            int statusCode = client.getHttpClient().executeMethod(method);
-            if (statusCode != HttpStatus.SC_OK) {
-                logger.warning("Method failed: " + method.getStatusLine());
-            }
-            InputStream is = method.getResponseBodyAsStream();
-            ctx.withInputStream(is);
-            StreamUtils.closeSilently(is);
-        } catch (HttpException e) {
-            logger.warning("Fatal protocol violation: " + e.getMessage());
-        } catch (IOException e) {
-            logger.warning("Fatal transport error: " + e.getMessage());
-        } finally {
-            // Release the connection.
-            method.releaseConnection();
-        }
+        this.client.withAttachmentAsStream(urlResolver.urlForPath("/" + a.getContentId() + "/" + a.getName()), ctx);
     }
 
     public ServerResponse deleteDocument(Document doc) {
         final String id = doc.getId();
         final String rev = doc.getRev();
-        DeleteMethod method = new DeleteMethod(urlResolver.urlForPath(id, map("rev", rev)));
-        ServerResponse response = client.executeMethod(method);
+        ServerResponse response = client.delete(urlResolver.urlForPath(id, map("rev", rev)));
         doc.put("_id", id);
         doc.put("_rev", response.getRev());
         return response;
     }
-
-
 
     private String jsonForPath(final String path) {
         return String.valueOf(getResponseForUrl(urlForPath(path)));
@@ -320,7 +229,10 @@ public class DatabaseImpl implements Database {
     }
 
     public void disconnect() {
-        this.couchDb.disconnect(this);
+        // TODO Introduce another interface that exposes the disconnect(Database) method?
+        if(this.couchDb instanceof DefaultCouchDbClient) {
+            ((DefaultCouchDbClient)this.couchDb).disconnect(this);
+        }
     }
 
     public String getName() {
@@ -402,12 +314,10 @@ public class DatabaseImpl implements Database {
     }
 
     public <T> T fetchObject(String docId, Class<T> clazz) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Implement!");
     }
 
     public <T> T fetchObject(String docId, String rev, Class<T> clazz) {
-        // TODO Auto-generated method stub
-        return null;
+        throw new UnsupportedOperationException("Implement!");
     }
 }

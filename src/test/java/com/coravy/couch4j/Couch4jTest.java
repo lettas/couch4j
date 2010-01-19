@@ -36,10 +36,11 @@ import java.util.UUID;
 
 import net.sf.json.JSONArray;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.HttpMethod;
-import org.apache.commons.httpclient.HttpStatus;
-import org.apache.commons.httpclient.methods.GetMethod;
+import org.apache.http.HttpResponse;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -267,19 +268,15 @@ public class Couch4jTest extends Couch4jBase {
     public void testDeleteDatabase() throws Exception {
         testEmpty.delete();
         // Check if the database exists...
-        HttpClient client = new HttpClient();
+        HttpClient client = new DefaultHttpClient();
         // Check if the database exists
-        HttpMethod m = null;
+        HttpGet m = null;
         try {
-            m = new GetMethod(server.toString() + "/" + testEmpty.getName());
-            int statusCode = client.executeMethod(m);
-            assertEquals(HttpStatus.SC_NOT_FOUND, statusCode);
+            m = new HttpGet(server.toString() + "/" + testEmpty.getName());
+            HttpResponse response = client.execute(m);
+            assertEquals(HttpStatus.SC_NOT_FOUND, response.getStatusLine().getStatusCode());
         } catch (IOException e) {
             fail(e.getLocalizedMessage());
-        } finally {
-            if (null != m) {
-                m.releaseConnection();
-            }
         }
     }
 

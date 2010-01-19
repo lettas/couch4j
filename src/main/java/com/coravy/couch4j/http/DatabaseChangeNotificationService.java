@@ -42,10 +42,11 @@ import java.util.logging.Logger;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.methods.GetMethod;
-import org.apache.commons.httpclient.params.HttpClientParams;
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.util.EntityUtils;
 
 import com.coravy.core.annotations.Immutable;
 import com.coravy.couch4j.Database;
@@ -69,9 +70,9 @@ final class DatabaseChangeNotificationService {
     private final Database database;
 
     DatabaseChangeNotificationService(final HttpClient c, final UrlResolver urlResolver, Database database) {
-        HttpClientParams params = new HttpClientParams();
-        params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
-        this.client = new HttpClient(params);
+        // HttpClientParams params = new HttpClientParams();
+        // params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
+        this.client = c;
         this.urlResolver = urlResolver;
         this.database = database;
     }
@@ -101,13 +102,17 @@ final class DatabaseChangeNotificationService {
                     return;
                 }
                 // Do we need the "heartbeat" param?
-                GetMethod method = new GetMethod(urlResolver.urlForPath("_changes", map("feed", "continuous", "style",
+                HttpGet method = new HttpGet(urlResolver.urlForPath("_changes", map("feed", "continuous", "style",
                         "all_docs", "since", String.valueOf(updateSeq), "heartbeat", "5000")));
+
+                HttpResponse response = null;
+                HttpEntity entity = null;
                 try {
                     // int statusCode = client.executeMethod(method);
-                    client.executeMethod(method);
+                    response = client.execute(method);
+                    entity = response.getEntity();
                     // Read the response body.
-                    Reader in = new InputStreamReader(method.getResponseBodyAsStream(), method.getRequestCharSet());
+                    Reader in = new InputStreamReader(entity.getContent(), EntityUtils.getContentCharSet(entity));
 
                     Scanner s = new Scanner(in).useDelimiter("\n");
                     String line;
@@ -134,16 +139,19 @@ final class DatabaseChangeNotificationService {
                 } catch (IOException e) {
                     throw new Couch4JException(e);
                 } finally {
-                    method.releaseConnection();
+                    if (null != entity) {
+                        try {
+                            entity.consumeContent();
+                        } catch (IOException e) {
+                            // swallow
+                        }
+                    }
                 }
             }
 
             public void run() {
-                int connectionsInPool = ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager())
-                        .getConnectionsInPool();
                 if (logger.isLoggable(Level.FINE)) {
-                    logger.fine("[" + Thread.currentThread().getName()
-                            + "] Start receiving changes... [connectionsInPool: " + connectionsInPool + "]");
+                    logger.fine("[" + Thread.currentThread().getName() + "] Start receiving changes... ");
                 }
                 // Start with current udpate seq
                 int updateSeq = database.getDatabaseInfo().getUpdateSeq();

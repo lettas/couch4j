@@ -31,6 +31,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import com.coravy.couch4j.http.DefaultCouchDbClient;
+
 public class ServerTest extends Couch4jBase {
 
     private Database test;
@@ -57,20 +59,20 @@ public class ServerTest extends Couch4jBase {
 
     @Test
     public void testFactoryMethod() throws Exception {
-        server = new CouchDbClient();
+        server = new DefaultCouchDbClient();
         assertEquals(5984, server.getRemotePort());
         assertEquals("localhost", server.getRemoteHost());
     }
 
     @Test
     public void testFactoryMethodHost() throws Exception {
-        server = new CouchDbClient("localhost");
+        server = new DefaultCouchDbClient("localhost");
         assertEquals(5984, server.getRemotePort());
     }
 
     @Test
     public void testFactoryMethodsHostPort() throws Exception {
-        server = new CouchDbClient("localhost", 1234);
+        server = new DefaultCouchDbClient("localhost", 1234);
     }
 
 }

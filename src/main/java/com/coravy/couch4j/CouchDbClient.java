@@ -23,24 +23,14 @@
  */
 package com.coravy.couch4j;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.logging.Logger;
-
-import org.apache.commons.httpclient.HttpClient;
-import org.apache.commons.httpclient.MultiThreadedHttpConnectionManager;
-import org.apache.commons.httpclient.params.HttpClientParams;
-
-import com.coravy.core.annotations.ThreadSafe;
-import com.coravy.couch4j.http.DatabaseImpl;
 
 /**
  * Main entry point for clients...
  * <p>
  * 
  * <pre>
- * CouchDbClient couch = new CouchDbClient(&quot;http://abc.example.com&quot;);
+ * CouchDbClient couch = new DefaultCouchDbClient(&quot;http://abc.example.com&quot;);
  * Database db1 = couch.getDatabase(&quot;dbname&quot;);
  * </pre>
  * 
@@ -48,14 +38,14 @@ import com.coravy.couch4j.http.DatabaseImpl;
  * 
  * <pre>
  * &lt;bean id="couchDb"
- *       class="com.coravy.couch4j.CouchDbClient" />
+ *       class="com.coravy.couch4j.http.DefaultCouchDbClient" />
  * </pre>
  * 
  * Or
  * 
  * <pre>
  * &lt;bean id="couchDb"
- *       class="com.coravy.couch4j.CouchDbClient">
+ *       class="com.coravy.couch4j.http.DefaultCouchDbClient">
  *       &lt;constructor-arg value="http://abc.example.com"/>
  *       &lt;constructor-arg value="5985"/>
  * &lt;/bean>
@@ -63,133 +53,14 @@ import com.coravy.couch4j.http.DatabaseImpl;
  * 
  * @author Stefan Saasen
  */
-@ThreadSafe
-public final class CouchDbClient {
-    final static String DEFAULT_HOST = "localhost";
-    final static int DEFAULT_PORT = 5984;
+public interface CouchDbClient {
+    String getRemoteHost();
 
-    private final static Logger logger = Logger.getLogger(CouchDbClient.class.getName());
-    private static final int MAX_HOST_CONNECTIONS = 10;
-    private HttpClient client;
+    int getRemotePort();
 
-    private final String host;
-    private final int port;
+    Database getDatabase(final String databaseName);
 
-    // public CouchDbClient(URL url) {
-    // }
+    List<String> databaseNames();
 
-    public CouchDbClient(final String host) {
-        this(host, DEFAULT_PORT);
-    }
-
-    public CouchDbClient() {
-        this(DEFAULT_HOST, DEFAULT_PORT);
-    }
-
-    public CouchDbClient(final String host, final int port) {
-        this.host = host;
-        this.port = port;
-        this.client = createHttpClient();
-    }
-
-    private HttpClient createHttpClient() {
-        HttpClientParams params = new HttpClientParams();
-        params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
-        params.setIntParameter("maxHostConnections", MAX_HOST_CONNECTIONS);
-
-        logger.info("Creating new database instance. Please reuse this object for the same CouchDB database.");
-
-        return new HttpClient(params);
-    }
-
-    public String getRemoteHost() {
-        return host;
-    }
-
-    public int getRemotePort() {
-        return port;
-    }
-
-    private Map<String, Database> instances = new HashMap<String, Database>();
-
-    public Database getDatabase(final String databaseName) {
-        synchronized (instances) {
-            if (instances.containsKey(databaseName)) {
-                return instances.get(databaseName);
-            }
-        }
-
-        Database d = new DatabaseImpl(this, client, databaseName);
-        synchronized (instances) {
-            instances.put(databaseName, d);
-        }
-        return d;
-    }
-
-    public void disconnect(Database d) {
-        synchronized (instances) {
-            if (instances.containsKey(d.getName())) {
-                instances.remove(d.getName());
-            }
-            if (instances.size() < 1) {
-                ((MultiThreadedHttpConnectionManager) client.getHttpConnectionManager()).shutdown();
-                client = createHttpClient();
-            }
-        }
-    }
-
-    public List<String> databaseNames() {
-        throw new UnsupportedOperationException(); // FIXME implement
-    }
-
-    public void disconnect() {
-        // for (Map.Entry<String, Database> e : this.instances.entrySet()) {
-        // e.getValue().disconnect();
-        // }
-        // synchronized (instances) {
-        // instances.clear();
-        // }
-    }
-
-    @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder();
-        sb.append("http");
-        /*
-         * if (useSsl) { sb.append("s"); }
-         */
-        sb.append("://");
-        sb.append(getRemoteHost());
-        sb.append(":");
-        sb.append(getRemotePort());
-        return sb.toString();
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((host == null) ? 0 : host.hashCode());
-        result = prime * result + port;
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof CouchDbClient))
-            return false;
-        CouchDbClient other = (CouchDbClient) obj;
-        if (host == null) {
-            if (other.getRemoteHost() != null)
-                return false;
-        } else if (!host.equals(other.getRemoteHost()))
-            return false;
-        if (port != other.getRemotePort())
-            return false;
-        return true;
-    }
+    void disconnect();
 }

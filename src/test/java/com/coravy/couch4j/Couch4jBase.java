@@ -32,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.coravy.couch4j.exceptions.Couch4JException;
+import com.coravy.couch4j.http.DefaultCouchDbClient;
 
 /**
  * For the test to work at least one running CouchDB instance needs to be there.
@@ -75,7 +76,7 @@ public abstract class Couch4jBase {
     public static Collection<CouchDbClient[]> testDatabases() {
         Collection<CouchDbClient[]> instancesRunning = new ArrayList<CouchDbClient[]>();
         for (int port : PORTS) {
-            CouchDbClient server = new CouchDbClient("localhost", port);
+            CouchDbClient server = new DefaultCouchDbClient("localhost", port);
             try {
                 server.getDatabase("couch4j");
                 instancesRunning.add(new CouchDbClient[] { server });

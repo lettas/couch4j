@@ -37,7 +37,7 @@ import com.coravy.couch4j.Document;
 /**
  * @author Stefan Saasen
  */
-public class ResponseDocument extends Document implements DatabaseAware {
+class ResponseDocument extends Document implements DatabaseAware {
     private final String _id;
     private final String _rev;
     private boolean isAvailable;

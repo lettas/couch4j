@@ -141,7 +141,7 @@ public interface Database {
 
     /**
      * Disconnect this database client. After calling {@code disconnect} the
-     * database client can not be used any more.
+     * database client cannot be used any more.
      */
     void disconnect();
 
