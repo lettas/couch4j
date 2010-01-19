@@ -9,10 +9,10 @@ Documentation
 -------------
 
 Documentation can be found here:  
-[http://dev.coravy.com/wiki/display/opensource/couch4j][wiki]
+[http://dev.coravy.com/wiki/display/couch4j][wiki]
 
 Quick start tutorial:  
-[http://dev.coravy.com/wiki/display/opensource/couch4j+Quick+Start][quickstart]
+[http://dev.coravy.com/wiki/display/couch4j/couch4j+Quick+Start][quickstart]
 
 Download
 --------
@@ -46,6 +46,6 @@ License
 The MIT License - see *License.txt*
 
 
-[wiki]: http://dev.coravy.com/wiki/display/opensource/couch4j  "couch4j documentation"
-[quickstart]: http://dev.coravy.com/wiki/display/opensource/couch4j+Quick+Start "5 minute quickstart"
+[wiki]: http://dev.coravy.com/wiki/display/couch4j  "couch4j documentation"
+[quickstart]: http://dev.coravy.com/wiki/display/couch4j/couch4j+Quick+Start "5 minute quickstart"
 [download]: http://github.com/juretta/couch4j/downloads "Downloads"
