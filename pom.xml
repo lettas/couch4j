@@ -6,7 +6,11 @@
 	<packaging>jar</packaging>
 	<version>0.8.3-SNAPSHOT</version>
 	<name>couch4j</name>
-	<url>http://dev.coravy.com/wiki/display/opensource/couch4j</url>
+	<url>http://dev.coravy.com/wiki/display/couch4j</url>
+	<issueManagement>
+		<system>github</system>
+		<url>http://github.com/juretta/couch4j/issues</url>
+	</issueManagement>
 	<ciManagement>
 		<system>Hudson</system>
 		<url>https://ci.coravy.com/hudson/job/couch4j/</url>
@@ -62,10 +66,14 @@
 			</roles>
 		</developer>
 	</developers>
+	<scm>
+		<developerConnection>scm:git:git@github.com:juretta/couch4j.git</developerConnection>
+		<url>scm:git:git://github.com/juretta/couch4j.git</url>
+	</scm>
 
 	<organization>
-		<name>coravy. Limited</name>
-		<url>https://coravy.com</url>
+		<name>coravy.</name>
+		<url>http://dev.coravy.com</url>
 	</organization>
 	<repositories>
 		<repository>
