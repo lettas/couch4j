@@ -53,6 +53,9 @@ import org.junit.runners.Parameterized;
 public class Couch4jTest extends Couch4jBase {
 
     public static final String VALID_DOC_ID = "test1";
+    public static final String DOC_ID_WITHOUT_ATTACHMENT = VALID_DOC_ID;
+    public static final String DOC_ID_WITH_ATTACHMENT = "test3_with_attachment";
+    public static final String ATTACHMENT_NAME = "Icon-128x128.png";
     public static final String NEW_DOCUMENT_ID = "new_document";
 
     static final String EMPTY_DATABASE_NAME = "couch4j-empty";
@@ -142,11 +145,11 @@ public class Couch4jTest extends Couch4jBase {
     public void testWithAttachmentAsStream() throws Exception {
         final int CONTENT_LENGTH = 9276;
 
-        final String docId = "test3_with_attachment";
+        final String docId = DOC_ID_WITH_ATTACHMENT;
         Document d = test.fetchDocument(docId);
         assertEquals(docId, d.getId());
 
-        final String attachmentId = "Icon-128x128.png";
+        final String attachmentId = ATTACHMENT_NAME;
         Attachment a = d.getAttachment(attachmentId);
         assertNotNull(a);
         assertEquals("image/png", a.getContentType());

@@ -33,7 +33,6 @@ import org.couch4j.Database;
 import org.couch4j.Document;
 import org.couch4j.Database.StreamContext;
 
-
 /**
  * @author Stefan Saasen
  */
@@ -44,12 +43,12 @@ class AttachmentImpl implements Attachment {
     private final long length;
 
     private final String name;
-    private final Document doc;
+    private final String docId;
 
     private Database database;
 
     AttachmentImpl(JSONObject json, String name, Document doc) {
-        this.doc = doc;
+        this.docId = doc.getId();
         this.name = name;
         stub = json.getBoolean("stub");
         contentType = json.getString("content_type");
@@ -95,11 +94,73 @@ class AttachmentImpl implements Attachment {
     /**
      * @return the contentId
      */
+    @Override
     public String getContentId() {
-        return this.doc.getId();
+        return docId;
     }
 
+    
+    @Override
+    public String getDocumentId() {
+        return docId;
+    }
+    
     public void retrieve(StreamContext sc) throws IOException {
         database.withAttachmentAsStream(this, sc);
     }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((contentType == null) ? 0 : contentType.hashCode());
+        result = prime * result + ((docId == null) ? 0 : docId.hashCode());
+        result = prime * result + (int) (length ^ (length >>> 32));
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + (stub ? 1231 : 1237);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (!(obj instanceof AttachmentImpl)) {
+            return false;
+        }
+        AttachmentImpl other = (AttachmentImpl) obj;
+        if (contentType == null) {
+            if (other.contentType != null) {
+                return false;
+            }
+        } else if (!contentType.equals(other.contentType)) {
+            return false;
+        }
+        if (docId == null) {
+            if (other.docId != null) {
+                return false;
+            }
+        } else if (!docId.equals(other.docId)) {
+            return false;
+        }
+        if (length != other.length) {
+            return false;
+        }
+        if (name == null) {
+            if (other.name != null) {
+                return false;
+            }
+        } else if (!name.equals(other.name)) {
+            return false;
+        }
+        if (stub != other.stub) {
+            return false;
+        }
+        return true;
+    }
+
 }

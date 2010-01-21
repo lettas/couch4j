@@ -23,14 +23,15 @@
  */
 package org.couch4j;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-
-import net.sf.json.JSONObject;
 
 import org.junit.After;
 import org.junit.Before;
@@ -63,21 +64,6 @@ public class DocumentTest extends Couch4jBase {
         Document d = new Document();
         assertNull(d.getId());
         assertNull(d.getRev());
-    }
-
-    @Test
-    public void documentToJson() throws Exception {
-        Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
-        JSONObject json = JSONObject.fromObject(d.toJson());
-        assertThat(d.toJson(), is(json.toString()));
-    }
-
-    @Test
-    public void documentToJSONObject() throws Exception {
-        Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
-        JSONObject json = d.toJSONObject();
-        assertEquals(d.getId(), json.getString("_id"));
-        assertEquals(d.getRev(), json.getString("_rev"));
     }
 
     @Test

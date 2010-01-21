@@ -23,16 +23,18 @@
  */
 package org.couch4j.http;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import net.sf.json.JSONException;
+import net.sf.json.JSONObject;
 
 import org.couch4j.Attachment;
 import org.couch4j.Database;
 import org.couch4j.Document;
-
-import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
 
 
 /**
@@ -117,6 +119,8 @@ class ResponseDocument extends Document implements DatabaseAware {
         }
         return "";
     }
+    
+    // TODO cache the attachment instances...
 
     public Attachment getAttachment(final String name) {
         fetchDocument();
@@ -130,14 +134,32 @@ class ResponseDocument extends Document implements DatabaseAware {
         return null;
     }
 
+    @SuppressWarnings("unchecked")
     public List<Attachment> getAttachments() {
         fetchDocument();
-        return Collections.emptyList();
+        if (null == attachments || attachments.isEmpty()) {
+            return Collections.emptyList();
+        }
+        ArrayList<Attachment> _attachments = new ArrayList<Attachment>(this.attachments.size());
+        for (Iterator iterator = this.attachments.keys(); iterator.hasNext();) {
+            String name = (String) iterator.next();
+            _attachments.add(new AttachmentImpl(this.attachments.getJSONObject(name), name, this));
+        }
+        return _attachments;
     }
 
+    @SuppressWarnings("unchecked")
     public List<String> getAttachmentNames() {
         fetchDocument();
-        return Collections.emptyList();
+        if (null == attachments || attachments.isEmpty()) {
+            return Collections.emptyList();
+        }
+        ArrayList<String> _attachments = new ArrayList<String>(this.attachments.size());
+        for (Iterator iterator = this.attachments.keys(); iterator.hasNext();) {
+            String name = (String) iterator.next();
+            _attachments.add(name);
+        }
+        return _attachments;
     }
 
     public Database getDatabase() {

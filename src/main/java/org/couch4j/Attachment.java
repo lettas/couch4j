@@ -56,8 +56,15 @@ public interface Attachment {
 
     /**
      * @return The id of the enclosing document
+     * @see Attachment#getDocumentId()
      */
+    @Deprecated
     String getContentId();
+
+    /**
+     * @return The id of the enclosing document
+     */
+    String getDocumentId();
 
     /**
      * Stream the attachment bytes.
