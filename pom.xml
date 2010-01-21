@@ -25,6 +25,7 @@
 	</licenses>
 
 	<build>
+    	<finalName>${pom.name}-${pom.version}</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
