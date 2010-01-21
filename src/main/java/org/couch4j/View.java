@@ -27,11 +27,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import net.sf.json.util.JSONUtils;
-
-import org.couch4j.util.StringUtils;
 
 /**
  * @author Stefan Saasen
@@ -53,7 +52,7 @@ public class View {
     private String viewName;
     private String documentName;
 
-    private final HashMap<String, String> params = new HashMap<String, String>();
+    private final Map<String, String> params = new HashMap<String, String>();
 
     public View() {
     }
@@ -132,8 +131,16 @@ public class View {
     }
 
     public View startkey(final String... keyparts) {
+        if(null == keyparts) {
+            return this;
+        }
         StringBuilder sb = new StringBuilder("[");
-        sb.append(StringUtils.join(keyparts, ","));
+        for (int i = 0; i < keyparts.length; i++) {
+            if (i > 0) {
+                sb.append(',');
+            }
+            sb.append(JSONUtils.quote(keyparts[i]));
+        }
         sb.append("]");
         params.put("startkey", sb.toString());
         return this;
