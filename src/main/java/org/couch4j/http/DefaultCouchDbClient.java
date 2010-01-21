@@ -29,10 +29,9 @@ import java.util.Map;
 
 import org.couch4j.CouchDbClient;
 import org.couch4j.Database;
+import org.couch4j.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.coravy.core.annotations.ThreadSafe;
 
 /**
  * Main entry point for clients...

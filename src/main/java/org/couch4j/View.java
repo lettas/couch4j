@@ -31,7 +31,7 @@ import java.util.Map.Entry;
 
 import net.sf.json.util.JSONUtils;
 
-import com.coravy.core.util.StringUtils;
+import org.couch4j.util.StringUtils;
 
 /**
  * @author Stefan Saasen

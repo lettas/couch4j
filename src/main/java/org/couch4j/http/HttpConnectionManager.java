@@ -36,7 +36,6 @@ import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
 import org.apache.http.HttpVersion;
-import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
@@ -60,8 +59,7 @@ import org.couch4j.Database.StreamContext;
 import org.couch4j.exceptions.Couch4JException;
 import org.couch4j.exceptions.DocumentNotFoundException;
 import org.couch4j.exceptions.DocumentUpdateConflictException;
-
-import com.coravy.core.io.StreamUtils;
+import org.couch4j.util.StreamUtils;
 
 /**
  * @author Stefan Saasen

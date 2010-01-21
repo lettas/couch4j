@@ -23,16 +23,15 @@
  */
 package org.couch4j.http;
 
-import org.couch4j.Database;
-import org.couch4j.Document;
-import org.couch4j.ViewResultRow;
-import org.couch4j.exceptions.Couch4JException;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import com.coravy.core.annotations.Immutable;
+import org.couch4j.Database;
+import org.couch4j.Document;
+import org.couch4j.ViewResultRow;
+import org.couch4j.annotations.Immutable;
+import org.couch4j.exceptions.Couch4JException;
 
 /**
  * @author Stefan Saasen

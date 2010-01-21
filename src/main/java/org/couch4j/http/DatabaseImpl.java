@@ -23,7 +23,7 @@
  */
 package org.couch4j.http;
 
-import static com.coravy.core.collections.CollectionUtils.map;
+import static org.couch4j.util.CollectionUtils.map;
 
 import java.io.Externalizable;
 import java.io.IOException;
@@ -53,7 +53,7 @@ import org.couch4j.exceptions.DocumentNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.coravy.core.annotations.ThreadSafe;
+import org.couch4j.annotations.ThreadSafe;
 
 /**
  * @author Stefan Saasen

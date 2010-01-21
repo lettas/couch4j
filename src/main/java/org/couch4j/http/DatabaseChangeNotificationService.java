@@ -23,7 +23,7 @@
  */
 package org.couch4j.http;
 
-import static com.coravy.core.collections.CollectionUtils.map;
+import static org.couch4j.util.CollectionUtils.map;
 
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -50,9 +50,8 @@ import org.apache.http.util.EntityUtils;
 import org.couch4j.Database;
 import org.couch4j.Database.ChangeEvent;
 import org.couch4j.Database.ChangeListener;
+import org.couch4j.annotations.Immutable;
 import org.couch4j.exceptions.Couch4JException;
-
-import com.coravy.core.annotations.Immutable;
 
 /**
  * @author Stefan Saasen

@@ -41,24 +41,15 @@ import org.apache.http.HttpStatus;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.couch4j.Attachment;
-import org.couch4j.CouchDbClient;
-import org.couch4j.Database;
-import org.couch4j.Document;
-import org.couch4j.View;
-import org.couch4j.ViewResult;
-import org.couch4j.ViewResultRow;
 import org.couch4j.Database.StreamContext;
-import org.couch4j.exceptions.Couch4JException;
 import org.couch4j.exceptions.DocumentNotFoundException;
 import org.couch4j.exceptions.DocumentUpdateConflictException;
+import org.couch4j.util.StreamUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
-
-import com.coravy.core.io.StreamUtils;
 
 @RunWith(Parameterized.class)
 public class Couch4jTest extends Couch4jBase {

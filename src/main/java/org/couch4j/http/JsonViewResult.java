@@ -27,13 +27,12 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
+import net.sf.json.JSONObject;
+
 import org.couch4j.Database;
 import org.couch4j.ViewResult;
 import org.couch4j.ViewResultRow;
-
-import net.sf.json.JSONObject;
-
-import com.coravy.core.annotations.Immutable;
+import org.couch4j.annotations.Immutable;
 
 /**
  * @author Stefan Saasen
