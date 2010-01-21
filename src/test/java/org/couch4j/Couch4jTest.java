@@ -23,10 +23,8 @@
  */
 package org.couch4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -153,7 +151,7 @@ public class Couch4jTest extends Couch4jBase {
         assertNotNull(a);
         assertEquals("image/png", a.getContentType());
         assertEquals(CONTENT_LENGTH, a.getLength());
-        assertTrue(a.isStub());
+//        assertTrue(a.isStub());
 
         a.retrieve(new StreamContext() {
             public void withInputStream(InputStream is) throws IOException {
@@ -285,7 +283,7 @@ public class Couch4jTest extends Couch4jBase {
         try {
             m = new HttpGet(server.toString() + "/" + testEmpty.getName());
             HttpResponse response = client.execute(m);
-            assertEquals(HttpStatus.SC_NOT_FOUND, response.getStatusLine().getStatusCode());
+            assertThat(HttpStatus.SC_NOT_FOUND, is(response.getStatusLine().getStatusCode()));
         } catch (IOException e) {
             fail(e.getLocalizedMessage());
         }
@@ -295,10 +293,9 @@ public class Couch4jTest extends Couch4jBase {
         assertEquals(VALID_DOC_ID, d.getId());
 
         JSONArray ary = (JSONArray) d.get("a");
-        assertEquals(1, ary.get(0));
-        assertEquals(2, ary.get(1));
-        assertEquals(3, ary.get(2));
-
+        assertThat(1, is(ary.get(0)));
+        assertThat(2, is(ary.get(1)));
+        assertThat(3, is(ary.get(2)));
         assertEquals("test", d.get("b"));
     }
 

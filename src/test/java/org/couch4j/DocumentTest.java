@@ -23,8 +23,8 @@
  */
 package org.couch4j;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.hamcrest.CoreMatchers.*;
+import static org.junit.Assert.*;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -55,7 +55,7 @@ public class DocumentTest extends Couch4jBase {
     public void testDocumentToJson() throws Exception {
         Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
         JSONObject json = JSONObject.fromObject(d.toJson());
-        assertEquals(d.toJson(), json.toString());
+        assertThat(d.toJson(), is(json.toString()));
     }
 
     @Test
@@ -71,5 +71,6 @@ public class DocumentTest extends Couch4jBase {
         Map<String,String> map = new HashMap<String,String>();
         map.put("k1", "value1");
         Document d = new Document(map);
+        assertNotNull(d);
     }
 }

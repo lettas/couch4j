@@ -23,37 +23,34 @@
  */
 package org.couch4j;
 
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
-import org.couch4j.View;
-import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
 
-
+/**
+ * @author Stefan Saasen
+ */
 public class ViewBuilderTest {
-
-    @Before
-    public void setUp() throws Exception {
-    }
-
-    @After
-    public void tearDown() throws Exception {
-    }
 
     @Test
     public final void testViewBuilder() {
-        assertEquals("_all_docs", new View("_all_docs").toString());
+        assertThat("_all_docs", is(new View("_all_docs").toString()));
     }
 
     @Test
+    public final void testViewBuilderName() {
+        assertThat("_all_docs", is(new View().name("_all_docs").toString()));
+    }
+    
+    @Test
     public final void testDocument() {
-        assertEquals("_design/design/_view/test", View.builder("test").document("design").toString());
+        assertThat("_design/design/_view/test", is(View.builder("test").document("design").toString()));
     }
 
     @Test
     public final void testDocumentCombined() {
-        assertEquals("_design/design/_view/test", View.builder("design/test").toString());
+        assertThat("_design/design/_view/test", is(View.builder("design/test").toString()));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -65,7 +62,7 @@ public class ViewBuilderTest {
     public final void testKey() {
         final String key = "/web/test.jsp";
         View v = View.builder("design/test").key(key);
-        assertEquals("_design/design/_view/test?key=%22%2Fweb%2Ftest.jsp%22", v.queryString());
+        assertThat("_design/design/_view/test?key=%22%2Fweb%2Ftest.jsp%22", is(v.queryString()));
     }
 
     //
@@ -73,62 +70,84 @@ public class ViewBuilderTest {
     public final void testEndkey() {
         final String key = "/web/test.jsp";
         View v = View.builder("design/test").endkey(key);
-        assertEquals("_design/design/_view/test?endkey=%22%2Fweb%2Ftest.jsp%22", v.queryString());
+        assertThat("_design/design/_view/test?endkey=%22%2Fweb%2Ftest.jsp%22", is(v.queryString()));
     }
 
-    //
-    // @Test
-    // public final void testDescending() {
-    // fail("Not yet implemented");
-    // }
+    @Test
+    public final void testDescendingTrue() {
+        View v = View.builder("design/test").descending(true);
+        assertThat("_design/design/_view/test?descending=true", is(v.queryString()));
+    }
+
+    @Test
+    public final void testDescendingFalse() {
+        View v = View.builder("design/test").descending(false);
+        assertThat("_design/design/_view/test?descending=false", is(v.queryString()));
+    }
 
     @Test
     public final void testIncludeDocs() {
-        assertEquals("_all_docs?include_docs=true", View.builder("_all_docs").includeDocs(true).toString());
+        assertThat("_all_docs?include_docs=true", is(View.builder("_all_docs").includeDocs(true).toString()));
     }
 
-    // @Test
-    // public final void testGroup() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public final void testUpdate() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public final void testSkip() {
-    // fail("Not yet implemented");
-    // }
-    //
-    // @Test
-    // public final void testCount() {
-    // fail("Not yet implemented");
-    // }
-    //
+    @Test
+    public final void testGroupTrue() {
+        View v = View.builder("design/test").group(true);
+        assertThat("_design/design/_view/test?group=true", is(v.queryString()));
+    }
+
+    @Test
+    public final void testGroupFalse() {
+        View v = View.builder("design/test").group(false);
+        assertThat("_design/design/_view/test?group=false", is(v.queryString()));
+    }
+
+    @Test
+    public final void testUpdateTrue() {
+        View v = View.builder("design/test").update(true);
+        assertThat("_design/design/_view/test?update=true", is(v.queryString()));
+    }
+
+    @Test
+    public final void testUpdateFalse() {
+        View v = View.builder("design/test").update(false);
+        assertThat("_design/design/_view/test?update=false", is(v.queryString()));
+    }
+
+    @Test
+    public final void testSkip() {
+        View v = View.builder("design/test").skip(10);
+        assertThat("_design/design/_view/test?skip=10", is(v.queryString()));
+    }
+
+    @Test
+    public final void testCount() {
+        View v = View.builder("design/test").count(13);
+        assertThat("_design/design/_view/test?count=13", is(v.queryString()));
+    }
+
     @Test
     public final void testStartkeyString() {
         final String key = "/web/test.jsp";
         View v = View.builder("design/test").startkey(key);
-        assertEquals("_design/design/_view/test?startkey=%22%2Fweb%2Ftest.jsp%22", v.queryString());
+        assertThat("_design/design/_view/test?startkey=%22%2Fweb%2Ftest.jsp%22", is(v.queryString()));
     }
 
-    // @Test
-    // public final void testStartkeyStringArray() {
-    // View v = View.builder("design/test").startkey("1", "2").build();
-    // assertEquals("_design/design/_view/test?startkey=[%221%22,%222%22]",
-    // v.queryString());
-    // }
-    //
+//    @Test
+//    public final void testStartkeyStringArray() {
+//        View v = View.builder("design/test").startkey("1", "2");
+//        assertThat("_design/design/_view/test?startkey=[%221%22,%222%22]", is(v.queryString()));
+//    }
+
     // @Test
     // public final void testStartkeyDocid() {
     // fail("Not yet implemented");
     // }
-    //
-    // @Test
-    // public final void testToString() {
-    // fail("Not yet implemented");
-    // }
+    @Test
+    public final void testToString() {
+        View v = View.builder("design/test").count(13);
+        assertThat("_design/design/_view/test?count=13", is(v.toString()));
+        assertThat(v.queryString(), is(v.toString()));
+    }
 
 }
