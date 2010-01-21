@@ -13,11 +13,6 @@ public class Couch4JException extends RuntimeException {
     private String error;
     private String reason;
 
-    public Couch4JException(String error, String reason) {
-        this.error = error;
-        this.reason = reason;
-    }
-
     public Couch4JException(Throwable t) {
         super(t);
     }
@@ -52,8 +47,8 @@ public class Couch4JException extends RuntimeException {
 
     @Override
     public String getMessage() {
-        return this.getClass().getSimpleName() + " [error=" + error + ", reason=" + reason + ", statusCode=" + statusCode
-                + ", message: " + super.getMessage() + "]";
+        return this.getClass().getSimpleName() + " [error=" + error + ", reason=" + reason + ", statusCode="
+                + statusCode + ", message: " + super.getMessage() + "]";
     }
 
     @Override
