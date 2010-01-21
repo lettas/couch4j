@@ -31,7 +31,7 @@ import org.junit.Test;
 /**
  * @author Stefan Saasen
  */
-public class ViewBuilderTest {
+public class ViewQueryTest {
 
     @Test
     public final void testViewBuilder() {
