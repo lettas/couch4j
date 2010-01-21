@@ -25,7 +25,7 @@
 	</licenses>
 
 	<build>
-    	<finalName>${pom.name}-${pom.version}</finalName>
+		<finalName>${pom.name}-${pom.version}</finalName>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -132,10 +132,6 @@
 			<version>1.5.10</version>
 			<scope>test</scope>
 		</dependency>
-
-		<!-- Fix logging -->
-
-		<!-- Logging for tests... -->
 	</dependencies>
 
 	<properties>
