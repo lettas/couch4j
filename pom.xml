@@ -1,12 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.coravy</groupId>
+	<groupId>org.couch4j</groupId>
 	<artifactId>couch4j</artifactId>
 	<packaging>jar</packaging>
-	<version>0.8.3-SNAPSHOT</version>
+	<version>0.9.0-SNAPSHOT</version>
 	<name>couch4j</name>
-	<url>http://dev.coravy.com/wiki/display/couch4j</url>
+	<url>http://couch4j.org/wiki/display/couch4j</url>
 	<issueManagement>
 		<system>github</system>
 		<url>http://github.com/juretta/couch4j/issues</url>
@@ -109,8 +109,6 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
-		<!-- Fix logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -127,14 +125,16 @@
 			<artifactId>jcl-over-slf4j</artifactId>
 			<version>1.5.10</version>
 		</dependency>
-
-		<!-- Logging for tests... -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-simple</artifactId>
 			<version>1.5.10</version>
 			<scope>test</scope>
 		</dependency>
+
+		<!-- Fix logging -->
+
+		<!-- Logging for tests... -->
 	</dependencies>
 
 	<properties>
@@ -171,15 +171,15 @@
 	<distributionManagement>
 		<!-- use the following if you're not using a snapshot version. -->
 		<repository>
-			<id>coravy-opensource-release</id>
+			<id>couch4j-release</id>
 			<name>Repository Name</name>
-			<url>file:///opt/webs/coravy.com/repository/www/maven2</url>
+			<url>file:///opt/webs/couch4j.org/repository/www/maven2</url>
 		</repository>
 		<!-- use the following if you ARE using a snapshot version. -->
 		<snapshotRepository>
-			<id>coravy-opensource-snapshot</id>
+			<id>couch4j-snapshot</id>
 			<name>Repository Name</name>
-			<url>file:///opt/webs/coravy.com/snapshots/www/maven2</url>
+			<url>file:///opt/webs/couch4j.org/snapshots/www/maven2</url>
 		</snapshotRepository>
 	</distributionManagement>
 </project>
