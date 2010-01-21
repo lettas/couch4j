@@ -1,3 +1,26 @@
+/*
+ * The MIT License
+ *
+ * Copyright (c) 2009, 2010 Stefan Saasen
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
 package org.couch4j.util;
 
 import java.io.BufferedReader;
@@ -38,10 +61,8 @@ public final class StreamUtils {
      */
     private static final int BUFFER_SIZE = 4 * 1024;
 
-    /**
-     * Do not instantiate StreamUtils.
-     */
     private StreamUtils() {
+        throw new AssertionError("Do not instantiate StreamUtils");
     }
 
     /**
@@ -129,7 +150,7 @@ public final class StreamUtils {
     /**
      * Copy input to output stream.
      * <p>
-     * This method does NOT close the input and output stream!
+     * This method does <strong>NOT</strong> close the input and output stream!
      * 
      * @param is
      *            InputStream to copy from.
@@ -247,7 +268,7 @@ public final class StreamUtils {
     /**
      * Performs a fast channel copy from {@code src} to {@code dest}.
      * <p>
-     * Does not close the channels!
+     * Does <strong>NOT</strong> close the channels!
      * 
      * @param src
      *            ReadableByteChannel
@@ -259,17 +280,11 @@ public final class StreamUtils {
             throws IOException {
         final ByteBuffer buffer = ByteBuffer.allocateDirect(4 * BUFFER_SIZE);
         while (src.read(buffer) != -1) {
-            // prepare the buffer to be drained
             buffer.flip();
-            // write to the channel, may block
             dest.write(buffer);
-            // If partial transfer, shift remainder down
-            // If buffer is empty, same as doing clear()
             buffer.compact();
         }
-        // EOF will leave buffer in fill state
         buffer.flip();
-        // make sure the buffer is fully drained.
         while (buffer.hasRemaining()) {
             dest.write(buffer);
         }
@@ -319,21 +334,6 @@ public final class StreamUtils {
     }
 
     /**
-     * Returns a String representation of the given InputStream.
-     * <p>
-     * The InputStream will not be closed.
-     * 
-     * @param is
-     * @return
-     * @throws IOException
-     */
-    public static String toString(final InputStream is) throws IOException {
-        Writer sw = new StringWriter();
-        copyAndClose(new InputStreamReader(is), sw);
-        return sw.toString();
-    }
-
-    /**
      * Returns a String representation of the given Reader.
      * <p>
      * The Reader will be closed.
@@ -347,22 +347,6 @@ public final class StreamUtils {
         Writer sw = new StringWriter();
         copyAndClose(r, sw);
         return sw.toString();
-    }
-
-    /**
-     * Returns a String representation of the given InputStream and closes the
-     * stream silently.
-     * 
-     * @param is
-     * @return
-     * @throws IOException
-     */
-    public static String toStringAndClose(final InputStream is) throws IOException {
-        try {
-            return toString(is);
-        } finally {
-            closeSilently(is);
-        }
     }
 
 }
