@@ -23,6 +23,7 @@
  */
 package org.couch4j;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -41,6 +42,12 @@ import net.sf.json.JSONObject;
 
 /**
  * Represents a CouchDB document.
+ * <p>
+ * This class uses the {@link Object#equals(Object)} and
+ * {@link Object#hashCode()} implementations! Calling methods that
+ * <strong>return</strong> a Document will most likely return a
+ * <strong>subtype</strong> of Document for which the equals/hashCode contract
+ * would be violated.
  * 
  * @couchdbApi http://wiki.apache.org/couchdb/HTTP_Document_API
  * @author Stefan Saasen
@@ -71,10 +78,7 @@ public class Document implements JsonExportable {
     }
 
     public String getRev() {
-        if (!attributes.containsKey("_rev")) {
-            return null;
-        }
-        return attributes.get("_rev").toString();
+        return null; // This class always returns null
     }
 
     /**
@@ -84,9 +88,9 @@ public class Document implements JsonExportable {
      * @return true if this document will be deleted in next compaction run,
      *         false otherwise.
      */
-    public boolean isDeleted() {
-        throw new UnsupportedOperationException("Implement!");
-    }
+    // public boolean isDeleted() {
+    // throw new UnsupportedOperationException("Implement!");
+    // }
 
     public void put(Object key, Object value) {
         this.attributes.put(key, value);
@@ -111,7 +115,7 @@ public class Document implements JsonExportable {
      * @return List of revisions or an empty list.
      */
     public List<String> getRevisions() {
-        throw new UnsupportedOperationException("Implement!");
+        return Collections.emptyList(); // This class only returns an empty list
     }
 
     public Attachment getAttachment(final String name) {
@@ -132,30 +136,5 @@ public class Document implements JsonExportable {
 
     public JSONObject toJSONObject() {
         return JSONObject.fromObject(this.attributes);
-    }
-
-    @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((attributes == null) ? 0 : attributes.hashCode());
-        return result;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (!(obj instanceof Document))
-            return false;
-        Document other = (Document) obj;
-        if (attributes == null) {
-            if (other.attributes != null)
-                return false;
-        } else if (!attributes.equals(other.attributes))
-            return false;
-        return true;
     }
 }

@@ -52,8 +52,8 @@ import org.junit.runners.Parameterized;
 @RunWith(Parameterized.class)
 public class Couch4jTest extends Couch4jBase {
 
-    static final String VALID_DOC_ID = "test1";
-    static final String NEW_DOCUMENT_ID = "new_document";
+    public static final String VALID_DOC_ID = "test1";
+    public static final String NEW_DOCUMENT_ID = "new_document";
 
     static final String EMPTY_DATABASE_NAME = "couch4j-empty";
     static final String TEST_DATABASE_NAME = "couch4j";
@@ -134,7 +134,7 @@ public class Couch4jTest extends Couch4jBase {
         assertDocumentTest1(d);
         
         Document d2 = test.fetchDocument(VALID_DOC_ID, d.getRev());
-        assertEquals(d, d2);
+        assertEquals(d.getId(), d2.getId());
         assertDocumentTest1(d2);
     }
 
