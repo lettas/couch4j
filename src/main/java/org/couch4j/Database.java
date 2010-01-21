@@ -134,7 +134,7 @@ public interface Database {
 
     ViewResult fetchAllDocuments(boolean includeDocs);
 
-    ViewResult fetchView(View v);
+    ViewResult fetchView(ViewQuery v);
 
     ServerResponse delete();
 

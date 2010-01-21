@@ -46,7 +46,7 @@ import org.couch4j.DatabaseInfo;
 import org.couch4j.Document;
 import org.couch4j.JsonExportable;
 import org.couch4j.ServerResponse;
-import org.couch4j.View;
+import org.couch4j.ViewQuery;
 import org.couch4j.ViewResult;
 import org.couch4j.exceptions.Couch4JException;
 import org.couch4j.exceptions.DocumentNotFoundException;
@@ -108,7 +108,7 @@ public class DatabaseImpl implements Database {
     }
 
     public ViewResult fetchAllDocuments(boolean includeDocs) {
-        return new JsonViewResult(jsonForPath(View.builder("_all_docs").includeDocs(true).toString()), this);
+        return new JsonViewResult(jsonForPath(ViewQuery.builder("_all_docs").includeDocs(true).toString()), this);
     }
 
     /*
@@ -129,7 +129,7 @@ public class DatabaseImpl implements Database {
         return d;
     }
 
-    public ViewResult fetchView(View v) {
+    public ViewResult fetchView(ViewQuery v) {
         return new JsonViewResult(jsonForPath(v.queryString()), this);
     }
 

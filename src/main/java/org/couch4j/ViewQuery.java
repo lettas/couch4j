@@ -35,14 +35,14 @@ import net.sf.json.util.JSONUtils;
 /**
  * @author Stefan Saasen
  */
-public class View {
+public class ViewQuery {
 
-    public static View builder() {
-        return new View();
+    public static ViewQuery builder() {
+        return new ViewQuery();
     }
 
-    public static View builder(final String name) {
-        return new View(name);
+    public static ViewQuery builder(final String name) {
+        return new ViewQuery(name);
     }
 
     public String queryString() {
@@ -54,14 +54,14 @@ public class View {
 
     private final Map<String, String> params = new HashMap<String, String>();
 
-    public View() {
+    public ViewQuery() {
     }
 
-    public View(final String name) {
+    public ViewQuery(final String name) {
         name(name);
     }
 
-    public View name(final String name) {
+    public ViewQuery name(final String name) {
         if (null != name && name.contains("/")) {
             String[] elems = name.split("/");
             if (elems.length != 2) {
@@ -76,7 +76,7 @@ public class View {
         return this;
     }
 
-    public View document(final String name) {
+    public ViewQuery document(final String name) {
         documentName = name;
         return this;
     }
@@ -85,52 +85,52 @@ public class View {
      * @param string
      * @return
      */
-    public View key(final String key) {
+    public ViewQuery key(final String key) {
         params.put("key", JSONUtils.quote(key));
         return this;
     }
 
-    public View endkey(final String key) {
+    public ViewQuery endkey(final String key) {
         params.put("endkey", JSONUtils.quote(key));
         return this;
     }
 
-    public View descending(final boolean descending) {
+    public ViewQuery descending(final boolean descending) {
         params.put("descending", String.valueOf(descending));
         return this;
     }
 
-    public View includeDocs(final boolean includeDocs) {
+    public ViewQuery includeDocs(final boolean includeDocs) {
         params.put("include_docs", String.valueOf(includeDocs));
         return this;
     }
 
-    public View group(final boolean group) {
+    public ViewQuery group(final boolean group) {
         params.put("group", String.valueOf(group));
         return this;
     }
 
-    public View update(final boolean update) {
+    public ViewQuery update(final boolean update) {
         params.put("update", String.valueOf(update));
         return this;
     }
 
-    public View skip(final int skip) {
+    public ViewQuery skip(final int skip) {
         params.put("skip", String.valueOf(skip));
         return this;
     }
 
-    public View count(final int c) {
+    public ViewQuery count(final int c) {
         params.put("count", String.valueOf(c));
         return this;
     }
 
-    public View startkey(final String key) {
+    public ViewQuery startkey(final String key) {
         params.put("startkey", JSONUtils.quote(key));
         return this;
     }
 
-    public View startkey(final String... keyparts) {
+    public ViewQuery startkey(final String... keyparts) {
         if(null == keyparts) {
             return this;
         }
@@ -146,7 +146,7 @@ public class View {
         return this;
     }
 
-    public View startkeyDocid(final String... keyparts) {
+    public ViewQuery startkeyDocid(final String... keyparts) {
         throw new UnsupportedOperationException("Implement me");
     }
 
