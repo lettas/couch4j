@@ -24,6 +24,8 @@
 package org.couch4j;
 
 /**
+ * TODO -> Should this be more generic?
+ * 
  * @author Stefan Saasen
  */
 public interface ServerResponse extends JsonExportable {

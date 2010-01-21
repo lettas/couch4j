@@ -36,6 +36,8 @@ public interface ViewResultRow extends JsonExportable {
     String getKey();
 
     Document getDocument();
+    
+//    <T> getObject(Class<T> clazz);
 
     JSONObject getValueAsObject();
 
