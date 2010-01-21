@@ -9,10 +9,10 @@ Documentation
 -------------
 
 Documentation can be found here:  
-[http://dev.coravy.com/wiki/display/couch4j][wiki]
+[http://couch4j.org/wiki/display/couch4j][wiki]
 
 Quick start tutorial:  
-[http://dev.coravy.com/wiki/display/couch4j/couch4j+Quick+Start][quickstart]
+[http://couch4j.org/wiki/display/couch4j/couch4j+Quick+Start][quickstart]
 
 Download
 --------
@@ -24,15 +24,15 @@ Maven dependencies
 ------------------
 
 	<dependency>
-    	<groupId>com.coravy</groupId>
+    	<groupId>org.couch4j</groupId>
     	<artifactId>couch4j</artifactId>
-    	<version>0.8.1</version>
+    	<version>0.9.0</version>
 	</dependency>
 	
 	<repository>
-	    <id>coravy-opensource</id>
-	    <name>coravy. opensource</name>
-	    <url>http://repository.coravy.com/maven2/</url>
+	    <id>couch4j-repos</id>
+	    <name>couch4j repos</name>
+	    <url>http://repository.couch4j.org/maven2/</url>
 	    <releases>
 	    </releases>
 	    <snapshots>
@@ -46,6 +46,6 @@ License
 The MIT License - see *License.txt*
 
 
-[wiki]: http://dev.coravy.com/wiki/display/couch4j  "couch4j documentation"
-[quickstart]: http://dev.coravy.com/wiki/display/couch4j/couch4j+Quick+Start "5 minute quickstart"
+[wiki]: http://couch4j.org/wiki/display/couch4j  "couch4j documentation"
+[quickstart]: http://couch4j.org/wiki/display/couch4j/couch4j+Quick+Start "5 minute quickstart"
 [download]: http://github.com/juretta/couch4j/downloads "Downloads"
