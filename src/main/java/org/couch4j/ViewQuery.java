@@ -33,34 +33,68 @@ import java.util.Map.Entry;
 import net.sf.json.util.JSONUtils;
 
 /**
+ * Define a query for a particular view.
+ * <p>
+ * This class represents a query string needed to query the CouchDB server for a
+ * particular view result.
+ * <p>
+ * The class uses the builder pattern to provide a fluent interface for creating
+ * views.
+ * 
+ * <pre>
+ * ViewQuery query = ViewQuery.builder(&quot;designdoc/viewname&quot;).key(&quot;test&quot;).descending(true);
+ * </pre>
+ * 
  * @author Stefan Saasen
  */
 public class ViewQuery {
 
+    /**
+     * @return Simply returns an instance of an empty {@code ViewQuery}.
+     */
     public static ViewQuery builder() {
         return new ViewQuery();
     }
 
+    /**
+     * @param name
+     *            - The name of the view or the design document/view combination
+     *            (e.g. "admin/by_id" with "DOCNAME/VIEWNAME" format).
+     * @return Simply returns an instance of a {@code ViewQuery} for a
+     *         particular view.
+     */
     public static ViewQuery builder(final String name) {
         return new ViewQuery(name);
     }
 
-    public String queryString() {
-        return this.toString();
-    }
-
     private String viewName;
     private String documentName;
-
     private final Map<String, String> params = new HashMap<String, String>();
 
+    /**
+     * Create an empty ViewQuery. A ViewQuery needs at least the name of the
+     * view.
+     * 
+     * @see ViewQuery(String)
+     */
     public ViewQuery() {
     }
 
+    /**
+     * Crreate a ViewQuery with a view name.
+     * 
+     * @param name
+     *            - See {@link ViewQuery#builder(String)}
+     */
     public ViewQuery(final String name) {
         name(name);
     }
 
+    /**
+     * @param name
+     *            - See {@link ViewQuery#builder(String)}
+     * @return ViewQuery
+     */
     public ViewQuery name(final String name) {
         if (null != name && name.contains("/")) {
             String[] elems = name.split("/");
@@ -76,15 +110,16 @@ public class ViewQuery {
         return this;
     }
 
-    public ViewQuery document(final String name) {
-        documentName = name;
+    /**
+     * @param documentName
+     *            The name of the design document
+     * @return ViewQuery
+     */
+    public ViewQuery document(final String documentName) {
+        this.documentName = documentName;
         return this;
     }
 
-    /**
-     * @param string
-     * @return
-     */
     public ViewQuery key(final String key) {
         params.put("key", JSONUtils.quote(key));
         return this;
@@ -131,7 +166,7 @@ public class ViewQuery {
     }
 
     public ViewQuery startkey(final String... keyparts) {
-        if(null == keyparts) {
+        if (null == keyparts) {
             return this;
         }
         StringBuilder sb = new StringBuilder("[");
@@ -177,6 +212,13 @@ public class ViewQuery {
             }
         }
         return sb.toString();
+    }
+
+    /**
+     * @return the query string to be used to fetch a CouchDB view result.
+     */
+    public String queryString() {
+        return this.toString();
     }
 
 }
