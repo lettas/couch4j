@@ -23,9 +23,13 @@
  */
 package org.couch4j.util;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Map.Entry;
 
 /**
  * String related helper/utility methods.
@@ -182,6 +186,45 @@ public final class StringUtils {
             }
         }
         return result.toString();
+    }
+    
+    /**
+     * Create a query String using the given parameters.
+     * <pre>
+     * Map<String,String> map = new LinkedHashMap<String,String>();
+     * map.put("k1", "value1");
+     * map.put("k2", "value2");
+     * 
+     * String s = StringUtils.createQueryString(params);
+     * 
+     * // => "?k1=value1&k2=value2"
+     * </pre>
+     * @param params
+     * @return Query String
+     */
+    public static String createQueryString(Map<String,String> params) {
+        if(null == params || params.isEmpty()) {
+            return "";
+        }
+        StringBuilder sb = new StringBuilder();
+        if (!params.isEmpty()) {
+            sb.append("?");
+            try {
+
+                for (Iterator<Entry<String, String>> iterator = params.entrySet().iterator(); iterator.hasNext();) {
+                    final Entry<String, String> entry = iterator.next();
+                    sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
+                    sb.append("=");
+                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
+                    if (iterator.hasNext()) {
+                        sb.append("&");
+                    }
+                }
+            } catch (UnsupportedEncodingException ue) {
+                // ignore - UTF-8 is mandatory
+            }
+        }
+        return sb.toString();
     }
 
 }

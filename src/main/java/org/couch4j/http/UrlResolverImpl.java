@@ -31,6 +31,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 
 import org.couch4j.CouchDbClient;
+import org.couch4j.util.StringUtils;
 
 
 /**
@@ -78,23 +79,7 @@ class UrlResolverImpl implements UrlResolver {
         sb.append(baseUrl);
         sb.append("/");
         sb.append(path);
-        if (!params.isEmpty()) {
-            sb.append("?");
-            try {
-
-                for (Iterator<Entry<String, String>> iterator = params.entrySet().iterator(); iterator.hasNext();) {
-                    final Entry<String, String> entry = iterator.next();
-                    sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-                    sb.append("=");
-                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-                    if (iterator.hasNext()) {
-                        sb.append("&");
-                    }
-                }
-            } catch (UnsupportedEncodingException ue) {
-                // ignore - UTF-8 is mandatory
-            }
-        }
+        sb.append(StringUtils.createQueryString(params));
         return sb.toString();
     }
 }
