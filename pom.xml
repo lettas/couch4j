@@ -76,27 +76,6 @@
 		<url>http://dev.coravy.com</url>
 	</organization>
 	<repositories>
-		<repository>
-			<id>coravy-opensource-snapshots</id>
-			<name>coravy. opensource</name>
-			<url>http://snapshots.coravy.com/maven2/</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-			</snapshots>
-		</repository>
-
-		<repository>
-			<id>coravy-opensource</id>
-			<name>coravy. opensource</name>
-			<url>http://repository.coravy.com/maven2/</url>
-			<releases>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
 	</repositories>
 
 	<dependencies>
