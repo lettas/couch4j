@@ -30,6 +30,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.couch4j.util.StringUtils;
+
 import net.sf.json.util.JSONUtils;
 
 /**
@@ -195,22 +197,7 @@ public class ViewQuery {
             sb.append("/_view/");
         }
         sb.append(viewName);
-        if (!params.isEmpty()) {
-            sb.append("?");
-            try {
-                for (Iterator<Entry<String, String>> iterator = params.entrySet().iterator(); iterator.hasNext();) {
-                    final Entry<String, String> entry = iterator.next();
-                    sb.append(URLEncoder.encode(entry.getKey(), "UTF-8"));
-                    sb.append("=");
-                    sb.append(URLEncoder.encode(entry.getValue(), "UTF-8"));
-                    if (iterator.hasNext()) {
-                        sb.append("&");
-                    }
-                }
-            } catch (UnsupportedEncodingException ue) {
-                // ignore
-            }
-        }
+        sb.append(StringUtils.createQueryString(this.params));
         return sb.toString();
     }
 
