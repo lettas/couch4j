@@ -58,8 +58,8 @@ public class Couch4jTest extends Couch4jBase {
     public static final String ATTACHMENT_NAME = "Icon-128x128.png";
     public static final String NEW_DOCUMENT_ID = "new_document";
 
-    static final String EMPTY_DATABASE_NAME = "couch4j-empty";
-    static final String TEST_DATABASE_NAME = "couch4j";
+    public static final String EMPTY_DATABASE_NAME = "couch4j-empty";
+    public static final String TEST_DATABASE_NAME = "couch4j";
 
     private static final int NUM_ALL_DOCS = 5;
 
