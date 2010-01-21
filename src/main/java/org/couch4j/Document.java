@@ -29,7 +29,20 @@ import java.util.Map;
 
 import net.sf.json.JSONObject;
 
+/*
+ * TODO:
+ * ''_rev_infos''
+ *      Similar to _revisions, but more details about the history and the availability of ancient versions of the document
+ * ''_conflicts''
+ *      Information about conflicts
+ * ''_deleted_conflicts''
+ *  Information about conflicts
+ */
+
 /**
+ * Represents a CouchDB document.
+ * 
+ * @couchdbApi http://wiki.apache.org/couchdb/HTTP_Document_API
  * @author Stefan Saasen
  */
 public class Document implements JsonExportable {
@@ -64,6 +77,17 @@ public class Document implements JsonExportable {
         return attributes.get("_rev").toString();
     }
 
+    /**
+     * Indicates that this document has been deleted and will be removed on next
+     * compaction run.
+     * 
+     * @return true if this document will be deleted in next compaction run,
+     *         false otherwise.
+     */
+    public boolean isDeleted() {
+        throw new UnsupportedOperationException("Implement!");
+    }
+
     public void put(Object key, Object value) {
         this.attributes.put(key, value);
     }
@@ -80,10 +104,16 @@ public class Document implements JsonExportable {
         return attributes;
     }
 
+    /**
+     * If the document was requested with ?revs=true this field will hold a
+     * simple list of the documents history
+     * 
+     * @return List of revisions or an empty list.
+     */
     public List<String> getRevisions() {
         throw new UnsupportedOperationException("Implement!");
     }
-    
+
     public Attachment getAttachment(final String name) {
         throw new UnsupportedOperationException("Implement!");
     }

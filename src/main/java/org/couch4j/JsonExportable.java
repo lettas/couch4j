@@ -26,6 +26,8 @@ package org.couch4j;
 import net.sf.json.JSONObject;
 
 /**
+ * Implementors can be exported to a JSON string and an JSONObject.
+ * 
  * @author Stefan Saasen
  */
 public interface JsonExportable {

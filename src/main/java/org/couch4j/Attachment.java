@@ -27,21 +27,43 @@ import java.io.IOException;
 
 import org.couch4j.Database.StreamContext;
 
-
-
 /**
  * @author Stefan Saasen
  */
 public interface Attachment {
-    boolean isStub();
 
+    /*
+     * From http://wiki.apache.org/couchdb/HTTP_Document_API:
+     * When you update the document you must include the attachment stubs or 
+     * CouchDB will delete the attachment.
+     */
+//    boolean isStub();
+
+    /**
+     * Return the Content-Type (e.g "image/jpeg") of the attachment.
+     */
     String getContentType();
 
+    /**
+     * @return the size of the attachment in bytes
+     */
     long getLength();
 
+    /**
+     * @return the file name of the attachment
+     */
     String getName();
 
+    /**
+     * @return The id of the enclosing document
+     */
     String getContentId();
 
+    /**
+     * Stream the attachment bytes.
+     * 
+     * @param StreamContext 
+     * @throws IOException
+     */
     void retrieve(StreamContext sc) throws IOException;
 }

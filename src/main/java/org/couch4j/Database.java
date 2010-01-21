@@ -33,10 +33,12 @@ import java.util.Map;
 
 import org.couch4j.exceptions.DocumentNotFoundException;
 
-
 /**
- * Represents a single logical CouchDB database.
+ * Represents a single CouchDB database.
+ * <p>
  * 
+ * @couchdbApi http://wiki.apache.org/couchdb/HTTP_database_API
+ * @couchdbApi http://wiki.apache.org/couchdb/Compaction
  * @author Stefan Saasen
  */
 public interface Database {
