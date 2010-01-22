@@ -44,7 +44,7 @@ import org.junit.Test;
  */
 public class StreamUtilsTest {
 
-    private class Marker {
+    private static class Marker {
         boolean flag;
     }
 

@@ -204,7 +204,7 @@ class HttpConnectionManager {
         case PUT:
             m = new HttpPut(url);
             if (null != entity) {
-                ((HttpPost) m).setEntity(entity);
+                ((HttpPut) m).setEntity(entity);
             }
             break;
         case DELETE:
