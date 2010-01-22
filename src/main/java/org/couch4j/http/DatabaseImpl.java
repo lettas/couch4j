@@ -25,10 +25,8 @@ package org.couch4j.http;
 
 import static org.couch4j.util.CollectionUtils.map;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.Collections;
@@ -36,7 +34,6 @@ import java.util.Date;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
-import net.sf.json.JSONSerializer;
 
 import org.apache.http.entity.StringEntity;
 import org.couch4j.Attachment;
@@ -44,7 +41,6 @@ import org.couch4j.CouchDbClient;
 import org.couch4j.Database;
 import org.couch4j.DatabaseInfo;
 import org.couch4j.Document;
-import org.couch4j.JsonExportable;
 import org.couch4j.ServerResponse;
 import org.couch4j.ViewQuery;
 import org.couch4j.ViewResult;
@@ -58,6 +54,7 @@ import org.slf4j.LoggerFactory;
  */
 @ThreadSafe
 public class DatabaseImpl implements Database {
+
     private static final String UTF_8 = "UTF-8";
 
     private final static Logger logger = LoggerFactory.getLogger(Database.class);
@@ -91,6 +88,10 @@ public class DatabaseImpl implements Database {
         }
     }
 
+    public void addChangeListener(ChangeListener listener) {
+        changesService.addChangeListener(listener);
+    }
+
     /*
      * (non-Javadoc)
      * @see org.couch4j.Database#bulkSave(java.util.Collection)
@@ -101,6 +102,23 @@ public class DatabaseImpl implements Database {
 
     public ServerResponse delete() {
         return client.delete(urlResolver.baseUrl());
+    }
+
+    public ServerResponse deleteDocument(Document doc) {
+        final String id = doc.getId();
+        final String rev = doc.getRev();
+        ServerResponse response = client.delete(urlResolver.urlForPath(id, map("rev", rev)));
+        doc.put("_id", id);
+        doc.put("_rev", response.getRev());
+        return response;
+    }
+
+    public void disconnect() {
+        // TODO Introduce another interface that exposes the
+        // disconnect(Database) method?
+        if (this.couchDb instanceof DefaultCouchDbClient) {
+            ((DefaultCouchDbClient) this.couchDb).disconnect(this);
+        }
     }
 
     public ViewResult fetchAllDocuments() {
@@ -129,118 +147,16 @@ public class DatabaseImpl implements Database {
         return d;
     }
 
+    public <T> T fetchObject(String docId, Class<T> clazz) {
+        throw new UnsupportedOperationException("Implement!");
+    }
+
+    public <T> T fetchObject(String docId, String rev, Class<T> clazz) {
+        throw new UnsupportedOperationException("Implement!");
+    }
+
     public ViewResult fetchView(ViewQuery v) {
         return new JsonViewResult(jsonForPath(v.queryString()), this);
-    }
-
-    /*
-     * (non-Javadoc)
-     * @see org.couch4j.Database#saveDocument(org.couch4j.Document)
-     */
-    public ServerResponse saveDocument(Document doc) {
-
-        StringEntity entity;
-        try {
-            entity = new StringEntity(doc.toJson(), UTF_8);
-            entity.setContentType("application/json");
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e);
-        }
-
-        ServerResponse response;
-        if (null == doc.getId()) {
-            response = client.post(urlResolver.baseUrl(), entity);
-        } else {
-            response = client.put(urlForPath(doc.getId()), entity);
-        }
-
-        doc.put("_id", response.getId());
-        doc.put("_rev", response.getRev());
-        return response;
-    }
-
-    public ServerResponse saveDocument(Map<String, ? super Object> doc) {
-        HttpConnectionManager.Method method;
-        String url;
-        final String id = (String) (doc.get("id") != null ? doc.get("id") : doc.get("_id"));
-        if (null == id) {
-            url = urlResolver.baseUrl();
-            method = HttpConnectionManager.Method.POST;
-        } else {
-            url = urlForPath(id);
-            method = HttpConnectionManager.Method.PUT;
-        }
-
-        StringEntity entity;
-        try {
-            entity = new StringEntity(JSONSerializer.toJSON(doc).toString(), UTF_8);
-            entity.setContentType("application/json");
-
-            ServerResponse response = this.client.execute(url, method, entity);
-            doc.put("_id", response.getId());
-            doc.put("_rev", response.getRev());
-            return response;
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e); // Should not happen as UTF-8 is
-            // supported on every JVM
-        }
-    }
-
-    public ServerResponse saveDocument(String json) {
-        try {
-            StringEntity e = new StringEntity(json, UTF_8);
-            e.setContentType("application/json");
-            return client.post(urlResolver.baseUrl(), e);
-        } catch (UnsupportedEncodingException e) {
-            throw new AssertionError(e); // Should not happen as UTF-8 is
-            // supported on every JVM
-        }
-    }
-
-    public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
-        this.client.withAttachmentAsStream(urlResolver.urlForPath("/" + a.getDocumentId() + "/" + a.getName()), ctx);
-    }
-
-    public ServerResponse deleteDocument(Document doc) {
-        final String id = doc.getId();
-        final String rev = doc.getRev();
-        ServerResponse response = client.delete(urlResolver.urlForPath(id, map("rev", rev)));
-        doc.put("_id", id);
-        doc.put("_rev", response.getRev());
-        return response;
-    }
-
-    private String jsonForPath(final String path) {
-        return client.jsonGet(urlForPath(path)).toString();
-    }
-
-    private String urlForPath(final String path) {
-        Map<String, String> p = Collections.emptyMap();
-        return urlResolver.urlForPath(path, p);
-    }
-
-    private String urlForPath(final String path, Map<String, String> params) {
-        return urlResolver.urlForPath(path, params);
-    }
-
-    public void disconnect() {
-        // TODO Introduce another interface that exposes the
-        // disconnect(Database) method?
-        if (this.couchDb instanceof DefaultCouchDbClient) {
-            ((DefaultCouchDbClient) this.couchDb).disconnect(this);
-        }
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void addChangeListener(ChangeListener listener) {
-        changesService.addChangeListener(listener);
-    }
-
-    public void removeChangeListener(ChangeListener listener) {
-        changesService.removeChangeListener(listener);
     }
 
     public DatabaseInfo getDatabaseInfo() {
@@ -293,7 +209,42 @@ public class DatabaseImpl implements Database {
         };
     }
 
-    public ServerResponse saveDocument(Serializable obj) {
+    public String getName() {
+        return name;
+    }
+
+    public void removeChangeListener(ChangeListener listener) {
+        changesService.removeChangeListener(listener);
+    }
+
+    private ServerResponse saveDocument(Document doc) {
+
+        StringEntity entity;
+        try {
+            entity = new StringEntity(doc.toJson(), UTF_8);
+            entity.setContentType("application/json");
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+
+        ServerResponse response;
+        if (null == doc.getId()) {
+            response = client.post(urlResolver.baseUrl(), entity);
+        } else {
+            response = client.put(urlForPath(doc.getId()), entity);
+        }
+
+        doc.put("_id", response.getId());
+        doc.put("_rev", response.getRev());
+        return response;
+    }
+
+    public ServerResponse saveDocument(Object obj) {
+
+        if (obj instanceof Document) {
+            return this.saveDocument((Document) obj);
+        }
+
         JSONObject json = JSONObject.fromObject(obj);
         try {
             StringEntity e = new StringEntity(json.toString(), UTF_8);
@@ -305,25 +256,38 @@ public class DatabaseImpl implements Database {
         }
     }
 
-    
-    public ServerResponse saveDocument(Externalizable obj) {
-        throw new UnsupportedOperationException("Implement!");
-    }
-
-    public ServerResponse saveDocument(JsonExportable json) {
-        return this.saveDocument(json.toJson());
-    }
-
-    public <T> T fetchObject(String docId, Class<T> clazz) {
-        throw new UnsupportedOperationException("Implement!");
-    }
-
-    public <T> T fetchObject(String docId, String rev, Class<T> clazz) {
-        throw new UnsupportedOperationException("Implement!");
+    @Override
+    public ServerResponse saveDocument(String documentId, Object obj) {
+        StringEntity entity;
+        try {
+            JSONObject json = JSONObject.fromObject(obj);
+            entity = new StringEntity(json.toString(), UTF_8);
+            entity.setContentType("application/json");
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e);
+        }
+        return client.put(urlForPath(documentId), entity);
     }
 
     @Override
     public ServerResponse storeAttachment(String documentId, String attachmentName, InputStream is) {
         throw new UnsupportedOperationException("Implement!");
+    }
+
+    public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
+        this.client.withAttachmentAsStream(urlResolver.urlForPath("/" + a.getDocumentId() + "/" + a.getName()), ctx);
+    }
+
+    private String jsonForPath(final String path) {
+        return client.jsonGet(urlForPath(path)).toString();
+    }
+
+    private String urlForPath(final String path) {
+        Map<String, String> p = Collections.emptyMap();
+        return urlResolver.urlForPath(path, p);
+    }
+
+    private String urlForPath(final String path, Map<String, String> params) {
+        return urlResolver.urlForPath(path, params);
     }
 }

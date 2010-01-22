@@ -23,13 +23,10 @@
  */
 package org.couch4j;
 
-import java.io.Externalizable;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 import org.couch4j.exceptions.DocumentNotFoundException;
 
@@ -98,7 +95,7 @@ public interface Database {
      * @see Database#fetchDocument(String)
      */
     <T> T fetchObject(String docId, Class<T> clazz);
-    
+
     /**
      * Returns an instance of clazz with the properties of the CouchDB document
      * with the id {@code docId}.
@@ -112,19 +109,33 @@ public interface Database {
      * @return T
      * @see Database#fetchDocument(String, String)
      */
-    <T> T fetchObject(String docId,  String rev, Class<T> clazz);
+    <T> T fetchObject(String docId, String rev, Class<T> clazz);
 
-    ServerResponse saveDocument(Document doc);
+    /**
+     * Save the given object as a CouchDB document.
+     * <p>
+     * 
+     * @param object
+     *            - Accepts JSON formatted strings, Maps, DynaBeans, JavaBeans
+     *            and {@link Document} instances.
+     * @return ServerResponse
+     */
+    ServerResponse saveDocument(Object object);
 
-    ServerResponse saveDocument(Map<String, ? super Object> doc);
-
-    ServerResponse saveDocument(String json);
-
-    ServerResponse saveDocument(Serializable obj);
-
-    ServerResponse saveDocument(Externalizable obj);
-
-    ServerResponse saveDocument(JsonExportable json);
+    /**
+     * Save the given object as a CouchDB document using the given document id.
+     * <p>
+     * 
+     * @param documentId
+     *            The document id to use. If the document already exists it will
+     *            be updated, otherwise a new document with this document id
+     *            will be created.
+     * @param object
+     *            - Accepts JSON formatted strings, Maps, DynaBeans, JavaBeans
+     *            and {@link Document} instances.
+     * @return ServerResponse
+     */
+    ServerResponse saveDocument(String documentId, Object object);
 
     ServerResponse bulkSave(Collection<Document> docs);
 
@@ -137,7 +148,7 @@ public interface Database {
     ServerResponse delete();
 
     ServerResponse storeAttachment(String documentId, String attachmentName, InputStream is);
-    
+
     void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException;
 
     ServerResponse deleteDocument(Document doc);

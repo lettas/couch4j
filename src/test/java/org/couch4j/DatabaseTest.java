@@ -24,11 +24,7 @@
 package org.couch4j;
 
 import static org.hamcrest.CoreMatchers.is;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -37,6 +33,7 @@ import java.util.List;
 import java.util.UUID;
 
 import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.HttpStatus;
@@ -262,16 +259,24 @@ public class DatabaseTest extends Couch4jBase {
     
     @Test
     public void saveSerializable() throws Exception {
-        
         A a = new A();
-        
         ServerResponse r = testEmpty.saveDocument(a);
         assertNotNull(r.getId());
-        
         Document doc = testEmpty.fetchDocument(r.getId());
-        System.out.println(doc);
+        JSONObject o = (JSONObject)doc.get("b");
+        assertThat(o.getInt("m"), is(10));
     }
 
+    @Test
+    public void saveWithDocumentId() throws Exception {
+        A a = new A();
+        ServerResponse r = testEmpty.saveDocument("theDocId",  a);
+        assertNotNull(r.getId());
+        Document doc = testEmpty.fetchDocument("theDocId");
+        JSONObject o = (JSONObject)doc.get("b");
+        assertThat(o.getInt("m"), is(10));
+    }
+    
     @Test
     public void testDelete() throws Exception {
         Document d = test.fetchDocument("test2");
