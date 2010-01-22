@@ -20,23 +20,23 @@ Download
 [http://github.com/juretta/couch4j/downloads][download]
 
 
-Maven dependencies
-------------------
+Maven dependencies (For now we only have Snaphots)
+--------------------------------------------------
 
 	<dependency>
     	<groupId>org.couch4j</groupId>
     	<artifactId>couch4j</artifactId>
-    	<version>0.9.0</version>
+    	<version>0.9.0-SNAPSHOT</version>
 	</dependency>
 	
 	<repository>
 	    <id>couch4j-repos</id>
 	    <name>couch4j repos</name>
-	    <url>http://repository.couch4j.org/maven2/</url>
+	    <url>http://snapshots.couch4j.org/maven2/</url>
 	    <releases>
+	        <enabled>false</enabled>
 	    </releases>
 	    <snapshots>
-	        <enabled>false</enabled>
 	    </snapshots>
 	</repository>
 	
