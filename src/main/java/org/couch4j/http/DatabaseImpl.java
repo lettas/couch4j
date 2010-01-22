@@ -294,9 +294,18 @@ public class DatabaseImpl implements Database {
     }
 
     public ServerResponse saveDocument(Serializable obj) {
-        throw new UnsupportedOperationException("Implement!");
+        JSONObject json = JSONObject.fromObject(obj);
+        try {
+            StringEntity e = new StringEntity(json.toString(), UTF_8);
+            e.setContentType("application/json");
+            return client.post(urlResolver.baseUrl(), e);
+        } catch (UnsupportedEncodingException e) {
+            throw new AssertionError(e); // Should not happen as UTF-8 is
+            // supported on every JVM
+        }
     }
 
+    
     public ServerResponse saveDocument(Externalizable obj) {
         throw new UnsupportedOperationException("Implement!");
     }

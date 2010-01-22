@@ -120,9 +120,9 @@ public interface Database {
 
     ServerResponse saveDocument(String json);
 
-    ServerResponse saveDocument(Serializable json);
+    ServerResponse saveDocument(Serializable obj);
 
-    ServerResponse saveDocument(Externalizable json);
+    ServerResponse saveDocument(Externalizable obj);
 
     ServerResponse saveDocument(JsonExportable json);
 

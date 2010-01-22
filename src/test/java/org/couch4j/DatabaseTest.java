@@ -23,8 +23,12 @@
  */
 package org.couch4j;
 
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -48,6 +52,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
+
+import com.example.test.A;
 
 @RunWith(Parameterized.class)
 public class DatabaseTest extends Couch4jBase {
@@ -252,6 +258,18 @@ public class DatabaseTest extends Couch4jBase {
         // Fetch again
         d = test.fetchDocument(NEW_DOCUMENT_ID);
         assertEquals(rand, d.get(key));
+    }
+    
+    @Test
+    public void saveSerializable() throws Exception {
+        
+        A a = new A();
+        
+        ServerResponse r = testEmpty.saveDocument(a);
+        assertNotNull(r.getId());
+        
+        Document doc = testEmpty.fetchDocument(r.getId());
+        System.out.println(doc);
     }
 
     @Test
