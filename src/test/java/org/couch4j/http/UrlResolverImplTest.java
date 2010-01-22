@@ -43,7 +43,7 @@ public class UrlResolverImplTest extends Couch4jBase {
 
     @Before
     public void setUp() throws Exception {
-        resolver = new UrlResolverImpl(server, Couch4jBase.TEST_DATABASE_NAME);
+        resolver = new UrlResolver(server, Couch4jBase.TEST_DATABASE_NAME);
     }
 
     @Test

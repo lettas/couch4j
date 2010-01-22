@@ -74,7 +74,7 @@ public class DatabaseImpl implements Database {
         this.client = ht;
         this.name = databaseName;
 
-        this.urlResolver = new UrlResolverImpl(couchDb, databaseName);
+        this.urlResolver = new UrlResolver(couchDb, databaseName);
         changesService = new DatabaseChangeNotificationService(ht.getHttpClient(), urlResolver, this);
 
         // Check if the database exists, create if not

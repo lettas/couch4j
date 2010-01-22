@@ -23,17 +23,59 @@
  */
 package org.couch4j.http;
 
+import java.util.Collections;
 import java.util.Map;
+
+import org.couch4j.CouchDbClient;
+import org.couch4j.util.StringUtils;
 
 /**
  * @author Stefan Saasen
  */
-interface UrlResolver {
+class UrlResolver {
 
-    String baseUrl();
+    private String baseUrl;
 
-    String urlForPath(String path);
+    UrlResolver(CouchDbClient client, String databaseName) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("http");
+        /*
+         * if (useSsl) { sb.append("s"); }
+         */
+        sb.append("://");
+        sb.append(client.getRemoteHost());
+        sb.append(":");
+        sb.append(client.getRemotePort());
+        sb.append("/");
+        sb.append(databaseName);
+        baseUrl = sb.toString();
+    }
 
-    String urlForPath(String path, Map<String, String> params);
+    public String baseUrl() {
+        return baseUrl;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.couch4j.http.UrlResolver#urlForPath(java.lang.String)
+     */
+    public String urlForPath(String path) {
+        Map<String, String> m = Collections.emptyMap();
+        return urlForPath(path, m);
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see org.couch4j.http.UrlResolver#urlForPath(java.lang.String,
+     * java.util.Map)
+     */
+    public String urlForPath(String path, Map<String, String> params) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(baseUrl);
+        sb.append("/");
+        sb.append(path);
+        sb.append(StringUtils.createQueryString(params));
+        return sb.toString();
+    }
 
 }
