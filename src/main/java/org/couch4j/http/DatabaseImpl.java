@@ -135,8 +135,7 @@ public class DatabaseImpl implements Database {
 
     /*
      * (non-Javadoc)
-     * @see
-     * org.couch4j.Database#saveDocument(org.couch4j.Document)
+     * @see org.couch4j.Database#saveDocument(org.couch4j.Document)
      */
     public ServerResponse saveDocument(Document doc) {
 
@@ -198,7 +197,7 @@ public class DatabaseImpl implements Database {
     }
 
     public void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException {
-        this.client.withAttachmentAsStream(urlResolver.urlForPath("/" + a.getContentId() + "/" + a.getName()), ctx);
+        this.client.withAttachmentAsStream(urlResolver.urlForPath("/" + a.getDocumentId() + "/" + a.getName()), ctx);
     }
 
     public ServerResponse deleteDocument(Document doc) {
@@ -224,9 +223,10 @@ public class DatabaseImpl implements Database {
     }
 
     public void disconnect() {
-        // TODO Introduce another interface that exposes the disconnect(Database) method?
-        if(this.couchDb instanceof DefaultCouchDbClient) {
-            ((DefaultCouchDbClient)this.couchDb).disconnect(this);
+        // TODO Introduce another interface that exposes the
+        // disconnect(Database) method?
+        if (this.couchDb instanceof DefaultCouchDbClient) {
+            ((DefaultCouchDbClient) this.couchDb).disconnect(this);
         }
     }
 
@@ -313,6 +313,11 @@ public class DatabaseImpl implements Database {
     }
 
     public <T> T fetchObject(String docId, String rev, Class<T> clazz) {
+        throw new UnsupportedOperationException("Implement!");
+    }
+
+    @Override
+    public ServerResponse storeAttachment(String documentId, String attachmentName, InputStream is) {
         throw new UnsupportedOperationException("Implement!");
     }
 }

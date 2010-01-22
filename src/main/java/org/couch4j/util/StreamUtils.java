@@ -24,6 +24,7 @@
 package org.couch4j.util;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.InputStream;
@@ -347,6 +348,18 @@ public final class StreamUtils {
         Writer sw = new StringWriter();
         copyAndClose(r, sw);
         return sw.toString();
+    }
+
+    /**
+     * 
+     * @param is
+     * @return
+     * @throws IOException 
+     */
+    public static byte[] toByteArray(InputStream is) throws IOException {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        copyAndClose(is, baos);
+        return baos.toByteArray();
     }
 
 }

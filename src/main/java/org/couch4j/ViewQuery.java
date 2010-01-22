@@ -23,16 +23,12 @@
  */
 package org.couch4j;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
-
-import org.couch4j.util.StringUtils;
 
 import net.sf.json.util.JSONUtils;
+
+import org.couch4j.util.StringUtils;
 
 /**
  * Define a query for a particular view.

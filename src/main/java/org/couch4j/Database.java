@@ -138,6 +138,8 @@ public interface Database {
 
     ServerResponse delete();
 
+    ServerResponse storeAttachment(String documentId, String attachmentName, InputStream is);
+    
     void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException;
 
     ServerResponse deleteDocument(Document doc);

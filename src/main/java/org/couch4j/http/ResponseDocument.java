@@ -24,9 +24,9 @@
 package org.couch4j.http;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONException;
@@ -135,7 +135,7 @@ class ResponseDocument extends Document implements DatabaseAware {
     }
 
     @SuppressWarnings("unchecked")
-    public List<Attachment> getAttachments() {
+    public Collection<Attachment> getAttachments() {
         fetchDocument();
         if (null == attachments || attachments.isEmpty()) {
             return Collections.emptyList();
@@ -149,7 +149,7 @@ class ResponseDocument extends Document implements DatabaseAware {
     }
 
     @SuppressWarnings("unchecked")
-    public List<String> getAttachmentNames() {
+    public Collection<String> getAttachmentNames() {
         fetchDocument();
         if (null == attachments || attachments.isEmpty()) {
             return Collections.emptyList();

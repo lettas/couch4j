@@ -23,12 +23,23 @@
  */
 package org.couch4j;
 
+import static org.couch4j.util.CollectionUtils.map;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import net.sf.json.JSONObject;
+
+import org.apache.commons.codec.binary.Base64;
+import org.couch4j.exceptions.Couch4JException;
+import org.couch4j.util.StreamUtils;
+
+import eu.medsea.mimeutil.MimeUtil2;
 
 /*
  * TODO:
@@ -51,9 +62,21 @@ import net.sf.json.JSONObject;
  * 
  * @couchdbApi http://wiki.apache.org/couchdb/HTTP_Document_API
  * @author Stefan Saasen
+ * 
+ *         TODO cleanup this mess ;-)
  */
 public class Document implements JsonExportable {
 
+    private final static ThreadLocal<MimeUtil2> MIME_UTIL = new ThreadLocal<MimeUtil2>() {
+        @Override
+        protected MimeUtil2 initialValue() {
+            MimeUtil2 mimeUtil = new MimeUtil2();
+            mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+            return mimeUtil;
+        }
+    };
+
+    private final Map<String, Map<String, String>> attachments = new HashMap<String, Map<String, String>>();
     private final Map<? super Object, ? super Object> attributes;
 
     public Document() {
@@ -122,12 +145,12 @@ public class Document implements JsonExportable {
         throw new UnsupportedOperationException("Implement!");
     }
 
-    public List<Attachment> getAttachments() {
+    public Collection<Attachment> getAttachments() {
         throw new UnsupportedOperationException("Implement!");
     }
 
-    public List<String> getAttachmentNames() {
-        throw new UnsupportedOperationException("Implement!");
+    public Collection<String> getAttachmentNames() {
+        return Collections.unmodifiableCollection(this.attachments.keySet());
     }
 
     public String toJson() {
@@ -135,6 +158,34 @@ public class Document implements JsonExportable {
     }
 
     public JSONObject toJSONObject() {
+        if (attachments.size() > 0) {
+            attributes.put("_attachments", this.attachments);
+        }
         return JSONObject.fromObject(this.attributes);
+    }
+
+    /**
+     * Add an attachment to the document using the name and the given
+     * {@link InputStream}.
+     * <p>
+     * This method should only be used for "small-ish" attachments.
+     * <p>
+     * For larger attachments use the
+     * {@link Database#saveAttachment(Document, String, InputStream)}.
+     * 
+     * @param name
+     *            The name for the attachment.
+     * @param content
+     *            InputStream
+     */
+    public void addAttachment(String name, InputStream content) {
+        try {
+            byte[] binaryData = StreamUtils.toByteArray(content);
+            attachments.put(name, map("content_type", MimeUtil2.getMostSpecificMimeType(
+                    MIME_UTIL.get().getMimeTypes(binaryData)).toString(), "data", new String(Base64
+                    .encodeBase64(binaryData))));
+        } catch (IOException e) {
+            throw new Couch4JException(e);
+        }
     }
 }

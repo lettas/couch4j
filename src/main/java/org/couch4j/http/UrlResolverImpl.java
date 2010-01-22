@@ -23,12 +23,8 @@
  */
 package org.couch4j.http;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.couch4j.CouchDbClient;
 import org.couch4j.util.StringUtils;

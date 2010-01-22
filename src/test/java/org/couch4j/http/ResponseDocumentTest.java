@@ -24,10 +24,14 @@
 package org.couch4j.http;
 
 import static org.couch4j.util.CollectionUtils.map;
-import static org.hamcrest.CoreMatchers.*;
-import static org.junit.Assert.*;
+import static org.hamcrest.CoreMatchers.is;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 import java.util.UUID;
 
@@ -187,16 +191,16 @@ public class ResponseDocumentTest extends Couch4jBase {
         Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
         
         Attachment a = d.getAttachment(Couch4jTest.ATTACHMENT_NAME);
-        List<Attachment> attachments = d.getAttachments();
+        Collection<Attachment> attachments = d.getAttachments();
         assertThat(attachments.size(), is(1));
-        assertThat(attachments.get(0), is(a));
+        assertThat(attachments.iterator().next(), is(a));
     }
     
     @Test
     public final void testGetAttachmentsEmpty() {
         Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITHOUT_ATTACHMENT);
         
-        List<Attachment> attachments = d.getAttachments();
+        Collection<Attachment> attachments = d.getAttachments();
         assertThat(attachments.size(), is(0));
     }
 
@@ -204,17 +208,17 @@ public class ResponseDocumentTest extends Couch4jBase {
     public final void testGetAttachmentNames() {
         Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
         
-        List<String> names = d.getAttachmentNames();
+        Collection<String> names = d.getAttachmentNames();
         assertNotNull(names);
         assertThat(names.size(), is(1));
-        assertThat(names.get(0), is(Couch4jTest.ATTACHMENT_NAME));
+        assertThat(names.iterator().next(), is(Couch4jTest.ATTACHMENT_NAME));
     }
     
     @Test
     public final void testGetAttachmentNamesEmpty() {
         Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITHOUT_ATTACHMENT);
         
-        List<String> names = d.getAttachmentNames();
+        Collection<String> names = d.getAttachmentNames();
         assertNotNull(names);
         assertThat(names.size(), is(0));
     }
