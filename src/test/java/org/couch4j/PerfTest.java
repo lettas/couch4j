@@ -46,7 +46,7 @@ public class PerfTest extends Couch4jBase {
         super(server);
     }
 
-    @Test(timeout = 7000)
+    @Test(timeout = 10000) // It's quite slow on the CI machine :(
     // ~ 2700 ms on a 3.06 Core 2 Duo
     public void fetchMultipleDocuments() throws Exception {
         Database test = server.getDatabase("couch4j");
