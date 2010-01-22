@@ -40,7 +40,6 @@ import net.sf.json.util.JSONUtils;
 
 import org.couch4j.Attachment;
 import org.couch4j.Couch4jBase;
-import org.couch4j.Couch4jTest;
 import org.couch4j.CouchDbClient;
 import org.couch4j.Database;
 import org.couch4j.Document;
@@ -95,28 +94,28 @@ public class ResponseDocumentTest extends Couch4jBase {
     
     @Test
     public void documentToJson() throws Exception {
-        Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
+        Document d = test.fetchDocument(Couch4jBase.VALID_DOC_ID);
         JSONObject json = JSONObject.fromObject(d.toJson());
         assertThat(d.toJson(), is(json.toString()));
     }
 
     @Test
     public void documentToJSONObject() throws Exception {
-        Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
+        Document d = test.fetchDocument(Couch4jBase.VALID_DOC_ID);
         JSONObject json = d.toJSONObject();
         assertNotNull(json);
     }
 
     @Test
     public final void testGetId() {
-        Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
+        Document d = test.fetchDocument(Couch4jBase.VALID_DOC_ID);
         JSONObject json = d.toJSONObject();
         assertEquals(d.getId(), json.getString("_id"));
     }
 
     @Test
     public final void testGetRev() {
-        Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
+        Document d = test.fetchDocument(Couch4jBase.VALID_DOC_ID);
         JSONObject json = d.toJSONObject();
         assertEquals(d.getRev(), json.getString("_rev"));
     }
@@ -169,28 +168,28 @@ public class ResponseDocumentTest extends Couch4jBase {
     @SuppressWarnings("deprecation")
     @Test
     public final void testGetAttachment() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITH_ATTACHMENT);
         
-        Attachment a = d.getAttachment(Couch4jTest.ATTACHMENT_NAME);
+        Attachment a = d.getAttachment(Couch4jBase.ATTACHMENT_NAME);
         assertNotNull(a);
-        assertThat(a.getName(), is(Couch4jTest.ATTACHMENT_NAME));
+        assertThat(a.getName(), is(Couch4jBase.ATTACHMENT_NAME));
         assertThat(a.getContentId(), is(d.getId()));
         assertThat(a.getDocumentId(), is(d.getId()));
     }
 
     @Test
     public final void testGetAttachmentEmpty() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITHOUT_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITHOUT_ATTACHMENT);
         
-        Attachment a = d.getAttachment(Couch4jTest.ATTACHMENT_NAME);
+        Attachment a = d.getAttachment(Couch4jBase.ATTACHMENT_NAME);
         assertNull(a);
     }
     
     @Test
     public final void testGetAttachments() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITH_ATTACHMENT);
         
-        Attachment a = d.getAttachment(Couch4jTest.ATTACHMENT_NAME);
+        Attachment a = d.getAttachment(Couch4jBase.ATTACHMENT_NAME);
         Collection<Attachment> attachments = d.getAttachments();
         assertThat(attachments.size(), is(1));
         assertThat(attachments.iterator().next(), is(a));
@@ -198,7 +197,7 @@ public class ResponseDocumentTest extends Couch4jBase {
     
     @Test
     public final void testGetAttachmentsEmpty() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITHOUT_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITHOUT_ATTACHMENT);
         
         Collection<Attachment> attachments = d.getAttachments();
         assertThat(attachments.size(), is(0));
@@ -206,17 +205,17 @@ public class ResponseDocumentTest extends Couch4jBase {
 
     @Test
     public final void testGetAttachmentNames() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITH_ATTACHMENT);
         
         Collection<String> names = d.getAttachmentNames();
         assertNotNull(names);
         assertThat(names.size(), is(1));
-        assertThat(names.iterator().next(), is(Couch4jTest.ATTACHMENT_NAME));
+        assertThat(names.iterator().next(), is(Couch4jBase.ATTACHMENT_NAME));
     }
     
     @Test
     public final void testGetAttachmentNamesEmpty() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITHOUT_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITHOUT_ATTACHMENT);
         
         Collection<String> names = d.getAttachmentNames();
         assertNotNull(names);
@@ -225,27 +224,27 @@ public class ResponseDocumentTest extends Couch4jBase {
 
     @Test
     public final void testToJson() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITH_ATTACHMENT);
         assertNotNull(d.toJson());
         assertTrue(JSONUtils.mayBeJSON(d.toJson()));
     }
     
     @Test
     public final void testToJSONObject() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITH_ATTACHMENT);
         assertNotNull(d.toJSONObject());
         assertTrue(!d.toJSONObject().isNullObject());
     }
 
     @Test
     public final void testToString() {
-        Document d = test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
+        Document d = test.fetchDocument(Couch4jBase.DOC_ID_WITH_ATTACHMENT);
         assertThat(d.toString(), is(d.toJson()));
     }
 
     @Test
     public final void testGetDatabase() {
-        ResponseDocument d = (ResponseDocument)test.fetchDocument(Couch4jTest.DOC_ID_WITH_ATTACHMENT);
+        ResponseDocument d = (ResponseDocument)test.fetchDocument(Couch4jBase.DOC_ID_WITH_ATTACHMENT);
         assertThat(d.getDatabase(), is(test));
     }
     

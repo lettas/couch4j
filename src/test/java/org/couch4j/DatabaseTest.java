@@ -50,23 +50,16 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 
 @RunWith(Parameterized.class)
-public class Couch4jTest extends Couch4jBase {
+public class DatabaseTest extends Couch4jBase {
 
-    public static final String VALID_DOC_ID = "test1";
-    public static final String DOC_ID_WITHOUT_ATTACHMENT = VALID_DOC_ID;
-    public static final String DOC_ID_WITH_ATTACHMENT = "test3_with_attachment";
-    public static final String ATTACHMENT_NAME = "Icon-128x128.png";
-    public static final String NEW_DOCUMENT_ID = "new_document";
 
-    public static final String EMPTY_DATABASE_NAME = "couch4j-empty";
-    public static final String TEST_DATABASE_NAME = "couch4j";
 
     private static final int NUM_ALL_DOCS = 5;
 
     private Database test;
     private Database testEmpty;
 
-    public Couch4jTest(CouchDbClient server) {
+    public DatabaseTest(CouchDbClient server) {
         super(server);
     }
 

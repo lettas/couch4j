@@ -48,18 +48,18 @@ import org.couch4j.JsonExportable;
 import org.couch4j.ServerResponse;
 import org.couch4j.ViewQuery;
 import org.couch4j.ViewResult;
-import org.couch4j.exceptions.Couch4JException;
+import org.couch4j.annotations.ThreadSafe;
 import org.couch4j.exceptions.DocumentNotFoundException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import org.couch4j.annotations.ThreadSafe;
 
 /**
  * @author Stefan Saasen
  */
 @ThreadSafe
 public class DatabaseImpl implements Database {
+    private static final String UTF_8 = "UTF-8";
+
     private final static Logger logger = LoggerFactory.getLogger(Database.class);
 
     private final HttpConnectionManager client;
@@ -141,10 +141,10 @@ public class DatabaseImpl implements Database {
 
         StringEntity entity;
         try {
-            entity = new StringEntity(doc.toJson(), "UTF-8");
+            entity = new StringEntity(doc.toJson(), UTF_8);
             entity.setContentType("application/json");
         } catch (UnsupportedEncodingException e) {
-            throw new Couch4JException(e);
+            throw new AssertionError(e);
         }
 
         ServerResponse response;
@@ -173,7 +173,7 @@ public class DatabaseImpl implements Database {
 
         StringEntity entity;
         try {
-            entity = new StringEntity(JSONSerializer.toJSON(doc).toString(), "UTF-8");
+            entity = new StringEntity(JSONSerializer.toJSON(doc).toString(), UTF_8);
             entity.setContentType("application/json");
 
             ServerResponse response = this.client.execute(url, method, entity);
@@ -181,18 +181,19 @@ public class DatabaseImpl implements Database {
             doc.put("_rev", response.getRev());
             return response;
         } catch (UnsupportedEncodingException e) {
-            throw new Couch4JException(e); // Should not happen as UTF-8 is
+            throw new AssertionError(e); // Should not happen as UTF-8 is
             // supported on every JVM
         }
     }
 
     public ServerResponse saveDocument(String json) {
         try {
-            StringEntity e = new StringEntity(json, "UTF-8");
+            StringEntity e = new StringEntity(json, UTF_8);
             e.setContentType("application/json");
             return client.post(urlResolver.baseUrl(), e);
         } catch (UnsupportedEncodingException e) {
-            throw new Couch4JException(e);
+            throw new AssertionError(e); // Should not happen as UTF-8 is
+            // supported on every JVM
         }
     }
 

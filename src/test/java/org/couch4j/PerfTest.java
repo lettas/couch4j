@@ -23,11 +23,9 @@
  */
 package org.couch4j;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
-import org.couch4j.CouchDbClient;
-import org.couch4j.Database;
-import org.couch4j.Document;
 import org.junit.Test;
 
 /**
@@ -53,9 +51,9 @@ public class PerfTest extends Couch4jBase {
         final int UPPER = 1000;
         long start = System.currentTimeMillis();
         for (int i = 0; i <= UPPER; i++) {
-            Document d = test.fetchDocument(Couch4jTest.VALID_DOC_ID);
+            Document d = test.fetchDocument(Couch4jBase.VALID_DOC_ID);
             assertNotNull(d.getRev());
-            assertEquals(Couch4jTest.VALID_DOC_ID, d.getId());
+            assertEquals(Couch4jBase.VALID_DOC_ID, d.getId());
         }
         long duration = System.currentTimeMillis() - start;
         System.out.format("Fetching %d documents took %d ms", UPPER, duration);

@@ -54,6 +54,15 @@ import org.slf4j.LoggerFactory;
 @RunWith(Parameterized.class)
 public abstract class Couch4jBase {
 
+    public static final String VALID_DOC_ID = "test1";
+    public static final String DOC_ID_WITHOUT_ATTACHMENT = VALID_DOC_ID;
+    public static final String DOC_ID_WITH_ATTACHMENT = "test3_with_attachment";
+    public static final String ATTACHMENT_NAME = "Icon-128x128.png";
+    public static final String NEW_DOCUMENT_ID = "new_document";
+
+    public static final String EMPTY_DATABASE_NAME = "couch4j-empty";
+    public static final String TEST_DATABASE_NAME = "couch4j";
+    
     protected final static Logger logger = LoggerFactory.getLogger(Couch4jBase.class);
 
     protected CouchDbClient server;

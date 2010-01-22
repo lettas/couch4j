@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.couch4j.Couch4jBase;
-import org.couch4j.Couch4jTest;
 import org.couch4j.CouchDbClient;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,17 +43,17 @@ public class UrlResolverImplTest extends Couch4jBase {
 
     @Before
     public void setUp() throws Exception {
-        resolver = new UrlResolverImpl(server, Couch4jTest.TEST_DATABASE_NAME);
+        resolver = new UrlResolverImpl(server, Couch4jBase.TEST_DATABASE_NAME);
     }
 
     @Test
     public final void testBaseUrl() {
-        assertTrue(resolver.baseUrl().endsWith(Couch4jTest.TEST_DATABASE_NAME));
+        assertTrue(resolver.baseUrl().endsWith(Couch4jBase.TEST_DATABASE_NAME));
     }
 
     @Test
     public final void testUrlForPathString() {
-        assertTrue(resolver.urlForPath("test").endsWith(Couch4jTest.TEST_DATABASE_NAME + "/test"));
+        assertTrue(resolver.urlForPath("test").endsWith(Couch4jBase.TEST_DATABASE_NAME + "/test"));
     }
 
     @Test
@@ -64,7 +63,7 @@ public class UrlResolverImplTest extends Couch4jBase {
         params.put("p2", "v2");
         params.put("p3", "v3");
         String url = resolver.urlForPath("test", params);
-        assertTrue(url.endsWith(Couch4jTest.TEST_DATABASE_NAME + "/test?p1=v1&p2=v2&p3=v3"));
+        assertTrue(url.endsWith(Couch4jBase.TEST_DATABASE_NAME + "/test?p1=v1&p2=v2&p3=v3"));
     }
 
 }

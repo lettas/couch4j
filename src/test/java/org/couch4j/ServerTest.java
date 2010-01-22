@@ -45,7 +45,7 @@ public class ServerTest extends Couch4jBase {
 
     @Before
     public void setUp() throws Exception {
-        test = server.getDatabase(Couch4jTest.TEST_DATABASE_NAME);
+        test = server.getDatabase(Couch4jBase.TEST_DATABASE_NAME);
         assertNotNull(test);
     }
 
@@ -56,7 +56,7 @@ public class ServerTest extends Couch4jBase {
 
     @Test
     public void testGetDatabaseReturnsSameInstance() throws Exception {
-        assertSame(test, server.getDatabase(Couch4jTest.TEST_DATABASE_NAME));
+        assertSame(test, server.getDatabase(Couch4jBase.TEST_DATABASE_NAME));
     }
 
     @Test
