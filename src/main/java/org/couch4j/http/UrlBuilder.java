@@ -32,11 +32,11 @@ import org.couch4j.util.StringUtils;
 /**
  * @author Stefan Saasen
  */
-class UrlResolver {
+final class UrlBuilder {
 
     private String baseUrl;
 
-    UrlResolver(CouchDbClient client, String databaseName) {
+    UrlBuilder(CouchDbClient client, String databaseName) {
         StringBuilder sb = new StringBuilder();
         sb.append("http");
         /*

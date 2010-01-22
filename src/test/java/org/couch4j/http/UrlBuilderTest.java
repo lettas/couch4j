@@ -33,17 +33,17 @@ import org.couch4j.CouchDbClient;
 import org.junit.Before;
 import org.junit.Test;
 
-public class UrlResolverImplTest extends Couch4jBase {
+public class UrlBuilderTest extends Couch4jBase {
 
-    private UrlResolver resolver;
+    private UrlBuilder resolver;
 
-    public UrlResolverImplTest(CouchDbClient server) {
+    public UrlBuilderTest(CouchDbClient server) {
         super(server);
     }
 
     @Before
     public void setUp() throws Exception {
-        resolver = new UrlResolver(server, Couch4jBase.TEST_DATABASE_NAME);
+        resolver = new UrlBuilder(server, Couch4jBase.TEST_DATABASE_NAME);
     }
 
     @Test

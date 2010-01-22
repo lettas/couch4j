@@ -66,7 +66,7 @@ public class DatabaseImpl implements Database {
     private final String name;
 
     private DatabaseChangeNotificationService changesService;
-    private final UrlResolver urlResolver;
+    private final UrlBuilder urlResolver;
     private final CouchDbClient couchDb;
 
     public DatabaseImpl(CouchDbClient couchDb, HttpConnectionManager ht, String databaseName) {
@@ -74,7 +74,7 @@ public class DatabaseImpl implements Database {
         this.client = ht;
         this.name = databaseName;
 
-        this.urlResolver = new UrlResolver(couchDb, databaseName);
+        this.urlResolver = new UrlBuilder(couchDb, databaseName);
         changesService = new DatabaseChangeNotificationService(ht.getHttpClient(), urlResolver, this);
 
         // Check if the database exists, create if not

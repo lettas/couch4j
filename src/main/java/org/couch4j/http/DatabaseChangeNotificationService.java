@@ -65,10 +65,10 @@ final class DatabaseChangeNotificationService {
     private final CopyOnWriteArrayList<ChangeListener> listener = new CopyOnWriteArrayList<ChangeListener>();
 
     private final HttpClient client;
-    private final UrlResolver urlResolver;
+    private final UrlBuilder urlResolver;
     private final Database database;
 
-    DatabaseChangeNotificationService(final HttpClient c, final UrlResolver urlResolver, Database database) {
+    DatabaseChangeNotificationService(final HttpClient c, final UrlBuilder urlResolver, Database database) {
         // HttpClientParams params = new HttpClientParams();
         // params.setConnectionManagerClass(org.apache.commons.httpclient.MultiThreadedHttpConnectionManager.class);
         this.client = c;
