@@ -305,10 +305,6 @@ public class DatabaseImpl implements Database {
         return this.saveDocument(json.toJson());
     }
 
-    public ServerResponse saveAttachment(Document doc, String name, InputStream data) {
-        throw new UnsupportedOperationException("Implement!");
-    }
-
     public <T> T fetchObject(String docId, Class<T> clazz) {
         throw new UnsupportedOperationException("Implement!");
     }
