@@ -117,9 +117,7 @@ class HttpConnectionManager {
             }
             return JsonServerResponse.fromJson(jsonObject);
         } catch (IOException e) {
-            throw new RuntimeException(e); // TODO replace
-        } finally {
-            // method.releaseConnection();
+            throw new Couch4JException(e);
         }
     }
 
@@ -144,7 +142,6 @@ class HttpConnectionManager {
             case HttpStatus.SC_NOT_FOUND:
             default:
                 throw new DocumentNotFoundException(jsonObject);
-//                throw new Couch4JException(jsonObject, statusCode);
             }
             return jsonObject;
         } catch (ConnectException re) {
@@ -229,34 +226,6 @@ class HttpConnectionManager {
         }
     }
 
-    // char[] getResponseForUrl(final String url) {
-    // // Create a method instance.
-    // HttpGet method = new HttpGet(url);
-    //
-    // HttpResponse response;
-    // Reader reader = null;
-    // CharArrayWriter w = null;
-    // try {
-    // response = client.execute(method);
-    // HttpEntity entity = response.getEntity();
-    // if (entity != null) {
-    // reader = new InputStreamReader(entity.getContent(),
-    // EntityUtils.getContentCharSet(entity));
-    // w = new CharArrayWriter();
-    // StreamUtils.copy(reader, w);
-    // return w.toCharArray();
-    // }
-    // } catch (ClientProtocolException e) {
-    // throw new Couch4JException(e);
-    // } catch (IOException e) {
-    // throw new Couch4JException(e);
-    // } finally {
-    // StreamUtils.closeSilently(reader);
-    // StreamUtils.closeSilently(w);
-    // }
-    // return new char[0];
-    // }
-
     private JSONObject fromResponseStream(HttpEntity entity) throws IOException {
         InputStream is = entity.getContent();
         Reader reader = new InputStreamReader(is, EntityUtils.getContentCharSet(entity));
@@ -271,7 +240,6 @@ class HttpConnectionManager {
 
     public void shutdown() {
         // TODO Auto-generated method stub
-
     }
 
 }
