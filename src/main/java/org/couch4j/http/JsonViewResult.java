@@ -51,7 +51,7 @@ final class JsonViewResult implements ViewResult {
         rows = new ArrayList<ViewResultRow>();
         this.database = database;
         this.total_rows = json.getInt("total_rows");
-        this.offset = (total_rows > 0) ? json.getInt("offset") : 0;
+        this.offset = (total_rows > 0 && json.has("offset")) ? json.getInt("offset") : 0;
     }
 
     public int getTotalRows() {
