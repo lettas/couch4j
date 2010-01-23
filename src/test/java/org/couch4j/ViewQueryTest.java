@@ -35,22 +35,22 @@ public class ViewQueryTest {
 
     @Test
     public final void testViewBuilder() {
-        assertThat("_all_docs", is(new ViewQuery("_all_docs").toString()));
+        assertThat(new ViewQuery("_all_docs").toString(), is("_all_docs"));
     }
 
     @Test
     public final void testViewBuilderName() {
-        assertThat("_all_docs", is(new ViewQuery().name("_all_docs").toString()));
+        assertThat(new ViewQuery().name("_all_docs").toString(), is("_all_docs"));
     }
-    
+
     @Test
     public final void testDocument() {
-        assertThat("_design/design/_view/test", is(ViewQuery.builder("test").document("design").toString()));
+        assertThat(ViewQuery.builder("test").document("design").toString(), is("_design/design/_view/test"));
     }
 
     @Test
     public final void testDocumentCombined() {
-        assertThat("_design/design/_view/test", is(ViewQuery.builder("design/test").toString()));
+        assertThat(ViewQuery.builder("design/test").toString(), is("_design/design/_view/test"));
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -62,7 +62,13 @@ public class ViewQueryTest {
     public final void testKey() {
         final String key = "/web/test.jsp";
         ViewQuery v = ViewQuery.builder("design/test").key(key);
-        assertThat("_design/design/_view/test?key=%22%2Fweb%2Ftest.jsp%22", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?key=%22%2Fweb%2Ftest.jsp%22"));
+    }
+
+    @Test
+    public final void testKeyVarArgs() {
+        ViewQuery v = ViewQuery.builder("design/test").key("de", "/about/");
+        assertThat(v.queryString(), is("_design/design/_view/test?key=[%22de%22,%22%2Fabout%2F%22]"));
     }
 
     //
@@ -70,83 +76,140 @@ public class ViewQueryTest {
     public final void testEndkey() {
         final String key = "/web/test.jsp";
         ViewQuery v = ViewQuery.builder("design/test").endkey(key);
-        assertThat("_design/design/_view/test?endkey=%22%2Fweb%2Ftest.jsp%22", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?endkey=%22%2Fweb%2Ftest.jsp%22"));
     }
 
     @Test
     public final void testDescendingTrue() {
         ViewQuery v = ViewQuery.builder("design/test").descending(true);
-        assertThat("_design/design/_view/test?descending=true", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?descending=true"));
     }
 
     @Test
     public final void testDescendingFalse() {
         ViewQuery v = ViewQuery.builder("design/test").descending(false);
-        assertThat("_design/design/_view/test?descending=false", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?descending=false"));
+    }
+
+    @Test
+    public final void testStale() {
+        ViewQuery v = ViewQuery.builder("design/test").stale(true);
+        assertThat(v.queryString(), is("_design/design/_view/test?stale=ok"));
+    }
+
+    @Test
+    public final void testReduceTrue() {
+        ViewQuery v = ViewQuery.builder("design/test").reduce(true);
+        assertThat(v.queryString(), is("_design/design/_view/test?reduce=true"));
+    }
+
+    @Test
+    public final void testReduceFalse() {
+        ViewQuery v = ViewQuery.builder("design/test").reduce(false);
+        assertThat(v.queryString(), is("_design/design/_view/test?reduce=false"));
+    }
+
+    @Test
+    public final void testInclusiveEndTrue() {
+        ViewQuery v = ViewQuery.builder("design/test").inclusiveEnd(true);
+        assertThat(v.queryString(), is("_design/design/_view/test?inclusive_end=true"));
+    }
+
+    @Test
+    public final void testInclusiveEndFalse() {
+        ViewQuery v = ViewQuery.builder("design/test").inclusiveEnd(false);
+        assertThat(v.queryString(), is("_design/design/_view/test?inclusive_end=false"));
     }
 
     @Test
     public final void testIncludeDocs() {
-        assertThat("_all_docs?include_docs=true", is(ViewQuery.builder("_all_docs").includeDocs(true).toString()));
+        assertThat(ViewQuery.builder("_all_docs").includeDocs(true).toString(), is("_all_docs?include_docs=true"));
     }
 
     @Test
     public final void testGroupTrue() {
         ViewQuery v = ViewQuery.builder("design/test").group(true);
-        assertThat("_design/design/_view/test?group=true", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?group=true"));
     }
 
     @Test
     public final void testGroupFalse() {
         ViewQuery v = ViewQuery.builder("design/test").group(false);
-        assertThat("_design/design/_view/test?group=false", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?group=false"));
+    }
+    
+    @Test
+    public final void testGroupLevel() {
+        ViewQuery v = ViewQuery.builder("design/test").groupLevel(3);
+        assertThat(v.queryString(), is("_design/design/_view/test?group_level=3"));
     }
 
     @Test
     public final void testUpdateTrue() {
         ViewQuery v = ViewQuery.builder("design/test").update(true);
-        assertThat("_design/design/_view/test?update=true", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?update=true"));
     }
 
     @Test
     public final void testUpdateFalse() {
         ViewQuery v = ViewQuery.builder("design/test").update(false);
-        assertThat("_design/design/_view/test?update=false", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?update=false"));
     }
 
     @Test
     public final void testSkip() {
         ViewQuery v = ViewQuery.builder("design/test").skip(10);
-        assertThat("_design/design/_view/test?skip=10", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?skip=10"));
     }
 
     @Test
     public final void testCount() {
         ViewQuery v = ViewQuery.builder("design/test").count(13);
-        assertThat("_design/design/_view/test?count=13", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?count=13"));
     }
 
     @Test
     public final void testStartkeyString() {
         final String key = "/web/test.jsp";
         ViewQuery v = ViewQuery.builder("design/test").startkey(key);
-        assertThat("_design/design/_view/test?startkey=%22%2Fweb%2Ftest.jsp%22", is(v.queryString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?startkey=%22%2Fweb%2Ftest.jsp%22"));
     }
 
-//    @Test
-//    public final void testStartkeyStringArray() {
-//        View v = View.builder("design/test").startkey("1", "2");
-//        assertThat("_design/design/_view/test?startkey=[%221%22,%222%22]", is(v.queryString()));
-//    }
+    @Test
+    public final void testStartkeyStringArray() {
+        ViewQuery v = ViewQuery.builder("design/test").startkey("1", "2");
+        assertThat(v.queryString(), is("_design/design/_view/test?startkey=[%221%22,%222%22]"));
+    }
 
-    // @Test
-    // public final void testStartkeyDocid() {
-    // fail("Not yet implemented");
-    // }
+    @Test
+    public final void testEndkeyString() {
+        final String key = "/web/test.jsp";
+        ViewQuery v = ViewQuery.builder("design/test").endkey(key);
+        assertThat(v.queryString(), is("_design/design/_view/test?endkey=%22%2Fweb%2Ftest.jsp%22"));
+    }
+
+    @Test
+    public final void testEndkeyStringArray() {
+        ViewQuery v = ViewQuery.builder("design/test").endkey("1", "2");
+        assertThat(v.queryString(), is("_design/design/_view/test?endkey=[%221%22,%222%22]"));
+    }
+
+    @Test
+    public final void testStartkeyDocid() {
+        ViewQuery v = ViewQuery.builder("design/test").startkeyDocid("2");
+        assertThat(v.queryString(), is("_design/design/_view/test?startkey_docid=%222%22"));
+    }
+    
+    @Test
+    public final void testEndkeyDocid() {
+        ViewQuery v = ViewQuery.builder("design/test").endkeyDocid("2");
+        assertThat(v.queryString(), is("_design/design/_view/test?endkey_docid=%222%22"));
+    }
+
     @Test
     public final void testToString() {
         ViewQuery v = ViewQuery.builder("design/test").count(13);
-        assertThat("_design/design/_view/test?count=13", is(v.toString()));
+        assertThat(v.queryString(), is("_design/design/_view/test?count=13"));
         assertThat(v.queryString(), is(v.toString()));
     }
 
