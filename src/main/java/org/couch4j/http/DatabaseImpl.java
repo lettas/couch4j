@@ -147,12 +147,16 @@ public class DatabaseImpl implements Database {
         return d;
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T fetchObject(String docId, Class<T> clazz) {
-        throw new UnsupportedOperationException("Implement!");
+        String url = urlForPath(docId);
+        return (T)JSONObject.toBean(this.client.jsonGet(url), clazz);
     }
 
+    @SuppressWarnings("unchecked")
     public <T> T fetchObject(String docId, String rev, Class<T> clazz) {
-        throw new UnsupportedOperationException("Implement!");
+        String url = urlForPath(docId, map("rev", rev));
+        return (T)JSONObject.toBean(this.client.jsonGet(url), clazz);
     }
 
     public ViewResult fetchView(ViewQuery v) {

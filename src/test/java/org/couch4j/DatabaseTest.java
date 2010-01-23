@@ -23,7 +23,7 @@
  */
 package org.couch4j;
 
-import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
 import java.io.ByteArrayOutputStream;
@@ -268,6 +268,26 @@ public class DatabaseTest extends Couch4jBase {
     }
 
     @Test
+    public void fetchObject() throws Exception {
+        A a = new A();
+        ServerResponse r = testEmpty.saveDocument(a);
+        
+        A fromDb = testEmpty.fetchObject(r.getId(), A.class);
+        assertNotNull(fromDb);
+        assertThat(fromDb, is(a));
+    }
+    
+    @Test
+    public void fetchObjectWithRevision() throws Exception {
+        A a = new A();
+        ServerResponse r = testEmpty.saveDocument(a);
+        
+        A fromDb = testEmpty.fetchObject(r.getId(), r.getRev(), A.class);
+        assertNotNull(fromDb);
+        assertThat(fromDb, is(a));
+    }
+    
+    @Test
     public void saveWithDocumentId() throws Exception {
         A a = new A();
         ServerResponse r = testEmpty.saveDocument("theDocId",  a);
@@ -308,6 +328,13 @@ public class DatabaseTest extends Couch4jBase {
         }
     }
 
+    @Test
+    public void databaseInfo() throws Exception {
+        DatabaseInfo info = testEmpty.getDatabaseInfo();
+        assertNotNull(info);
+        assertThat(info.getName(), is(testEmpty.getName()));
+    }
+    
     private void assertDocumentTest1(Document d) {
         assertEquals(VALID_DOC_ID, d.getId());
 
