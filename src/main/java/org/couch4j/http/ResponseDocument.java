@@ -68,6 +68,14 @@ class ResponseDocument extends Document implements DatabaseAware {
 
     private Database database;
 
+    public ResponseDocument(final String id) {
+        if (null == id) {
+            throw new IllegalArgumentException("'id' and 'rev' are required to create a ResponseDocument instance.");
+        }
+        this._id = id;
+        this._rev = null;
+    }
+    
     public ResponseDocument(final String id, final String rev) {
         if (null == id || null == rev) {
             throw new IllegalArgumentException("'id' and 'rev' are required to create a ResponseDocument instance.");

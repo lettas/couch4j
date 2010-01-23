@@ -80,9 +80,9 @@ final class JsonViewResultRow implements ViewResultRow {
                         JSONObject value = json.getJSONObject("value");
                         final String rev = value.has("_rev") ? value.getString("_rev") : (value.has("rev") ? value
                                 .getString("rev") : null);
-                        d = new ResponseDocument(this.id, rev);
+                        d = new ResponseDocument(value);
                     } else {
-                        return null;
+                        d = new ResponseDocument(this.id);
                     }
                 }
                 d.setDatabase(this.database);
