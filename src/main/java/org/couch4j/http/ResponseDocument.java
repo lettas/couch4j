@@ -23,6 +23,10 @@
  */
 package org.couch4j.http;
 
+import static org.couch4j.util.CollectionUtils.map;
+
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -32,15 +36,29 @@ import java.util.Map;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
+import org.apache.commons.codec.binary.Base64;
 import org.couch4j.Attachment;
 import org.couch4j.Database;
 import org.couch4j.Document;
+import org.couch4j.exceptions.Couch4JException;
+import org.couch4j.util.StreamUtils;
+
+import eu.medsea.mimeutil.MimeUtil2;
 
 
 /**
  * @author Stefan Saasen
  */
 class ResponseDocument extends Document implements DatabaseAware {
+    private final static ThreadLocal<MimeUtil2> MIME_UTIL = new ThreadLocal<MimeUtil2>() {
+        @Override
+        protected MimeUtil2 initialValue() {
+            MimeUtil2 mimeUtil = new MimeUtil2();
+            mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
+            return mimeUtil;
+        }
+    };
+    
     private final String _id;
     private final String _rev;
     private boolean isAvailable;
@@ -120,6 +138,8 @@ class ResponseDocument extends Document implements DatabaseAware {
         return "";
     }
     
+    
+    
     // TODO cache the attachment instances...
 
     public Attachment getAttachment(final String name) {
@@ -146,6 +166,20 @@ class ResponseDocument extends Document implements DatabaseAware {
             _attachments.add(new AttachmentImpl(this.attachments.getJSONObject(name), name, this));
         }
         return _attachments;
+    }
+    
+    @Override
+    public void addAttachment(String name, InputStream content) {
+        if(null != attachments) {
+            try {
+                byte[] binaryData = StreamUtils.toByteArray(content);
+                attachments.put(name, JSONObject.fromObject(map("content_type", MimeUtil2.getMostSpecificMimeType(
+                        MIME_UTIL.get().getMimeTypes(binaryData)).toString(), "data", new String(Base64
+                        .encodeBase64(binaryData)))));
+            } catch (IOException e) {
+                throw new Couch4JException(e);
+            }
+        }
     }
 
     @SuppressWarnings("unchecked")
@@ -189,6 +223,4 @@ class ResponseDocument extends Document implements DatabaseAware {
         fetchDocument();
         return jsonObject;
     }
-    
-    
 }

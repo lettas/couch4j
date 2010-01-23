@@ -223,6 +223,10 @@ public class DatabaseImpl implements Database {
 
     private ServerResponse saveDocument(Document doc) {
 
+        if(logger.isDebugEnabled()) {
+            logger.debug("saveDocument JSON: " + doc.toJson());
+        }
+        
         StringEntity entity;
         try {
             entity = new StringEntity(doc.toJson(), UTF_8);

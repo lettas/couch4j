@@ -60,12 +60,15 @@ import org.couch4j.exceptions.Couch4JException;
 import org.couch4j.exceptions.DocumentNotFoundException;
 import org.couch4j.exceptions.DocumentUpdateConflictException;
 import org.couch4j.util.StreamUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * @author Stefan Saasen
  */
 class HttpConnectionManager {
-
+    private final static Logger logger = LoggerFactory.getLogger(HttpConnectionManager.class);
+    
     static enum Method {
         GET, POST, PUT, DELETE
     }
@@ -98,6 +101,10 @@ class HttpConnectionManager {
     }
 
     private ServerResponse executeMethod(HttpRequestBase method) {
+        if(logger.isDebugEnabled()) {
+            logger.debug("REQUEST: " + method.getRequestLine());
+        }
+        
         try {
             HttpResponse response = client.execute(method);
             int statusCode = response.getStatusLine().getStatusCode();

@@ -26,14 +26,24 @@ package org.couch4j;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
+import org.couch4j.Database.StreamContext;
+import org.couch4j.util.StreamUtils;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 public class AttachmentTest extends Couch4jBase {
+
+    private static final long ATTACHMENT_1_FILESIZE = 6945L;
+    private static final String ATTACHMENT_1_NAME = "java.png";
+    private static final long ATTACHMENT_2_FILESIZE = 17424L;
+    private static final String ATTACHMENT_2_NAME = "couchdb-logo.jpg";
 
     private Database test;
     private Database empty;
@@ -65,30 +75,128 @@ public class AttachmentTest extends Couch4jBase {
     public void addAttachment() throws Exception {
         final String name = "java-log.png";
         Document d = new Document();
-        InputStream is = testInputStream();
+        InputStream is = testInputStream(ATTACHMENT_1_NAME);
         d.addAttachment(name, is);
         assertThat(d.getAttachmentNames().size(), is(1));
         assertThat(d.getAttachmentNames().iterator().next(), is(name));
     }
 
     @Test
-    public void addAttachmentToJson() throws Exception {
+    public void addAttachmentToDocument() throws Exception {
         final String name = "java-log.png";
         Document d = new Document();
-        InputStream is = testInputStream();
+        InputStream is = testInputStream(ATTACHMENT_1_NAME);
         d.addAttachment(name, is);
-        
+
         empty.saveDocument(d);
-        
+
         Document d2 = empty.fetchDocument(d.getId());
-        Attachment a = d2.getAttachment(name);        
+        Attachment a = d2.getAttachment(name);
         assertNotNull(a);
         assertThat(a.getContentType(), is("image/png"));
-        assertThat(a.getLength(), is(6945L));
+        assertThat(a.getLength(), is(ATTACHMENT_1_FILESIZE));
+        
+        
+        a.retrieve(new StreamContext() {
+            public void withInputStream(InputStream is) throws IOException {
+                assertNotNull(is);
+                ByteArrayOutputStream baos = new ByteArrayOutputStream();
+                StreamUtils.copy(is, baos);
+                byte[] b = baos.toByteArray();
+                assertEquals(ATTACHMENT_1_FILESIZE, b.length);
+                byte[] localFile = StreamUtils.toByteArray(testInputStream(ATTACHMENT_1_NAME));
+                assertArrayEquals(localFile, b);
+                // is will be closed automatically
+            }
+        });
     }
 
-    private InputStream testInputStream() {
-        return AttachmentTest.class.getResourceAsStream("/fixtures/java.png");
+    @Test
+    public void replaceExistingAttachment() throws Exception {
+        final String name = "java-log.png";
+        Document d = new Document();
+        InputStream is = testInputStream(ATTACHMENT_1_NAME);
+        d.addAttachment(name, is);
+
+        empty.saveDocument(d);
+
+        Document d2 = empty.fetchDocument(d.getId());
+        Attachment a = d2.getAttachment(name);
+        assertNotNull(a);
+        assertThat(a.getContentType(), is("image/png"));
+        assertThat(a.getLength(), is(ATTACHMENT_1_FILESIZE));
+
+        // Replace the attachment
+        d2.addAttachment(name, testInputStream(ATTACHMENT_2_NAME));
+        empty.saveDocument(d2);
+
+        Document d3 = empty.fetchDocument(d2.getId());
+        a = d3.getAttachment(name);
+        assertNotNull(a);
+        assertThat(a.getContentType(), is("image/jpeg"));
+        assertThat(a.getName(), is(name));
+        assertThat(a.getLength(), is(ATTACHMENT_2_FILESIZE));
+    }
+
+    @Test
+    public void addAnotherAttachment() throws Exception {
+        final String name = "java-log.png";
+        Document d = new Document();
+        InputStream is = testInputStream(ATTACHMENT_1_NAME);
+        d.addAttachment(name, is);
+
+        empty.saveDocument(d);
+
+        Document d2 = empty.fetchDocument(d.getId());
+        Attachment a = d2.getAttachment(name);
+        assertNotNull(a);
+        assertThat(a.getContentType(), is("image/png"));
+        assertThat(a.getLength(), is(ATTACHMENT_1_FILESIZE));
+
+        // Add another attachment
+        d2.addAttachment(ATTACHMENT_2_NAME, testInputStream(ATTACHMENT_2_NAME));
+        empty.saveDocument(d2);
+
+        Document d3 = empty.fetchDocument(d2.getId());
+        // The 1st
+        a = d3.getAttachment(name);
+        assertNotNull(a);
+        assertThat(a.getLength(), is(ATTACHMENT_1_FILESIZE));
+
+        // The 2nd
+        a = d3.getAttachment(ATTACHMENT_2_NAME);
+        assertNotNull(a);
+        assertThat(a.getLength(), is(ATTACHMENT_2_FILESIZE));
+    }
+
+    @Test
+    public void keepExistingAttachment() throws Exception {
+        final String name = "java-log.png";
+        Document d = new Document();
+        InputStream is = testInputStream(ATTACHMENT_1_NAME);
+        d.addAttachment(name, is);
+
+        empty.saveDocument(d);
+
+        Document d2 = empty.fetchDocument(d.getId());
+        Attachment a = d2.getAttachment(name);
+        assertNotNull(a);
+        assertThat(a.getContentType(), is("image/png"));
+        assertThat(a.getLength(), is(ATTACHMENT_1_FILESIZE));
+
+        d2.put("new_attr", "val");
+        empty.saveDocument(d2);
+
+        Document d3 = empty.fetchDocument(d2.getId());
+        a = d3.getAttachment(name);
+        assertNotNull(a);
+        assertThat(a.getContentType(), is("image/png"));
+        assertThat(a.getName(), is(name));
+        assertThat(a.getLength(), is(ATTACHMENT_1_FILESIZE));
+    }
+
+    private InputStream testInputStream(String name) {
+        return AttachmentTest.class.getResourceAsStream("/fixtures/" + name);
     }
 
 }
