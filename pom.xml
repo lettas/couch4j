@@ -185,17 +185,17 @@
 	</reporting>
 
 	<distributionManagement>
-		<!-- use the following if you're not using a snapshot version. -->
-		<repository>
-			<id>couch4j-release</id>
-			<name>Repository Name</name>
-			<url>file:///opt/webs/couch4j.org/repository/www/maven2</url>
-		</repository>
-		<!-- use the following if you ARE using a snapshot version. -->
-		<snapshotRepository>
-			<id>couch4j-snapshot</id>
-			<name>Repository Name</name>
-			<url>file:///opt/webs/couch4j.org/snapshots/www/maven2</url>
-		</snapshotRepository>
-	</distributionManagement>
+        <repository>
+            <id>couch4j-release</id>
+            <name>couch4j Staging Repository</name>
+            <url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>couch4j-snapshot</id>
+            <name>couch4j Snapshot Repository</name>
+            <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
+        </snapshotRepository>
+    </distributionManagement>
+
+	
 </project>
