@@ -59,6 +59,13 @@ public class ViewQueryTest {
     }
 
     @Test
+    public final void testCombined() {
+        final String key = "/web/test.jsp";
+        ViewQuery v = ViewQuery.builder("design/test").key(key).count(4).skip(10);
+        assertThat(v.queryString(), is("_design/design/_view/test?key=%22%2Fweb%2Ftest.jsp%22&count=4&skip=10"));
+    }
+    
+    @Test
     public final void testKey() {
         final String key = "/web/test.jsp";
         ViewQuery v = ViewQuery.builder("design/test").key(key);
