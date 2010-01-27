@@ -55,10 +55,6 @@ import com.example.test.A;
 @RunWith(Parameterized.class)
 public class DatabaseTest extends Couch4jBase {
 
-
-
-    private static final int NUM_ALL_DOCS = 5;
-
     private Database test;
     private Database testEmpty;
 
@@ -89,7 +85,7 @@ public class DatabaseTest extends Couch4jBase {
     @Test
     public void testFetchAllDocuments() throws Exception {
         ViewResult rows = test.fetchAllDocuments();
-        assertEquals(NUM_ALL_DOCS, rows.getTotalRows());
+        assertTrue(rows.getTotalRows() > 5);
     }
 
     @Test

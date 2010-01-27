@@ -28,13 +28,18 @@ import static org.couch4j.util.CollectionUtils.map;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Field;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.Map;
 
+import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
+import net.sf.json.JsonConfig;
+import net.sf.json.util.PropertySetStrategy;
 
+import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.entity.StringEntity;
 import org.couch4j.Attachment;
 import org.couch4j.CouchDbClient;
@@ -53,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author Stefan Saasen
  */
 @ThreadSafe
-public class DatabaseImpl implements Database {
+public final class DatabaseImpl implements JsonAwareDatabase {
 
     private static final String UTF_8 = "UTF-8";
 
@@ -66,6 +71,8 @@ public class DatabaseImpl implements Database {
     private final UrlBuilder urlResolver;
     private final CouchDbClient couchDb;
 
+    private final JsonConfig config;
+    
     public DatabaseImpl(CouchDbClient couchDb, HttpConnectionManager ht, String databaseName) {
         this.couchDb = couchDb;
         this.client = ht;
@@ -86,6 +93,25 @@ public class DatabaseImpl implements Database {
             }
             ht.jsonPut(urlResolver.baseUrl());
         }
+        
+        config = new JsonConfig();
+        config.setPropertySetStrategy(new PropertySetStrategy() {
+            @Override
+            public void setProperty(Object bean, String key, Object value) throws JSONException {
+                try {
+                    Field field = bean.getClass().getField( key );
+                    if( field != null ) field.set( bean, value );
+                 } catch( Exception e ){
+                     try {
+                         PropertyUtils.setSimpleProperty(bean, key, value);
+                     } catch (Exception ex) {
+                         // Ignore - We simply ignore attributes in the
+                         // CouchDB document that are not available in the
+                         // class.
+                     }
+                 }
+            }
+        });
     }
 
     public void addChangeListener(ChangeListener listener) {
@@ -297,5 +323,9 @@ public class DatabaseImpl implements Database {
 
     private String urlForPath(final String path, Map<String, String> params) {
         return urlResolver.urlForPath(path, params);
+    }
+
+    public JsonConfig getConfig() {
+        return config;
     }
 }

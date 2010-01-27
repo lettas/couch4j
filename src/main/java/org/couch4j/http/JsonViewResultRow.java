@@ -27,7 +27,6 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.couch4j.Database;
 import org.couch4j.Document;
 import org.couch4j.ViewResultRow;
 import org.couch4j.annotations.Immutable;
@@ -41,14 +40,14 @@ final class JsonViewResultRow implements ViewResultRow {
     private final String id;
     private final String key;
     private final JSONObject json;
-    private final Database database;
+    private final JsonAwareDatabase database;
 
     // private final JSONObject json;
 
     /**
      * @param next
      */
-    JsonViewResultRow(JSONObject json, Database database) {
+    JsonViewResultRow(JSONObject json, JsonAwareDatabase database) {
         this.json = json;
         this.key = json.getString("key");
         this.id = json.getString("id");
@@ -131,6 +130,73 @@ final class JsonViewResultRow implements ViewResultRow {
     @Override
     public String toString() {
         return toJson();
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T> T getObject(Class<T> clazz) {
+        if (json != null) {
+            if (json.containsKey("value")) {
+                try {
+                    return (T) JSONObject.toBean(json.getJSONObject("value"), clazz.newInstance(), database.getConfig());
+                } catch (InstantiationException e) {
+                    e.printStackTrace();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+        return null;
+    }
+
+    @Override
+    public boolean getValueAsBoolean() {
+        if (json != null) {
+            if (json.containsKey("value")) {
+                return json.getBoolean("value");
+            }
+        }
+        return false;
+    }
+
+    @Override
+    public double getValueAsDouble() {
+        if (json != null) {
+            if (json.containsKey("value")) {
+                return json.getDouble("value");
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public int getValueAsInt() {
+        if (json != null) {
+            if (json.containsKey("value")) {
+                return json.getInt("value");
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public long getValueAsLong() {
+        if (json != null) {
+            if (json.containsKey("value")) {
+                return json.getLong("value");
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    public String getValueAsString() {
+        if (json != null) {
+            if (json.containsKey("value")) {
+                return json.getString("value");
+            }
+        }
+        return "";
     }
 
 }

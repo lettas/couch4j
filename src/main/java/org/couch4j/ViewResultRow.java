@@ -27,6 +27,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 /**
+ * A single row in a CouchDB view result.
+ * 
  * @author Stefan Saasen
  */
 public interface ViewResultRow extends JsonExportable {
@@ -36,10 +38,20 @@ public interface ViewResultRow extends JsonExportable {
     String getKey();
 
     Document getDocument();
-    
-//    <T> getObject(Class<T> clazz);
+
+    <T> T getObject(Class<T> clazz);
 
     JSONObject getValueAsObject();
 
     JSONArray getValueAsArray();
+
+    boolean getValueAsBoolean();
+
+    double getValueAsDouble();
+
+    int getValueAsInt();
+
+    String getValueAsString();
+
+    long getValueAsLong();
 }

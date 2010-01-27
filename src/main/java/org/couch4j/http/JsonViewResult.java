@@ -42,11 +42,11 @@ final class JsonViewResult implements ViewResult {
     private final int total_rows;
     private final int offset;
     private final List<ViewResultRow> rows;
-    private final Database database;
+    private final JsonAwareDatabase database;
 
     private final JSONObject json;
 
-    JsonViewResult(final String jsonString, Database database) {
+    JsonViewResult(final String jsonString, JsonAwareDatabase database) {
         this.json = JSONObject.fromObject(jsonString);
         rows = new ArrayList<ViewResultRow>();
         this.database = database;
