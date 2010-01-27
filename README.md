@@ -32,7 +32,7 @@ Maven dependencies (For now we only have Snaphots)
 	<repository>
 	    <id>couch4j-repos</id>
 	    <name>couch4j repos</name>
-	    <url>http://snapshots.couch4j.org/maven2/</url>
+	    <url>http://oss.sonatype.org/content/repositories/snapshots/</url>
 	    <releases>
 	        <enabled>false</enabled>
 	    </releases>
