@@ -24,7 +24,7 @@
 package org.couch4j;
 
 /**
- * TODO -> Should this be more generic?
+ * A generic server response.
  * 
  * @author Stefan Saasen
  */

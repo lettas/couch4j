@@ -26,6 +26,10 @@ package org.couch4j;
 import java.util.List;
 
 /**
+ * A CouchDB view result.
+ * <p>
+ * Has meta information (number of total rows, offset) and a {@link List} of {@link ViewResultRow}s.
+ * 
  * @author Stefan Saasen
  */
 public interface ViewResult extends Iterable<ViewResultRow>, JsonExportable {

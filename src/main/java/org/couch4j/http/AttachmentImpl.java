@@ -38,6 +38,13 @@ import org.couch4j.Database.StreamContext;
  */
 class AttachmentImpl implements Attachment {
 
+    /*
+     * From http://wiki.apache.org/couchdb/HTTP_Document_API:
+     * When you update the document you must include the attachment stubs or 
+     * CouchDB will delete the attachment.
+     */
+//    boolean isStub();
+    
     private final boolean stub;
     private final String contentType;
     private final long length;

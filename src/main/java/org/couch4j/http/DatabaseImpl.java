@@ -58,7 +58,7 @@ import org.slf4j.LoggerFactory;
  * @author Stefan Saasen
  */
 @ThreadSafe
-public final class DatabaseImpl implements JsonAwareDatabase {
+final class DatabaseImpl implements JsonAwareDatabase {
 
     private static final String UTF_8 = "UTF-8";
 

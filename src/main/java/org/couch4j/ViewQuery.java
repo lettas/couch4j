@@ -34,11 +34,11 @@ import net.sf.json.util.JSONUtils;
 /**
  * Define a query for a particular view.
  * <p>
- * This class represents a query string needed to query the CouchDB server for a
+ * This class represents a query string required to query the CouchDB server for a
  * particular view result.
  * <p>
  * The class uses the builder pattern to provide a fluent interface for creating
- * views.
+ * view queries.
  * 
  * <pre>
  * ViewQuery query = ViewQuery.builder(&quot;designdoc/viewname&quot;).key(&quot;test&quot;).descending(true);

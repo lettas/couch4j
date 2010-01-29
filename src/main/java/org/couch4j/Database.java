@@ -137,12 +137,31 @@ public interface Database {
      */
     ServerResponse saveDocument(String documentId, Object object);
 
+    /**
+     * Bulk save a collection of documents.
+     * 
+     * @param Collection of {@link Document}s.
+     * @return ServerResponse
+     */
     ServerResponse bulkSave(Collection<Document> docs);
 
+    /**
+     * @return a ViewResult that contains <strong>ALL</strong> documents.
+     */
     ViewResult fetchAllDocuments();
 
+    /**
+     * Fetch all documents.
+     * 
+     * @param includeDocs include the document if true, otherwise the document will be fetched lazily.
+     * @return ViewResult
+     */
     ViewResult fetchAllDocuments(boolean includeDocs);
 
+    /**
+     * @param v - A particular ViewQuery
+     * @return ViewResult for this {@link ViewQuery}
+     */
     ViewResult fetchView(ViewQuery v);
 
     ServerResponse delete();

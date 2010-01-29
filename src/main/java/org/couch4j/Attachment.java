@@ -28,16 +28,15 @@ import java.io.IOException;
 import org.couch4j.Database.StreamContext;
 
 /**
+ * An attachment is a blob that is attached to a document in a CouchDB database.
+ * <p>
+ * While in CouchDB there is a distinction between an attachment placeholder in
+ * the document (the "stub") and the actual binary data, couch4j retrieves the
+ * content automatically.
+ * 
  * @author Stefan Saasen
  */
 public interface Attachment {
-
-    /*
-     * From http://wiki.apache.org/couchdb/HTTP_Document_API:
-     * When you update the document you must include the attachment stubs or 
-     * CouchDB will delete the attachment.
-     */
-//    boolean isStub();
 
     /**
      * Return the Content-Type (e.g "image/jpeg") of the attachment.
@@ -69,7 +68,7 @@ public interface Attachment {
     /**
      * Stream the attachment bytes.
      * 
-     * @param StreamContext 
+     * @param StreamContext
      * @throws IOException
      */
     void retrieve(StreamContext sc) throws IOException;

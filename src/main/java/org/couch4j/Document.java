@@ -55,18 +55,19 @@ import eu.medsea.mimeutil.MimeUtil2;
  * Represents a CouchDB document.
  * <p>
  * This class uses the {@link Object#equals(Object)} and
- * {@link Object#hashCode()} implementations! Calling methods that
- * <strong>return</strong> a Document will most likely return a
- * <strong>subtype</strong> of Document for which the equals/hashCode contract
- * would be violated.
+ * {@link Object#hashCode()} implementations!
+ * <p>
+ * Calling methods that <strong>return</strong> a Document will most likely
+ * return a <strong>subtype</strong> of Document for which the equals/hashCode
+ * contract would be violated.
  * 
  * @couchdbApi http://wiki.apache.org/couchdb/HTTP_Document_API
  * @author Stefan Saasen
- * 
- *         TODO cleanup this mess ;-)
  */
+// TODO cleanup this mess ;-)
 public class Document implements JsonExportable {
 
+    // TODO Move to database or CouchDbClient...
     private final static ThreadLocal<MimeUtil2> MIME_UTIL = new ThreadLocal<MimeUtil2>() {
         @Override
         protected MimeUtil2 initialValue() {

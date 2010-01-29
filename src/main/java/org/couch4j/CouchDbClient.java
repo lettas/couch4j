@@ -54,13 +54,37 @@ import java.util.List;
  * @author Stefan Saasen
  */
 public interface CouchDbClient {
+
+    /**
+     * @return The hostname of the CouchDB server this client is connected to.
+     */
     String getRemoteHost();
 
+    /**
+     * @return The port of the CouchDB server this client is connected to.
+     */
     int getRemotePort();
 
+    /**
+     * Returns a {@link Database} instance for the CouchDB database with the
+     * name {@code databaseName}.
+     * 
+     * @param databaseName
+     *            The name of the CouchDB database
+     * @return Shared {@link Database} instance.
+     */
     Database getDatabase(final String databaseName);
 
+    /**
+     * @return A List<String> of database names that are available on the
+     *         CouchDB server.
+     */
     List<String> databaseNames();
 
+    /**
+     * Disconnect all {@link Database} instances. Another call to
+     * {@link CouchDbClient#getDatabase(String)} will reconnect or initialize
+     * the connection pool.
+     */
     void disconnect();
 }
