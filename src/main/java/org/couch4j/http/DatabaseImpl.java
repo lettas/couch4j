@@ -41,6 +41,7 @@ import net.sf.json.util.PropertySetStrategy;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.entity.StringEntity;
+import org.couch4j.AsyncDatabase;
 import org.couch4j.Attachment;
 import org.couch4j.CouchDbClient;
 import org.couch4j.Database;
@@ -58,7 +59,7 @@ import org.slf4j.LoggerFactory;
  * @author Stefan Saasen
  */
 @ThreadSafe
-final class DatabaseImpl implements JsonAwareDatabase {
+final class DatabaseImpl implements Database, JsonAwareDatabase {
 
     private static final String UTF_8 = "UTF-8";
 
@@ -71,6 +72,8 @@ final class DatabaseImpl implements JsonAwareDatabase {
     private final UrlBuilder urlResolver;
     private final CouchDbClient couchDb;
 
+    private AsyncDatabase asyncDatabase;
+    
     private final JsonConfig config;
     
     public DatabaseImpl(CouchDbClient couchDb, HttpConnectionManager ht, String databaseName) {
@@ -112,6 +115,8 @@ final class DatabaseImpl implements JsonAwareDatabase {
                  }
             }
         });
+        
+        this.asyncDatabase = new AsyncDatabaseImpl(client, urlResolver, this);
     }
 
     public void addChangeListener(ChangeListener listener) {
@@ -328,4 +333,35 @@ final class DatabaseImpl implements JsonAwareDatabase {
     public JsonConfig getConfig() {
         return config;
     }
+
+    // ~~ ======================== AsyncDatabase ========================
+    
+    public void bulkSave(Collection<Document> docs, ResponseHandler<ServerResponse> response) {
+        asyncDatabase.bulkSave(docs, response);
+    }
+
+    public void fetchAllDocuments(boolean includeDocs, ResponseHandler<ViewResult> response) {
+        asyncDatabase.fetchAllDocuments(includeDocs, response);
+    }
+
+    public void fetchAllDocuments(ResponseHandler<ViewResult> response) {
+        asyncDatabase.fetchAllDocuments(response);
+    }
+
+    public void fetchView(ViewQuery v, ResponseHandler<ViewResult> response) {
+        asyncDatabase.fetchView(v, response);
+    }
+
+    public void saveAttachment(Document doc, String name, InputStream data, ResponseHandler<ServerResponse> response) {
+        asyncDatabase.saveAttachment(doc, name, data, response);
+    }
+
+    public void saveDocument(Object doc, ResponseHandler<ServerResponse> response) {
+        asyncDatabase.saveDocument(doc, response);
+    }
+
+    public void saveDocument(String documentId, Object doc, ResponseHandler<ServerResponse> response) {
+        asyncDatabase.saveDocument(documentId, doc, response);
+    }
+
 }

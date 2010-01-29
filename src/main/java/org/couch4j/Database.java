@@ -38,7 +38,7 @@ import org.couch4j.exceptions.DocumentNotFoundException;
  * @couchdbApi http://wiki.apache.org/couchdb/Compaction
  * @author Stefan Saasen
  */
-public interface Database {
+public interface Database extends AsyncDatabase {
 
     /**
      * @couchdb 0.10.?
