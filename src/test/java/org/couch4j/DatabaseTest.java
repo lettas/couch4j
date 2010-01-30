@@ -254,6 +254,21 @@ public class DatabaseTest extends Couch4jBase {
     }
     
     @Test
+    public void testSaveNewDocumentWithId() throws Exception {
+        Document d = new Document();
+        final String rand = UUID.randomUUID().toString();
+        final String key = "rand_test_str";
+        d.put(key, rand);
+
+        // Save
+        test.saveDocument(NEW_DOCUMENT_ID, d);
+
+        // Fetch again
+        d = test.fetchDocument(NEW_DOCUMENT_ID);
+        assertEquals(rand, d.get(key));
+    }
+    
+    @Test
     public void saveSerializable() throws Exception {
         A a = new A();
         ServerResponse r = testEmpty.saveDocument(a);

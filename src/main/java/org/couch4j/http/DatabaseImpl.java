@@ -47,6 +47,7 @@ import org.couch4j.CouchDbClient;
 import org.couch4j.Database;
 import org.couch4j.DatabaseInfo;
 import org.couch4j.Document;
+import org.couch4j.JsonExportable;
 import org.couch4j.ServerResponse;
 import org.couch4j.ViewQuery;
 import org.couch4j.ViewResult;
@@ -73,9 +74,9 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
     private final CouchDbClient couchDb;
 
     private AsyncDatabase asyncDatabase;
-    
+
     private final JsonConfig config;
-    
+
     public DatabaseImpl(CouchDbClient couchDb, HttpConnectionManager ht, String databaseName) {
         this.couchDb = couchDb;
         this.client = ht;
@@ -96,27 +97,28 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
             }
             ht.jsonPut(urlResolver.baseUrl());
         }
-        
+
         config = new JsonConfig();
         config.setPropertySetStrategy(new PropertySetStrategy() {
             @Override
             public void setProperty(Object bean, String key, Object value) throws JSONException {
                 try {
-                    Field field = bean.getClass().getField( key );
-                    if( field != null ) field.set( bean, value );
-                 } catch( Exception e ){
-                     try {
-                         PropertyUtils.setSimpleProperty(bean, key, value);
-                     } catch (Exception ex) {
-                         // Ignore - We simply ignore attributes in the
-                         // CouchDB document that are not available in the
-                         // class.
-                     }
-                 }
+                    Field field = bean.getClass().getField(key);
+                    if (field != null)
+                        field.set(bean, value);
+                } catch (Exception e) {
+                    try {
+                        PropertyUtils.setSimpleProperty(bean, key, value);
+                    } catch (Exception ex) {
+                        // Ignore - We simply ignore attributes in the
+                        // CouchDB document that are not available in the
+                        // class.
+                    }
+                }
             }
         });
-        
-        this.asyncDatabase = new AsyncDatabaseImpl(client, urlResolver, this);
+
+        this.asyncDatabase = new AsyncDatabaseImpl(this);
     }
 
     public void addChangeListener(ChangeListener listener) {
@@ -181,13 +183,13 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
     @SuppressWarnings("unchecked")
     public <T> T fetchObject(String docId, Class<T> clazz) {
         String url = urlForPath(docId);
-        return (T)JSONObject.toBean(this.client.jsonGet(url), clazz);
+        return (T) JSONObject.toBean(this.client.jsonGet(url), clazz);
     }
 
     @SuppressWarnings("unchecked")
     public <T> T fetchObject(String docId, String rev, Class<T> clazz) {
         String url = urlForPath(docId, map("rev", rev));
-        return (T)JSONObject.toBean(this.client.jsonGet(url), clazz);
+        return (T) JSONObject.toBean(this.client.jsonGet(url), clazz);
     }
 
     public ViewResult fetchView(ViewQuery v) {
@@ -254,10 +256,10 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
 
     private ServerResponse saveDocument(Document doc) {
 
-        if(logger.isDebugEnabled()) {
+        if (logger.isDebugEnabled()) {
             logger.debug("saveDocument JSON: " + doc.toJson());
         }
-        
+
         StringEntity entity;
         try {
             entity = new StringEntity(doc.toJson(), UTF_8);
@@ -299,7 +301,12 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
     public ServerResponse saveDocument(String documentId, Object obj) {
         StringEntity entity;
         try {
-            JSONObject json = JSONObject.fromObject(obj);
+            JSONObject json;
+            if (obj instanceof JsonExportable) {
+                json = ((JsonExportable) obj).toJSONObject();
+            } else {
+                json = JSONObject.fromObject(obj);
+            }
             entity = new StringEntity(json.toString(), UTF_8);
             entity.setContentType("application/json");
         } catch (UnsupportedEncodingException e) {
@@ -335,7 +342,7 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
     }
 
     // ~~ ======================== AsyncDatabase ========================
-    
+
     public void bulkSave(Collection<Document> docs, ResponseHandler<ServerResponse> response) {
         asyncDatabase.bulkSave(docs, response);
     }
@@ -352,16 +359,25 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
         asyncDatabase.fetchView(v, response);
     }
 
-    public void saveAttachment(Document doc, String name, InputStream data, ResponseHandler<ServerResponse> response) {
-        asyncDatabase.saveAttachment(doc, name, data, response);
-    }
-
     public void saveDocument(Object doc, ResponseHandler<ServerResponse> response) {
         asyncDatabase.saveDocument(doc, response);
     }
 
     public void saveDocument(String documentId, Object doc, ResponseHandler<ServerResponse> response) {
         asyncDatabase.saveDocument(documentId, doc, response);
+    }
+
+    public void fetchDocument(String docId, ResponseHandler<Document> response) {
+        asyncDatabase.fetchDocument(docId, response);
+    }
+
+    public void fetchDocument(String docId, String rev, ResponseHandler<Document> response) {
+        asyncDatabase.fetchDocument(docId, rev, response);
+    }
+
+    public void storeAttachment(String documentId, String attachmentName, InputStream is,
+            ResponseHandler<ServerResponse> response) {
+        asyncDatabase.storeAttachment(documentId, attachmentName, is, response);
     }
 
 }
