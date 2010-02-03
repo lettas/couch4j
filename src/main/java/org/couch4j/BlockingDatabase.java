@@ -33,6 +33,46 @@ import org.couch4j.exceptions.DocumentNotFoundException;
  */
 public interface BlockingDatabase {
     /**
+     * Bulk save a collection of documents.
+     * 
+     * @param Collection
+     *            of {@link Document}s.
+     * @return ServerResponse
+     */
+    ServerResponse bulkSave(Collection<Document> docs);
+
+    /**
+     * Delete this database. !There is no undo!
+     * 
+     * @return ServerResponse
+     */
+    ServerResponse delete();
+
+    /**
+     * Delete the given document.
+     * 
+     * @param doc
+     *            - The document to be deleted
+     * @return ServerReponse
+     */
+    ServerResponse deleteDocument(Document doc);
+
+    /**
+     * @return a ViewResult that contains <strong>ALL</strong> documents.
+     */
+    ViewResult fetchAllDocuments();
+
+    /**
+     * Fetch all documents.
+     * 
+     * @param includeDocs
+     *            include the document if true, otherwise the document will be
+     *            fetched lazily.
+     * @return ViewResult
+     */
+    ViewResult fetchAllDocuments(boolean includeDocs);
+
+    /**
      * 
      * @param docId
      * @return
@@ -80,6 +120,13 @@ public interface BlockingDatabase {
     <T> T fetchObject(String docId, String rev, Class<T> clazz);
 
     /**
+     * @param v
+     *            - A ViewQuery
+     * @return ViewResult for this {@link ViewQuery}
+     */
+    ViewResult fetchView(ViewQuery v);
+
+    /**
      * Save the given object as a CouchDB document.
      * <p>
      * 
@@ -106,44 +153,6 @@ public interface BlockingDatabase {
     ServerResponse saveDocument(String documentId, Object object);
 
     /**
-     * Bulk save a collection of documents.
-     * 
-     * @param Collection
-     *            of {@link Document}s.
-     * @return ServerResponse
-     */
-    ServerResponse bulkSave(Collection<Document> docs);
-
-    /**
-     * @return a ViewResult that contains <strong>ALL</strong> documents.
-     */
-    ViewResult fetchAllDocuments();
-
-    /**
-     * Fetch all documents.
-     * 
-     * @param includeDocs
-     *            include the document if true, otherwise the document will be
-     *            fetched lazily.
-     * @return ViewResult
-     */
-    ViewResult fetchAllDocuments(boolean includeDocs);
-
-    /**
-     * @param v
-     *            - A ViewQuery
-     * @return ViewResult for this {@link ViewQuery}
-     */
-    ViewResult fetchView(ViewQuery v);
-
-    /**
-     * Delete this database. !There is no undo!
-     * 
-     * @return ServerResponse
-     */
-    ServerResponse delete();
-
-    /**
      * Stores the content of the {@link InputStream} is using for a given
      * document (if the document does not exists it will be created) using the
      * attachmentName.
@@ -154,13 +163,4 @@ public interface BlockingDatabase {
      * @return
      */
     ServerResponse storeAttachment(String documentId, String attachmentName, InputStream is);
-
-    /**
-     * Delete the given document.
-     * 
-     * @param doc
-     *            - The document to be deleted
-     * @return ServerReponse
-     */
-    ServerResponse deleteDocument(Document doc);
 }
