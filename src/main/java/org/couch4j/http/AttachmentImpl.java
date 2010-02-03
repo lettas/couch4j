@@ -113,7 +113,10 @@ class AttachmentImpl implements Attachment {
     }
     
     public void retrieve(StreamContext sc) throws IOException {
-        database.withAttachmentAsStream(this, sc);
+        // FIXME
+        if(database instanceof DatabaseImpl) {
+            ((DatabaseImpl)database).withAttachmentAsStream(this, sc);
+        }
     }
 
     @Override

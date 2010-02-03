@@ -25,10 +25,7 @@ package org.couch4j;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Collection;
 import java.util.List;
-
-import org.couch4j.exceptions.DocumentNotFoundException;
 
 /**
  * Represents a single CouchDB database.
@@ -38,7 +35,7 @@ import org.couch4j.exceptions.DocumentNotFoundException;
  * @couchdbApi http://wiki.apache.org/couchdb/Compaction
  * @author Stefan Saasen
  */
-public interface Database extends AsyncDatabase {
+public interface Database extends AsyncDatabase, BlockingDatabase {
 
     /**
      * @couchdb 0.10.?
@@ -65,114 +62,6 @@ public interface Database extends AsyncDatabase {
     }
 
     /**
-     * 
-     * @param docId
-     * @return
-     * @throws DocumentNotFoundException
-     */
-    Document fetchDocument(String docId);
-
-    /**
-     * Fetch a particular revision of a document.
-     * 
-     * @param docId
-     *            The document id
-     * @param rev
-     *            The document revision
-     * @return
-     */
-    Document fetchDocument(String docId, String rev);
-
-    /**
-     * Returns an instance of clazz with the properties of the CouchDB document
-     * with the id {@code docId}.
-     * 
-     * @param <T>
-     * @param docId
-     *            The document id
-     * @param clazz
-     * @return T
-     * @see Database#fetchDocument(String)
-     */
-    <T> T fetchObject(String docId, Class<T> clazz);
-
-    /**
-     * Returns an instance of clazz with the properties of the CouchDB document
-     * with the id {@code docId}.
-     * 
-     * @param <T>
-     * @param docId
-     *            The document id
-     * @param rev
-     *            The document revision
-     * @param clazz
-     * @return T
-     * @see Database#fetchDocument(String, String)
-     */
-    <T> T fetchObject(String docId, String rev, Class<T> clazz);
-
-    /**
-     * Save the given object as a CouchDB document.
-     * <p>
-     * 
-     * @param object
-     *            - Accepts JSON formatted strings, Maps, DynaBeans, JavaBeans
-     *            and {@link Document} instances.
-     * @return ServerResponse
-     */
-    ServerResponse saveDocument(Object object);
-
-    /**
-     * Save the given object as a CouchDB document using the given document id.
-     * <p>
-     * 
-     * @param documentId
-     *            The document id to use. If the document already exists it will
-     *            be updated, otherwise a new document with this document id
-     *            will be created.
-     * @param object
-     *            - Accepts JSON formatted strings, Maps, DynaBeans, JavaBeans
-     *            and {@link Document} instances.
-     * @return ServerResponse
-     */
-    ServerResponse saveDocument(String documentId, Object object);
-
-    /**
-     * Bulk save a collection of documents.
-     * 
-     * @param Collection of {@link Document}s.
-     * @return ServerResponse
-     */
-    ServerResponse bulkSave(Collection<Document> docs);
-
-    /**
-     * @return a ViewResult that contains <strong>ALL</strong> documents.
-     */
-    ViewResult fetchAllDocuments();
-
-    /**
-     * Fetch all documents.
-     * 
-     * @param includeDocs include the document if true, otherwise the document will be fetched lazily.
-     * @return ViewResult
-     */
-    ViewResult fetchAllDocuments(boolean includeDocs);
-
-    /**
-     * @param v - A particular ViewQuery
-     * @return ViewResult for this {@link ViewQuery}
-     */
-    ViewResult fetchView(ViewQuery v);
-
-    ServerResponse delete();
-
-    ServerResponse storeAttachment(String documentId, String attachmentName, InputStream is);
-
-    void withAttachmentAsStream(final Attachment a, final StreamContext ctx) throws IOException;
-
-    ServerResponse deleteDocument(Document doc);
-
-    /**
      * Disconnect this database client. After calling {@code disconnect} the
      * database client cannot be used any more.
      */
@@ -193,5 +82,8 @@ public interface Database extends AsyncDatabase {
      */
     void removeChangeListener(ChangeListener listener);
 
+    /**
+     * Return a {@link DatabaseInfo} descriptor for this database.
+     */
     DatabaseInfo getDatabaseInfo();
 }
