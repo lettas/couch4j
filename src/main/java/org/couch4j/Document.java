@@ -37,9 +37,8 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.binary.Base64;
 import org.couch4j.exceptions.Couch4JException;
+import org.couch4j.util.MimeUtil;
 import org.couch4j.util.StreamUtils;
-
-import eu.medsea.mimeutil.MimeUtil2;
 
 /*
  * TODO:
@@ -64,18 +63,7 @@ import eu.medsea.mimeutil.MimeUtil2;
  * @couchdbApi http://wiki.apache.org/couchdb/HTTP_Document_API
  * @author Stefan Saasen
  */
-// TODO cleanup this mess ;-)
 public class Document implements JsonExportable {
-
-    // TODO Move to database or CouchDbClient...
-    private final static ThreadLocal<MimeUtil2> MIME_UTIL = new ThreadLocal<MimeUtil2>() {
-        @Override
-        protected MimeUtil2 initialValue() {
-            MimeUtil2 mimeUtil = new MimeUtil2();
-            mimeUtil.registerMimeDetector("eu.medsea.mimeutil.detector.MagicMimeMimeDetector");
-            return mimeUtil;
-        }
-    };
 
     private final Map<String, Map<String, String>> attachments = new HashMap<String, Map<String, String>>();
     private final Map<? super Object, ? super Object> attributes;
@@ -182,9 +170,8 @@ public class Document implements JsonExportable {
     public void addAttachment(String name, InputStream content) {
         try {
             byte[] binaryData = StreamUtils.toByteArray(content);
-            attachments.put(name, map("content_type", MimeUtil2.getMostSpecificMimeType(
-                    MIME_UTIL.get().getMimeTypes(binaryData)).toString(), "data", new String(Base64
-                    .encodeBase64(binaryData))));
+            attachments.put(name, map("content_type", MimeUtil.mostSpecificContentType(binaryData), "data", new String(
+                    Base64.encodeBase64(binaryData))));
         } catch (IOException e) {
             throw new Couch4JException(e);
         }
