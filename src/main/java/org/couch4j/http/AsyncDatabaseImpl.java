@@ -8,7 +8,7 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.couch4j.AsyncDatabase;
+import org.couch4j.AsynchronousDatabase;
 import org.couch4j.Document;
 import org.couch4j.ServerResponse;
 import org.couch4j.ViewQuery;
@@ -18,7 +18,7 @@ import org.couch4j.exceptions.Couch4JException;
 /**
  * @author Stefan Saasen
  */
-final class AsyncDatabaseImpl implements AsyncDatabase {
+final class AsyncDatabaseImpl implements AsynchronousDatabase {
 
     private final static class RequestToken implements AsyncToken {
         RequestToken(Object... args) {

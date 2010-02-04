@@ -35,8 +35,8 @@ import java.util.UUID;
 
 import net.sf.json.JSONArray;
 
-import org.couch4j.AsyncDatabase.AsyncToken;
-import org.couch4j.AsyncDatabase.ResponseHandler;
+import org.couch4j.AsynchronousDatabase.AsyncToken;
+import org.couch4j.AsynchronousDatabase.ResponseHandler;
 import org.couch4j.exceptions.DocumentNotFoundException;
 import org.couch4j.exceptions.DocumentUpdateConflictException;
 import org.junit.After;
@@ -50,8 +50,8 @@ public class AsyncDatabaseTest extends Couch4jBase {
 
     private static final long TIMEOUT = 1000;
 
-    private AsyncDatabase test;
-    private AsyncDatabase testEmpty;
+    private AsynchronousDatabase test;
+    private AsynchronousDatabase testEmpty;
 
     private static class TestResultHandler<T> implements ResponseHandler<T> {
         private T response;

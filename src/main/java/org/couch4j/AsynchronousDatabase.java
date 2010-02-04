@@ -31,7 +31,7 @@ import org.couch4j.exceptions.DocumentNotFoundException;
 /**
  * @author Stefan Saasen
  */
-public interface AsyncDatabase {
+public interface AsynchronousDatabase {
 
     // TODO provide a limited set of predefined tokens
     static interface AsyncToken {

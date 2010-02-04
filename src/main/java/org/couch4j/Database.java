@@ -35,7 +35,7 @@ import java.util.List;
  * @couchdbApi http://wiki.apache.org/couchdb/Compaction
  * @author Stefan Saasen
  */
-public interface Database extends AsyncDatabase, BlockingDatabase {
+public interface Database extends AsynchronousDatabase, SynchronousDatabase {
 
     /**
      * @couchdb 0.10.?

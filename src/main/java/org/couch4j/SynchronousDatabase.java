@@ -31,7 +31,7 @@ import org.couch4j.exceptions.DocumentNotFoundException;
 /**
  * @author Stefan Saasen
  */
-public interface BlockingDatabase {
+public interface SynchronousDatabase {
     /**
      * Bulk save a collection of documents.
      * 

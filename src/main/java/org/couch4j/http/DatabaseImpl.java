@@ -41,7 +41,7 @@ import net.sf.json.util.PropertySetStrategy;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.entity.StringEntity;
-import org.couch4j.AsyncDatabase;
+import org.couch4j.AsynchronousDatabase;
 import org.couch4j.Attachment;
 import org.couch4j.CouchDbClient;
 import org.couch4j.Database;
@@ -73,7 +73,7 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
     private final UrlBuilder urlResolver;
     private final CouchDbClient couchDb;
 
-    private AsyncDatabase asyncDatabase;
+    private AsynchronousDatabase asyncDatabase;
 
     private final JsonConfig config;
 
