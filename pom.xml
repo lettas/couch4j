@@ -78,8 +78,6 @@
 		<name>coravy.</name>
 		<url>http://dev.coravy.com</url>
 	</organization>
-	<repositories>
-	</repositories>
 
 	<dependencies>
 		<dependency>
