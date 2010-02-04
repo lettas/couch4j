@@ -202,7 +202,7 @@
 
 	<distributionManagement>
 		<repository>
-			<id>couch4j-release</id>
+			<id>sonatype-nexus-staging</id>
 			<name>couch4j Staging Repository</name>
 			<url>http://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
