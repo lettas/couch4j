@@ -29,7 +29,6 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
-import org.couch4j.Database;
 import org.couch4j.ViewResult;
 import org.couch4j.ViewResultRow;
 import org.couch4j.annotations.Immutable;

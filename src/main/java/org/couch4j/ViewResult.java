@@ -33,9 +33,24 @@ import java.util.List;
  * @author Stefan Saasen
  */
 public interface ViewResult extends Iterable<ViewResultRow>, JsonExportable {
+    
+    /**
+     * The number of rows in this view result.
+     * 
+     * @return number of rows
+     */
     int getTotalRows();
 
+    /**
+     * The offset.
+     * @return offset
+     */
     int getOffset();
 
+    /**
+     * Returns a list of ViewResultRows.
+     * 
+     * @return List of view result rows or an empty list. Never returns null.
+     */
     List<ViewResultRow> getRows();
 }

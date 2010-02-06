@@ -77,8 +77,6 @@ final class JsonViewResultRow implements ViewResultRow {
                     // content
                     if (json.containsKey("value")) {
                         JSONObject value = json.getJSONObject("value");
-                        final String rev = value.has("_rev") ? value.getString("_rev") : (value.has("rev") ? value
-                                .getString("rev") : null);
                         d = new ResponseDocument(value);
                     } else {
                         d = new ResponseDocument(this.id);
