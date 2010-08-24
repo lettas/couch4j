@@ -35,8 +35,9 @@ import java.util.UUID;
 
 import net.sf.json.JSONArray;
 
-import org.couch4j.AsynchronousDatabase.AsyncToken;
-import org.couch4j.AsynchronousDatabase.ResponseHandler;
+import org.couch4j.api.AsynchronousDatabase.AsyncToken;
+import org.couch4j.api.*;
+import org.couch4j.api.AsynchronousDatabase.ResponseHandler;
 import org.couch4j.exceptions.DocumentNotFoundException;
 import org.couch4j.exceptions.DocumentUpdateConflictException;
 import org.junit.After;

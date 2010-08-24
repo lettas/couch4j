@@ -26,7 +26,7 @@ package org.couch4j;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.couch4j.CouchDbClient;
+import org.couch4j.api.CouchDbClient;
 import org.couch4j.exceptions.Couch4JException;
 import org.couch4j.http.DefaultCouchDbClient;
 import org.junit.runner.RunWith;

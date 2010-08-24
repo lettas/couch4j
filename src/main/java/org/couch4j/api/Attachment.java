@@ -21,69 +21,53 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.couch4j;
+package org.couch4j.api;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.util.List;
 
 /**
- * Represents a single CouchDB database.
+ * An attachment is a blob that is attached to a document in a CouchDB database.
  * <p>
+ * While in CouchDB there is a distinction between an attachment placeholder in
+ * the document (the "stub") and the actual binary data, couch4j retrieves the
+ * content automatically.
  * 
- * @couchdbApi http://wiki.apache.org/couchdb/HTTP_database_API
- * @couchdbApi http://wiki.apache.org/couchdb/Compaction
  * @author Stefan Saasen
  */
-public interface Database extends AsynchronousDatabase, SynchronousDatabase {
+public interface Attachment {
 
     /**
-     * @couchdb 0.10.?
+     * Return the Content-Type (e.g "image/jpeg") of the attachment.
      */
-    public interface ChangeEvent {
-        boolean isDeleted();
-
-        String getId();
-
-        String getSeq();
-
-        List<String> changeRevs();
-    }
+    String getContentType();
 
     /**
-     * @couchdb 0.10.?
+     * @return the size of the attachment in bytes
      */
-    public interface ChangeListener {
-        void onChange(ChangeEvent event);
-    }
-
-    public interface StreamContext {
-        void withInputStream(InputStream is) throws IOException;
-    }
+    long getLength();
 
     /**
-     * Disconnect this database client. After calling {@code disconnect} the
-     * database client cannot be used any more.
-     */
-    void disconnect();
-
-    /**
-     * @return The name of the database
+     * @return the file name of the attachment
      */
     String getName();
 
     /**
-     * @couchdb 0.10.?
+     * @return The id of the enclosing document
+     * @see Attachment#getDocumentId()
      */
-    void addChangeListener(ChangeListener listener);
+    @Deprecated
+    String getContentId();
 
     /**
-     * @couchdb 0.10.?
+     * @return The id of the enclosing document
      */
-    void removeChangeListener(ChangeListener listener);
+    String getDocumentId();
 
     /**
-     * Return a {@link DatabaseInfo} descriptor for this database.
+     * Stream the attachment bytes.
+     * 
+     * @param StreamContext
+     * @throws IOException
      */
-    DatabaseInfo getDatabaseInfo();
+    void retrieve(Database.StreamContext sc) throws IOException;
 }

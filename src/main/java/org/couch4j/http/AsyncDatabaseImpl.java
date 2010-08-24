@@ -8,11 +8,11 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import org.couch4j.AsynchronousDatabase;
-import org.couch4j.Document;
-import org.couch4j.ServerResponse;
-import org.couch4j.ViewQuery;
-import org.couch4j.ViewResult;
+import org.couch4j.api.AsynchronousDatabase;
+import org.couch4j.api.Document;
+import org.couch4j.api.ServerResponse;
+import org.couch4j.api.ViewQuery;
+import org.couch4j.api.*;
 import org.couch4j.exceptions.Couch4JException;
 
 /**

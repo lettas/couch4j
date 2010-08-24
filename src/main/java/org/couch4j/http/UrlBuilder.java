@@ -26,7 +26,7 @@ package org.couch4j.http;
 import java.util.Collections;
 import java.util.Map;
 
-import org.couch4j.CouchDbClient;
+import org.couch4j.api.CouchDbClient;
 import org.couch4j.util.StringUtils;
 
 /**

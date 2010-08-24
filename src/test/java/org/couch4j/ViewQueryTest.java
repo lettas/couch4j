@@ -26,6 +26,7 @@ package org.couch4j;
 import static org.hamcrest.CoreMatchers.*;
 import static org.junit.Assert.*;
 
+import org.couch4j.api.ViewQuery;
 import org.junit.Test;
 
 /**

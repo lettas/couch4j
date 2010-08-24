@@ -37,9 +37,9 @@ import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.codec.binary.Base64;
-import org.couch4j.Attachment;
-import org.couch4j.Database;
-import org.couch4j.Document;
+import org.couch4j.api.Attachment;
+import org.couch4j.api.Database;
+import org.couch4j.api.Document;
 import org.couch4j.exceptions.Couch4JException;
 import org.couch4j.util.StreamUtils;
 

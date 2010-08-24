@@ -29,7 +29,7 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import org.couch4j.Couch4jBase;
-import org.couch4j.CouchDbClient;
+import org.couch4j.api.CouchDbClient;
 import org.junit.Before;
 import org.junit.Test;
 

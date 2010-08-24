@@ -38,11 +38,11 @@ import java.util.UUID;
 import net.sf.json.JSONObject;
 import net.sf.json.util.JSONUtils;
 
-import org.couch4j.Attachment;
+import org.couch4j.api.Attachment;
 import org.couch4j.Couch4jBase;
-import org.couch4j.CouchDbClient;
-import org.couch4j.Database;
-import org.couch4j.Document;
+import org.couch4j.api.CouchDbClient;
+import org.couch4j.api.Database;
+import org.couch4j.api.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

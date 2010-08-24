@@ -23,7 +23,7 @@
  */
 package org.couch4j.http;
 
-import org.couch4j.Database;
+import org.couch4j.api.Database;
 
 /**
  * @author Stefan Saasen

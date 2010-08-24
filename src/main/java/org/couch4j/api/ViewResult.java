@@ -21,55 +21,36 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.couch4j;
+package org.couch4j.api;
 
-import java.util.Date;
+import java.util.List;
 
 /**
- * This class provides database meta information.
+ * A CouchDB view result.
+ * <p>
+ * Has meta information (number of total rows, offset) and a {@link List} of {@link ViewResultRow}s.
  * 
  * @author Stefan Saasen
  */
-public interface DatabaseInfo {
+public interface ViewResult extends Iterable<ViewResultRow>, JsonExportable {
+    
+    /**
+     * The number of rows in this view result.
+     * 
+     * @return number of rows
+     */
+    int getTotalRows();
 
     /**
-     * @return the name of the database.
+     * The offset.
+     * @return offset
      */
-    String getName();
+    int getOffset();
 
     /**
-     * @return the number of documents in this database.
+     * Returns a list of ViewResultRows.
+     * 
+     * @return List of view result rows or an empty list. Never returns null.
      */
-    int getDocCount();
-
-    /**
-     * @return the number of deleted documents.
-     */
-    // TODO verify that this returns the number of all the deleted documents.
-    int getDocDelCount();
-
-    /**
-     * @return The update sequence.
-     */
-    int getUpdateSeq();
-
-    int getPurgeSeq();
-
-    /**
-     * @return true if a compaction process is running, false otherwise.
-     */
-    boolean isCompactRunning();
-
-    /**
-     * @return size of the database file in bytes.
-     */
-    int getDiskSize();
-
-    /**
-     * @return Startup time of the CouchDB server.
-     */
-    // TODO verify
-    Date getInstanceStartTime();
-
-    int getDiskFormatVersion();
+    List<ViewResultRow> getRows();
 }

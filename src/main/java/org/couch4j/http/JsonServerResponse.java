@@ -23,7 +23,7 @@
  */
 package org.couch4j.http;
 
-import org.couch4j.ServerResponse;
+import org.couch4j.api.ServerResponse;
 
 import net.sf.json.JSONObject;
 

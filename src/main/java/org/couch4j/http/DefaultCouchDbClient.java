@@ -27,8 +27,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.couch4j.CouchDbClient;
-import org.couch4j.Database;
+import org.couch4j.api.CouchDbClient;
+import org.couch4j.api.Database;
 import org.couch4j.annotations.ThreadSafe;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

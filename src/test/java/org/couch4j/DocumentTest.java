@@ -33,6 +33,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+import org.couch4j.api.CouchDbClient;
+import org.couch4j.api.Database;
+import org.couch4j.api.Document;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;

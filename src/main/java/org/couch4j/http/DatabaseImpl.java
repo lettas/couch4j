@@ -41,16 +41,16 @@ import net.sf.json.util.PropertySetStrategy;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.http.entity.StringEntity;
-import org.couch4j.AsynchronousDatabase;
-import org.couch4j.Attachment;
-import org.couch4j.CouchDbClient;
-import org.couch4j.Database;
-import org.couch4j.DatabaseInfo;
-import org.couch4j.Document;
-import org.couch4j.JsonExportable;
-import org.couch4j.ServerResponse;
-import org.couch4j.ViewQuery;
-import org.couch4j.ViewResult;
+import org.couch4j.api.AsynchronousDatabase;
+import org.couch4j.api.Attachment;
+import org.couch4j.api.CouchDbClient;
+import org.couch4j.api.Database;
+import org.couch4j.api.DatabaseInfo;
+import org.couch4j.api.Document;
+import org.couch4j.api.JsonExportable;
+import org.couch4j.api.ServerResponse;
+import org.couch4j.api.ViewQuery;
+import org.couch4j.api.ViewResult;
 import org.couch4j.annotations.ThreadSafe;
 import org.couch4j.exceptions.DocumentNotFoundException;
 import org.slf4j.Logger;
@@ -127,7 +127,7 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
 
     /*
      * (non-Javadoc)
-     * @see org.couch4j.Database#bulkSave(java.util.Collection)
+     * @see org.couch4j.api.Database#bulkSave(java.util.Collection)
      */
     public ServerResponse bulkSave(Collection<Document> docs) {
         throw new UnsupportedOperationException("Implement!");
@@ -164,7 +164,7 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
 
     /*
      * (non-Javadoc)
-     * @see org.couch4j.Database#fetchDocument(java.lang.String)
+     * @see org.couch4j.api.Database#fetchDocument(java.lang.String)
      */
     public Document fetchDocument(String docId) {
         String url = urlForPath(docId);

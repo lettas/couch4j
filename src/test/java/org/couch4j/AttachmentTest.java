@@ -31,7 +31,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.UUID;
 
-import org.couch4j.Database.StreamContext;
+import org.couch4j.api.Database.StreamContext;
+import org.couch4j.api.Attachment;
+import org.couch4j.api.CouchDbClient;
+import org.couch4j.api.Database;
+import org.couch4j.api.Document;
 import org.couch4j.util.StreamUtils;
 import org.junit.After;
 import org.junit.Before;

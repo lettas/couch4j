@@ -28,10 +28,10 @@ import java.io.IOException;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.builder.ReflectionToStringBuilder;
-import org.couch4j.Attachment;
-import org.couch4j.Database;
-import org.couch4j.Document;
-import org.couch4j.Database.StreamContext;
+import org.couch4j.api.Attachment;
+import org.couch4j.api.Database;
+import org.couch4j.api.Document;
+import org.couch4j.api.Database.StreamContext;
 
 /**
  * @author Stefan Saasen

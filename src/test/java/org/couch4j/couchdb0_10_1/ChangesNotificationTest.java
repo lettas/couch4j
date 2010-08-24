@@ -31,11 +31,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.couch4j.Couch4jBase;
-import org.couch4j.CouchDbClient;
-import org.couch4j.Database;
-import org.couch4j.Document;
-import org.couch4j.Database.ChangeEvent;
-import org.couch4j.Database.ChangeListener;
+import org.couch4j.api.CouchDbClient;
+import org.couch4j.api.Database;
+import org.couch4j.api.Document;
+import org.couch4j.api.Database.ChangeEvent;
+import org.couch4j.api.Database.ChangeListener;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;

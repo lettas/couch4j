@@ -27,8 +27,8 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
 import net.sf.json.JSONObject;
 
-import org.couch4j.Document;
-import org.couch4j.ViewResultRow;
+import org.couch4j.api.Document;
+import org.couch4j.api.ViewResultRow;
 import org.couch4j.annotations.Immutable;
 import org.couch4j.exceptions.Couch4JException;
 

@@ -26,6 +26,9 @@ package org.couch4j;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import org.couch4j.api.CouchDbClient;
+import org.couch4j.api.Database;
+import org.couch4j.api.Document;
 import org.junit.Test;
 
 /**

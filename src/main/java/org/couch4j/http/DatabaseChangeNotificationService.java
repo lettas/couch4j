@@ -47,9 +47,9 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.util.EntityUtils;
-import org.couch4j.Database;
-import org.couch4j.Database.ChangeEvent;
-import org.couch4j.Database.ChangeListener;
+import org.couch4j.api.Database;
+import org.couch4j.api.Database.ChangeEvent;
+import org.couch4j.api.Database.ChangeListener;
 import org.couch4j.annotations.Immutable;
 import org.couch4j.exceptions.Couch4JException;
 
