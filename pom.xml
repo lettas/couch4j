@@ -93,9 +93,9 @@
 		</developer>
 	</developers>
 	<scm>
-		<connection>scm:git:git://github.com/juretta/couch4j.git</connection>
+		<connection>scm:git:git@github.com:juretta/couch4j.git</connection>
 		<developerConnection>scm:git:git@github.com:juretta/couch4j.git</developerConnection>
-		<url>http://github.com/juretta/couch4j</url>
+		<url>git@github.com:juretta/couch4j.git</url>
 	</scm>
 
 	<organization>
