@@ -47,7 +47,7 @@ final class AsyncDatabaseImpl implements AsynchronousDatabase {
 
     @Override
     public void fetchAllDocuments(boolean includeDocs, ResponseHandler<ViewResult> response) {
-        this.fetchView(ViewQuery.builder("_all_docs").includeDocs(includeDocs), response);
+        this.fetchView(ViewQuery.builder("_all_docs").includeDocs(includeDocs).build(), response);
     }
 
     @Override

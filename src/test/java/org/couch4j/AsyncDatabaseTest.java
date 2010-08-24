@@ -152,7 +152,7 @@ public class AsyncDatabaseTest extends Couch4jBase {
     @Test
     public void fetchView() throws Exception {
         TestResultHandler<ViewResult> testHandler = new TestResultHandler<ViewResult>();
-        test.fetchView(ViewQuery.builder("test/t2"), testHandler);
+        test.fetchView(ViewQuery.builder("test/t2").build(), testHandler);
 
         synchronized (testHandler) {
             testHandler.wait(TIMEOUT);

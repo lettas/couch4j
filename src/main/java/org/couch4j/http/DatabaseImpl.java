@@ -159,7 +159,7 @@ final class DatabaseImpl implements Database, JsonAwareDatabase {
     }
 
     public ViewResult fetchAllDocuments(boolean includeDocs) {
-        return new JsonViewResult(jsonForPath(ViewQuery.builder("_all_docs").includeDocs(true).toString()), this);
+        return new JsonViewResult(jsonForPath(ViewQuery.builder("_all_docs").includeDocs(true).build().toString()), this);
     }
 
     /*

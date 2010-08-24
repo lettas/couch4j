@@ -54,7 +54,7 @@ public class ViewResultRowTest extends Couch4jBase {
 
     @Test
     public void testBooleanValues() throws Exception {
-        ViewQuery v = new ViewQuery("boolean_value").document("viewresultrow");
+        ViewQuery v = ViewQuery.builder("boolean_value").document("viewresultrow").build();
         ViewResult res = database.fetchView(v);
 
         for (ViewResultRow row : res) {
@@ -64,7 +64,7 @@ public class ViewResultRowTest extends Couch4jBase {
 
     @Test
     public void testIntValues() throws Exception {
-        ViewQuery v = new ViewQuery("int_value").document("viewresultrow");
+        ViewQuery v = ViewQuery.builder("int_value").document("viewresultrow").build();
         ViewResult res = database.fetchView(v);
 
         for (ViewResultRow row : res) {
@@ -74,7 +74,7 @@ public class ViewResultRowTest extends Couch4jBase {
     
     @Test
     public void testObjValues() throws Exception {
-        ViewQuery v = new ViewQuery("object_value").document("viewresultrow");
+        ViewQuery v = ViewQuery.builder("object_value").document("viewresultrow").build();
         ViewResult res = database.fetchView(v);
 
         for (ViewResultRow row : res) {

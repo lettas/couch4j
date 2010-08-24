@@ -163,7 +163,7 @@ public class DatabaseTest extends Couch4jBase {
 
     @Test
     public void testFetchView() throws Exception {
-        ViewQuery v = ViewQuery.builder("test/t1");
+        ViewQuery v = ViewQuery.builder("test/t1").build();
         List<ViewResultRow> l = test.fetchView(v).getRows();
         assertNotNull(l);
         assertEquals(4, l.size());
@@ -177,7 +177,7 @@ public class DatabaseTest extends Couch4jBase {
 
     @Test
     public void testFetchEmptyView() throws Exception {
-        ViewQuery v = ViewQuery.builder("test/empty");
+        ViewQuery v = ViewQuery.builder("test/empty").build();
         List<ViewResultRow> l = test.fetchView(v).getRows();
         assertNotNull(l);
         assertEquals(0, l.size());
