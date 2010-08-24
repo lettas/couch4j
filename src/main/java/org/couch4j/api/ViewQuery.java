@@ -30,6 +30,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import net.sf.json.util.JSONUtils;
+import org.couch4j.annotations.Immutable;
 
 /**
  * Define a query for a particular view.
@@ -46,6 +47,7 @@ import net.sf.json.util.JSONUtils;
  *
  * @author Stefan Saasen
  */
+@Immutable
 public final class ViewQuery {
 
     private static class EncodedParam extends Param {
