@@ -2,7 +2,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>org.couch4j</groupId>
 	<artifactId>couch4j</artifactId>
-	<packaging>jar</packaging>
+	<packaging>bundle</packaging>
 	<version>0.9.1-SNAPSHOT</version>
 	<name>couch4j</name>
 	<description>couch4j is an easy to use and straightforward client library for Java.</description>
@@ -25,34 +25,49 @@
 	</licenses>
 
 	<build>
-		<finalName>${project.name}-${project.version}</finalName>
-		<pluginManagement>
-			<plugins>
-				<plugin>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<configuration>
-						<compilerVersion>1.6</compilerVersion>
-						<source>1.6</source>
-						<target>1.6</target>
-						<encoding>UTF-8</encoding>
-					</configuration>
-				</plugin>
-				<plugin>
-					<artifactId>maven-assembly-plugin</artifactId>
-					<version>2.2-beta-5</version>
-					<configuration>
-						<descriptors>
-							<descriptor>src/main/assembly/src.xml</descriptor>
-						</descriptors>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.0-beta-9</version>
-				</plugin>
-			</plugins>
-		</pluginManagement>
+        <finalName>${project.name}-${project.version}</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <compilerVersion>1.6</compilerVersion>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <version>2.2-beta-5</version>
+                <configuration>
+                    <descriptors>
+                        <descriptor>src/main/assembly/src.xml</descriptor>
+                    </descriptors>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.0-beta-9</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>1.2.0</version>
+                <configuration>
+                    <instructions>
+                        <Export-Package>
+                            org.couch4j.api
+                        </Export-Package>
+                        <Private-Package>
+                            org.couch4j.http, org.couch4j.util
+                        </Private-Package>
+                        <Bundle-SymbolicName>${pom.artifactId}</Bundle-SymbolicName>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
