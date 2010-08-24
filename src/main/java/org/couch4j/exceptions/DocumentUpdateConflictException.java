@@ -11,6 +11,5 @@ public class DocumentUpdateConflictException extends Couch4JException {
 
     public DocumentUpdateConflictException(JSONObject jsonObject) {
         super(jsonObject);
-        // TODO Auto-generated constructor stub
     }
 }

@@ -44,7 +44,7 @@ public final class CollectionUtils {
     }
     
     /**
-     * Use import static com.coravy.lib.web.util.CollectionUtils.set;
+     * Use import static org.couch4j.util.CollectionUtils.set;
      * 
      * <pre>
      * Map<String,String> m = map("key1", "value1", "key2", "value2");
@@ -74,7 +74,7 @@ public final class CollectionUtils {
     }
     
     /**
-     * Use import static com.coravy.lib.web.util.CollectionUtils.set;
+     * Use import static org.couch4j.util.CollectionUtils.set;
      * 
      * <p>
      * List<String> hs = list("s1", "s2");
@@ -89,7 +89,7 @@ public final class CollectionUtils {
     }    
     
     /**
-     * Use import static com.coravy.lib.web.util.CollectionUtils.set;
+     * Use import static org.couch4j.util.CollectionUtils.set;
      * 
      * <p>
      * Set<String> hs = set("s1", "s2");
@@ -104,7 +104,7 @@ public final class CollectionUtils {
     }
 
     /**
-     * Use import static com.coravy.lib.web.util.CollectionUtils.ary;
+     * Use import static org.couch4j.util.CollectionUtils.ary;
      * 
      * <p>
      * Integer[] aryOfInts = ary(1,2,3,4);

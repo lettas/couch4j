@@ -3,7 +3,7 @@ package org.couch4j.exceptions;
 import net.sf.json.JSONObject;
 
 /**
- * @author Stefan Saasen (stefan@coravy.com)
+ * @author Stefan Saasen
  */
 public class DocumentNotFoundException extends Couch4JException {
 
