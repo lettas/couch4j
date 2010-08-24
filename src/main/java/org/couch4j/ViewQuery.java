@@ -195,7 +195,7 @@ public class ViewQuery {
             String[] elems = name.split("/");
             if (elems.length != 2) {
                 throw new IllegalArgumentException(
-                        "Either supply only the view name and set the document by calling the document() method or use a single / to separate DESING/VIEW.");
+                        "Either supply only the view name and set the document by calling the document() method or use a single / to separate DESIGN/VIEW (where your document id= _design/DESIGN, and your views property has a function named VIEW) ");
             }
             documentName = elems[0];
             viewName = elems[1];
