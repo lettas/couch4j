@@ -177,6 +177,12 @@ public class ViewQueryTest {
     }
 
     @Test
+    public final void testLimit() {
+        ViewQuery v = ViewQuery.builder("design/test").limit(10).build();
+        assertThat(v.queryString(), is("_design/design/_view/test?limit=10"));
+    }
+
+    @Test
     public final void testStartkeyString() {
         final String key = "/web/test.jsp";
         ViewQuery v = ViewQuery.builder("design/test").startkey(key).build();

@@ -104,6 +104,11 @@ public final class ViewQuery {
             name(name);
         }
 
+        public ViewQueryBuilder limit(final int limit) {
+            params.add(new Param("limit", String.valueOf(limit)));
+            return this;
+        }
+
         public ViewQueryBuilder count(final int count) {
             params.add(new Param("count", String.valueOf(count)));
             return this;
