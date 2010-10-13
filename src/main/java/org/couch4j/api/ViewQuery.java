@@ -198,6 +198,13 @@ public final class ViewQuery {
             return this;
         }
 
+        public ViewQueryBuilder startkey(final int... keyparts) {
+            if (null != keyparts) {
+                params.add(new EncodedParam("startkey", toArray(keyparts)));
+            }
+            return this;
+        }
+
         public ViewQueryBuilder startkey(final String... keyparts) {
             if (null != keyparts) {
                 params.add(new EncodedParam("startkey", toArray(keyparts)));
@@ -226,6 +233,34 @@ public final class ViewQuery {
 
         public ViewQuery build() {
             return new ViewQuery(this);
+        }
+
+        private String toArray(int... parts) {
+            if (null == parts) {
+                return "";
+            }
+
+            if (parts.length == 1) {
+                try {
+                    return URLEncoder.encode(String.valueOf(parts[0]), "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    // Ignore - UTF-8 is always present
+                }
+            }
+
+            StringBuilder sb = new StringBuilder("[");
+            for (int i = 0; i < parts.length; i++) {
+                if (i > 0) {
+                    sb.append(',');
+                }
+                try {
+                    sb.append(URLEncoder.encode(String.valueOf(parts[i]), "UTF-8"));
+                } catch (UnsupportedEncodingException e) {
+                    // Ignore - UTF-8 is always present
+                }
+            }
+            sb.append("]");
+            return sb.toString();
         }
 
         private String toArray(String... parts) {
