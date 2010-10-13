@@ -31,6 +31,8 @@ import java.io.Reader;
 import java.net.ConnectException;
 
 import net.sf.json.JSONObject;
+import net.sf.json.JSONArray;
+import net.sf.json.JsonConfig;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
@@ -159,10 +161,43 @@ class HttpConnectionManager {
             // method.releaseConnection();
         }
     }
+    private JSONArray jsonArrayExecute(HttpRequestBase method) {
+        try {
+            HttpResponse response = client.execute(method);
+            int statusCode = response.getStatusLine().getStatusCode();
+            HttpEntity entity = response.getEntity();
+            JSONArray jsonArray = arrayFromResponseStream(entity);
+            switch (statusCode) {
+            case HttpStatus.SC_CONFLICT:
+                throw new DocumentUpdateConflictException(new JSONObject());
+            case HttpStatus.SC_OK:
+            case HttpStatus.SC_CREATED:
+                break;
+            case HttpStatus.SC_NOT_FOUND:
+            default:
+                throw new DocumentNotFoundException(new JSONObject());
+            }
+            return jsonArray;
+        }
+        catch (ConnectException re) {
+            throw new Couch4JException(re);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e); // TODO replace
+        }
+        finally {
+            // method.releaseConnection();
+        }
+    }
 
     JSONObject jsonGet(String url) {
         return jsonExecute(new HttpGet(url));
     }
+
+    JSONArray jsonArrayGet(String url) {
+        return jsonArrayExecute(new HttpGet(url));
+    }
+
 
     ServerResponse post(final String url) {
         return executeMethod(new HttpPost(url));
@@ -239,6 +274,18 @@ class HttpConnectionManager {
         CharArrayWriter w = new CharArrayWriter();
         StreamUtils.copy(reader, w);
         JSONObject json = JSONObject.fromObject(w.toString());
+        StreamUtils.closeSilently(reader);
+        StreamUtils.closeSilently(w);
+        entity.consumeContent(); // finish
+        return json;
+    }
+
+    private JSONArray arrayFromResponseStream(HttpEntity entity) throws IOException {
+        InputStream is = entity.getContent();
+        Reader reader = new InputStreamReader(is, EntityUtils.getContentCharSet(entity));
+        CharArrayWriter w = new CharArrayWriter();
+        StreamUtils.copy(reader, w);
+        JSONArray json = JSONArray.fromObject(w.toString());
         StreamUtils.closeSilently(reader);
         StreamUtils.closeSilently(w);
         entity.consumeContent(); // finish

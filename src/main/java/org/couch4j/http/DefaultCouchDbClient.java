@@ -23,10 +23,14 @@
  */
 package org.couch4j.http;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.sf.json.JSONArray;
+
+import org.couch4j.api.ViewQuery;
 import org.couch4j.api.CouchDbClient;
 import org.couch4j.api.Database;
 import org.couch4j.annotations.ThreadSafe;
@@ -110,7 +114,8 @@ public final class DefaultCouchDbClient implements CouchDbClient {
     }
 
     public List<String> databaseNames() {
-        throw new UnsupportedOperationException(); // FIXME implement
+        JSONArray allDbs = connections.jsonArrayGet(toString() + "/" + ViewQuery.builder("_all_dbs").includeDocs(true).build().toString());
+        return Arrays.asList((String[]) allDbs.toArray(new String[allDbs.size()]));
     }
 
     public void disconnect() {

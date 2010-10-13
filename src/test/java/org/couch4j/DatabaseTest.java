@@ -346,7 +346,14 @@ public class DatabaseTest extends Couch4jBase {
         assertNotNull(info);
         assertThat(info.getName(), is(testEmpty.getName()));
     }
-    
+
+    @Test
+    public void testDatabaseNames() throws Exception {
+        for(String name : server.databaseNames()) {
+            System.out.println(name);
+        }   
+    } 
+
     private void assertDocumentTest1(Document d) {
         assertEquals(VALID_DOC_ID, d.getId());
 
